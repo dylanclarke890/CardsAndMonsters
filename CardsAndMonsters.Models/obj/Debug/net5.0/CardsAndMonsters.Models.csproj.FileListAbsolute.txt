@@ -1,0 +1,12 @@
+C:\Users\invis\source\repos\CardsAndMonsters\CardsAndMonsters.Models\bin\Debug\net5.0\CardsAndMonsters.Models.deps.json
+C:\Users\invis\source\repos\CardsAndMonsters\CardsAndMonsters.Models\bin\Debug\net5.0\CardsAndMonsters.Models.dll
+C:\Users\invis\source\repos\CardsAndMonsters\CardsAndMonsters.Models\bin\Debug\net5.0\ref\CardsAndMonsters.Models.dll
+C:\Users\invis\source\repos\CardsAndMonsters\CardsAndMonsters.Models\bin\Debug\net5.0\CardsAndMonsters.Models.pdb
+C:\Users\invis\source\repos\CardsAndMonsters\CardsAndMonsters.Models\obj\Debug\net5.0\CardsAndMonsters.Models.csproj.AssemblyReference.cache
+C:\Users\invis\source\repos\CardsAndMonsters\CardsAndMonsters.Models\obj\Debug\net5.0\CardsAndMonsters.Models.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\invis\source\repos\CardsAndMonsters\CardsAndMonsters.Models\obj\Debug\net5.0\CardsAndMonsters.Models.AssemblyInfoInputs.cache
+C:\Users\invis\source\repos\CardsAndMonsters\CardsAndMonsters.Models\obj\Debug\net5.0\CardsAndMonsters.Models.AssemblyInfo.cs
+C:\Users\invis\source\repos\CardsAndMonsters\CardsAndMonsters.Models\obj\Debug\net5.0\CardsAndMonsters.Models.csproj.CoreCompileInputs.cache
+C:\Users\invis\source\repos\CardsAndMonsters\CardsAndMonsters.Models\obj\Debug\net5.0\CardsAndMonsters.Models.dll
+C:\Users\invis\source\repos\CardsAndMonsters\CardsAndMonsters.Models\obj\Debug\net5.0\ref\CardsAndMonsters.Models.dll
+C:\Users\invis\source\repos\CardsAndMonsters\CardsAndMonsters.Models\obj\Debug\net5.0\CardsAndMonsters.Models.pdb
