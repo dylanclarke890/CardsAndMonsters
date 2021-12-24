@@ -63,9 +63,9 @@
                         {
                             <div class="card">
                                 <p class="p-3">@card.Attack || @card.Defense</p>
-                                @if (CurrentTurn.Phase is Phase.Battle)
+                                @if (CurrentTurn.Phase is Phase.Battle && TurnCount > 0)
                                 {
-                                    <button @onclick="() => Attack(card)" class="btn btn-primary">ATTACK</button>
+                                    <button @onclick="() => DirectAttack(card, Opponent)" class="btn btn-primary">ATTACK</button>
                                 }
                             </div>
                         }
@@ -148,11 +148,6 @@ else
         EnterPhase(Phase.Main);
     }
 
-    private void Attack(Monster monster)
-    {
-        DamageOpponent(monster.Attack);
-    }
-
     private int TurnCount = 0;
     private bool IsPlayerTurn()
     {
@@ -215,9 +210,28 @@ else
         }
     }
 
+    private void DirectAttack(Monster monster, Player player)
+    {
+        var dmg = monster.Attack;
+        if (player.Equals(Player))
+        {
+            DamagePlayer(dmg);
+        }
+        else
+        {
+            DamageOpponent(dmg);
+        }
+    }
+
     private void DamageOpponent(decimal amount)
     {
         Opponent.TakeDamage(amount);
+        CheckForGameOver();
+    }
+
+    private void DamagePlayer(decimal amount)
+    {
+        Player.TakeDamage(amount);
         CheckForGameOver();
     }
 
