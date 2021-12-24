@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CardsAndMonsters.Models", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CardsAndMonsters.Data", "..\CardsAndMonsters.Data\CardsAndMonsters.Data.csproj", "{757031C6-BAF6-465F-BBB5-86830C0C1197}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CardsAndMonsters.Features", "..\CardsAndMonsters.Features\CardsAndMonsters.Features.csproj", "{5674CB4A-4F09-452A-9ED9-A0953BA408B2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{757031C6-BAF6-465F-BBB5-86830C0C1197}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{757031C6-BAF6-465F-BBB5-86830C0C1197}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{757031C6-BAF6-465F-BBB5-86830C0C1197}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5674CB4A-4F09-452A-9ED9-A0953BA408B2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5674CB4A-4F09-452A-9ED9-A0953BA408B2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5674CB4A-4F09-452A-9ED9-A0953BA408B2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5674CB4A-4F09-452A-9ED9-A0953BA408B2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
