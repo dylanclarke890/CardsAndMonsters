@@ -57,14 +57,6 @@
                     </div>
                 </div>
                 <div class="player-cards">
-                    <div class="spell-row">
-                        @for (int i = 0; i < 5; i++)
-                        {
-                            <div class="card">
-                                <p class="p-3">&nbsp;</p>
-                            </div>
-                        }
-                    </div>
                     <div class="monster-row">
                         @foreach (var card in Board.PlayerMonsters)
                         {
@@ -73,6 +65,14 @@
                             </div>
                         }
                         @for (int i = 0; i < 5 - Board.PlayerMonsters.Count; i++)
+                        {
+                            <div class="card">
+                                <p class="p-3">&nbsp;</p>
+                            </div>
+                        }
+                    </div>
+                    <div class="spell-row">
+                        @for (int i = 0; i < 5; i++)
                         {
                             <div class="card">
                                 <p class="p-3">&nbsp;</p>
@@ -165,10 +165,20 @@ else
             var monster = card as Monster;
             if (IsPlayerTurn())
             {
+                if (Board.PlayerMonsters.Count == 5)
+                {
+                    return;
+                }
+
                 Player.PlayMonster(monster, Board);
             }
             else
             {
+                if (Board.OpponentMonsters.Count == 5)
+                {
+                    return;
+                }
+
                 Opponent.PlayMonster(monster, Board);
             }
         }
