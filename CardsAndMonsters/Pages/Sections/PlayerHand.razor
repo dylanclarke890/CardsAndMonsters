@@ -11,7 +11,10 @@
                         <h5 class="card-title text-center">Monster Name</h5>
                         <p class="text-center">A: @c.Attack</p>
                         <p class="text-center">D: @c.Defense</p>
-                        <button @onclick="() => PlayCard(c)">PLAY</button>
+                        @if (Phase is Phase.Main)
+                        {
+                            <button @onclick="() => PlayCard(c)">PLAY</button>
+                        }    
                     </div>
                 </div>
             }
@@ -40,7 +43,39 @@
     public bool HideInfo { get; set; }
 
     [Parameter]
+    public Phase Phase { get; set; }
+
+    [Parameter]
     public EventCallback<BaseCard> CardPlayed { get; set; }
+
+    public override Task SetParametersAsync(ParameterView parameters)
+    {
+        foreach (var parameter in parameters)
+        {
+            switch (parameter.Name)
+            {
+                case nameof(Cards):
+                    Cards = (IList<BaseCard>)parameter.Value;
+                    break;
+                case nameof(CanPlay):
+                    CanPlay = (bool)parameter.Value;
+                    break;
+                case nameof(HideInfo):
+                    HideInfo = (bool)parameter.Value;
+                    break;
+                case nameof(Phase):
+                    Phase = (Phase)parameter.Value;
+                    break;
+                case nameof(CardPlayed):
+                    CardPlayed = (EventCallback<BaseCard>)parameter.Value;
+                    break;
+                default:
+                    throw new ArgumentException($"Unknown parameter: {parameter.Name}");
+            }
+        }
+
+        return base.SetParametersAsync(ParameterView.Empty);
+    }
 
     private async Task PlayCard(BaseCard card)
     {

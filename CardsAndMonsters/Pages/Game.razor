@@ -63,7 +63,7 @@
                         {
                             <div class="card">
                                 <p class="p-3">@card.Attack || @card.Defense</p>
-                                @if(CurrentTurn.Phase is Phase.Battle)
+                                @if (CurrentTurn.Phase is Phase.Battle)
                                 {
                                     <button @onclick="() => Attack(card)" class="btn btn-primary">ATTACK</button>
                                 }
@@ -100,7 +100,7 @@
                 <DeckPreview DeckCount="Player.Deck.Count" />
             </div>
             <div class="col-10">
-                <PlayerHand Cards="Player.CurrentHand" CanPlay="IsPlayerTurn()" CardPlayed="PlayCard" />
+                <PlayerHand Cards="Player.CurrentHand" CanPlay="IsPlayerTurn()" CardPlayed="PlayCard" Phase="CurrentTurn.Phase"/>
             </div>
         </div>
     </div>
@@ -168,6 +168,8 @@ else
         {
             EndGame();
         }
+
+        EnterPhase(Phase.Main);
     }
 
     private void EnterPhase(Phase phase)
@@ -181,6 +183,7 @@ else
         Turns[TurnCount] = CurrentTurn;
         CurrentTurn = new();
         TurnCount++;
+        EnterPhase(Phase.Standby);
         StartTurn(IsPlayerTurn() ? Player : Opponent);
     }
 
@@ -191,12 +194,7 @@ else
             var monster = card as Monster;
             if (IsPlayerTurn())
             {
-                if (Board.PlayerMonsters.Count == 5)
-                {
-                    return;
-                }
-
-                if (CurrentTurn.NormalSummonedMonsters.Count == CurrentTurn.NormalSummonLimit)
+                if (Board.PlayerMonsters.Count == 5 || CurrentTurn.NormalSummonLimitReached())
                 {
                     return;
                 }
@@ -206,12 +204,7 @@ else
             }
             else
             {
-                if (Board.OpponentMonsters.Count == 5)
-                {
-                    return;
-                }
-
-                if (CurrentTurn.NormalSummonedMonsters.Count == CurrentTurn.NormalSummonLimit)
+                if (Board.OpponentMonsters.Count == 5 || CurrentTurn.NormalSummonLimitReached())
                 {
                     return;
                 }
