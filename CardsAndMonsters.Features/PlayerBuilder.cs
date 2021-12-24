@@ -25,6 +25,10 @@ namespace CardsAndMonsters.Features
             player.Deck.Add(new Monster(1050, 100));
             player.Deck.Add(new Monster(1900, 1300));
             player.Deck.Add(new Monster(2000, 500));
+            player.Deck.Add(new Monster(2000, 500));
+            player.Deck.Add(new Monster(2000, 500));
+            player.Deck.Add(new Monster(2000, 500));
+            player.Deck.Add(new Monster(2000, 500));
         }
     }
 }

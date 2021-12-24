@@ -9,10 +9,17 @@ namespace CardsAndMonsters.Models.Extensions
             return player.HP <= 0;
         }
 
-        public static void DrawCard(this Player player)
+        public static bool DrawCard(this Player player)
         {
+            if (!player.Deck.Any())
+            {
+                return false;
+            }
+
             player.CurrentHand.Add(player.Deck.First());
             player.Deck.Remove(player.Deck.First());
+            
+            return true;
         }
 
         public static void TakeDamage(this Player player, decimal amount)

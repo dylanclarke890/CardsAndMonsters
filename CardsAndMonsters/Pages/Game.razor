@@ -1,20 +1,32 @@
 ﻿@page "/play"
+@layout EmptyLayout
 
-<GameStateInfo A="Player" B="Opponent" />
+<h3 class="text-center">Turn: @(TurnCount + 1)</h3>
 
 @if (!GameEnded)
 {
-    <button @onclick="() => DamageOpponent(4000)">Win</button>
-
     <div>
-        <p>Opponents Hand:</p>
-        <PlayerHand Cards="Opponent.CurrentHand" />
+        <p>Opponent - @Opponent.HP</p>
+        <div class="d-flex justify-content-end">
+            <PlayerHand Cards="Opponent.CurrentHand" HideInfo />
+            <DeckPreview DeckCount="Opponent.Deck.Count" />
+        </div>
     </div>
 
     <div>
-        <p>Your Hand:</p>
-        <PlayerHand Cards="Player.CurrentHand" />
+        <p>You - @Player.HP</p>
+        <DeckPreview DeckCount="Player.Deck.Count" />
+        <PlayerHand Cards="Player.CurrentHand" CanPlay="IsPlayerTurn()" />
     </div>
+
+    @if (IsPlayerTurn())
+    {
+        <button class="btn" @onclick="EndTurn">END TURN</button>
+    }
+    else
+    {
+        <button class="btn" @onclick="EndTurn">END OPPONENTS TURN</button>
+    }
 }
 else
 {
@@ -25,10 +37,37 @@ else
     private Player Player = PlayerBuilder.GetNewPlayer();
     private Player Opponent = PlayerBuilder.GetNewOpponent();
 
+    private int TurnCount = 0;
+    private Player StartingPlayer;
     private bool GameEnded;
+
+    private void EndTurn()
+    {
+        TurnCount++;
+        StartTurn(IsPlayerTurn() ? Player : Opponent);
+    }
+
+    private void StartTurn(Player player)
+    {
+        var success = player.DrawCard();
+
+        if (!success)
+        {
+            EndGame();
+        }
+    }
+
+    private bool IsPlayerTurn()
+    {
+        var isStartingPlayersTurn = TurnCount % 2 == 0;
+        return StartingPlayer.Equals(Player) ? isStartingPlayersTurn : !isStartingPlayersTurn;
+    }
 
     protected override async Task OnInitializedAsync()
     {
+        Random rnd = new();
+        StartingPlayer = rnd.Next(3) == 2 ? Opponent : Player;
+
         for (int i = 0; i < 5; i++)
         {
             Opponent.DrawCard();
@@ -48,7 +87,12 @@ else
     {
         if (Player.OutOfHealth() || Opponent.OutOfHealth())
         {
-            GameEnded = true;
+            EndGame();
         }
+    }
+
+    private void EndGame()
+    {
+        GameEnded = true;
     }
 }

@@ -1,8 +1,9 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 namespace CardsAndMonsters.Models
 {
-    public class Player : BaseModel
+    public class Player : BaseModel, IEqualityComparer<Player>
     {
         public Player()
         {
@@ -19,5 +20,15 @@ namespace CardsAndMonsters.Models
         public IList<BaseCard> CurrentHand { get; set; }
 
         public IList<BaseCard> Deck {get; set;}
+
+        public bool Equals(Player x, Player y)
+        {
+            return x.Id == y.Id;
+        }
+
+        public int GetHashCode([DisallowNull] Player obj)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }
