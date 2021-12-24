@@ -22,6 +22,12 @@ namespace CardsAndMonsters.Models.Extensions
             return true;
         }
 
+        public static void PlayMonster(this Player player, Monster monster, Board board)
+        {
+            player.CurrentHand.Remove(monster);
+            board.PlayerMonsters.Add(monster);
+        }
+
         public static void TakeDamage(this Player player, decimal amount)
         {
             player.HP -= amount;

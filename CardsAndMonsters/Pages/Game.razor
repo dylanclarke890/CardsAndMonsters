@@ -1,42 +1,105 @@
 ﻿@page "/play"
 @layout EmptyLayout
 
-<h3 class="text-center">Turn: @(TurnCount + 1)</h3>
-
 @if (!GameEnded)
 {
-    <div>
-        <h3 class="text-right">Opponent - @Opponent.HP</h3>
+<div class="container-fluid">
+    <div class="opponent-display">
         <div class="row">
-            <div class="col-11">
+            <div class="col-10">
                 <PlayerHand Cards="Opponent.CurrentHand" HideInfo />
             </div>
-            <div class="col-1">
+            <div class="col-2">
+                <h3 class="text-right">Opponent - @Opponent.HP</h3>
                 <DeckPreview DeckCount="Opponent.Deck.Count" />
             </div>
         </div>
     </div>
+</div>
 
-    <div>
-        <h3 class="text-left">You - @Player.HP</h3>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-2">
+            <h3 class="text-left">Turn: @(TurnCount + 1)</h3>
+            @if (IsPlayerTurn())
+            {
+                <button class="btn" @onclick="EndTurn">END TURN</button>
+            }
+            else
+            {
+                <button class="btn" @onclick="EndTurn">END OPPONENTS TURN</button>
+            }
+        </div>
+        <div class="col-9">
+            <div class="board">
+                <div class="opponent-cards">
+                    <div class="spell-row">
+                        @for (int i = 0; i < 5; i++)
+                        {
+                            <div class="card">
+                                <p class="p-3">&nbsp;</p>
+                            </div>
+                        }
+                    </div>
+                    <div class="monster-row">
+                        @foreach (var card in Board.OpponentMonsters)
+                        {
+                            <div class="card">
+                                <p class="p-3">@card.Attack || @card.Defense</p>
+                            </div>
+                        }
+                        @for (int i = 0; i < 5 - Board.OpponentMonsters.Count; i++)
+                        {
+                            <div class="card">
+                                <p class="p-3">&nbsp;</p>
+                            </div>
+                        }
+                    </div>
+                </div>
+                <div class="player-cards">
+                    <div class="spell-row">
+                        @for (int i = 0; i < 5; i++)
+                        {
+                            <div class="card">
+                                <p class="p-3">&nbsp;</p>
+                            </div>
+                        }
+                    </div>
+                    <div class="monster-row">
+                        @foreach (var card in Board.PlayerMonsters)
+                        {
+                            <div class="card">
+                                <p class="p-3">@card.Attack || @card.Defense</p>
+                            </div>
+                        }
+                        @for (int i = 0; i < 5 - Board.PlayerMonsters.Count; i++)
+                        {
+                            <div class="card">
+                                <p class="p-3">&nbsp;</p>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-1">
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid">
+    <div class="player-display">
         <div class="row">
-            <div class="col-1">
+            <div class="col-2">
+                <h3 class="text-left">You - @Player.HP</h3>
                 <DeckPreview DeckCount="Player.Deck.Count" />
             </div>
-            <div class="col-11">
-                <PlayerHand Cards="Player.CurrentHand" CanPlay="IsPlayerTurn()" />
+            <div class="col-10">
+                <PlayerHand Cards="Player.CurrentHand" CanPlay="IsPlayerTurn()" CardPlayed="PlayCard" />
             </div>
         </div>
     </div>
-
-    @if (IsPlayerTurn())
-    {
-        <button class="btn" @onclick="EndTurn">END TURN</button>
-    }
-    else
-    {
-        <button class="btn" @onclick="EndTurn">END OPPONENTS TURN</button>
-    }
+</div>
 }
 else
 {
@@ -47,11 +110,14 @@ else
     private Player Player;
     private Player Opponent;
 
+    private Board Board;
     private Player StartingPlayer;
     private bool GameEnded;
+    private bool Played;
 
     protected override async Task OnInitializedAsync()
     {
+        Board = new();
         Player = PlayerBuilder.GetNewPlayer();
         Opponent = PlayerBuilder.GetNewOpponent();
 
@@ -91,6 +157,23 @@ else
         StartTurn(IsPlayerTurn() ? Player : Opponent);
     }
 
+    private void PlayCard(BaseCard card)
+    {
+        Played = true;
+        if (card.GetType() == typeof(Monster))
+        {
+            var monster = card as Monster;
+            if (IsPlayerTurn())
+            {
+                Player.PlayMonster(monster, Board);
+            }
+            else
+            {
+                Opponent.PlayMonster(monster, Board);
+            }
+        }
+    }
+
     private void DamageOpponent(decimal amount)
     {
         Opponent.TakeDamage(amount);
@@ -110,3 +193,17 @@ else
         GameEnded = true;
     }
 }
+
+<style>
+    .opponent-display {
+        margin-bottom: 1em;
+    }
+    .player-display {
+        margin-top: 1em;
+    }
+
+    .spell-row, .monster-row {
+        display: flex;
+        justify-content: space-between;
+    }
+</style>

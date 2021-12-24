@@ -6,6 +6,10 @@
     background-repeat: no-repeat;
 }
 
+.pointer {
+    cursor: pointer;
+}
+
 html, body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }

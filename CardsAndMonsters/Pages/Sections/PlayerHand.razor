@@ -11,6 +11,7 @@
                         <h5 class="card-title text-center">Monster Name</h5>
                         <p class="text-center">A: @c.Attack</p>
                         <p class="text-center">D: @c.Defense</p>
+                        <button @onclick="() => PlayCard(c)">PLAY</button>
                     </div>
                 </div>
             }
@@ -37,4 +38,15 @@
 
     [Parameter]
     public bool HideInfo { get; set; }
+
+    [Parameter]
+    public EventCallback<BaseCard> CardPlayed { get; set; }
+
+    private async Task PlayCard(BaseCard card)
+    {
+        if (CanPlay)
+        {
+            await CardPlayed.InvokeAsync(card);
+        }
+    }
 }
