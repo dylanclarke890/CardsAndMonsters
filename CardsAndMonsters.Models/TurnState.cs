@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using CardsAndMonsters.Models.Enums;
+using System.Collections.Generic;
 
 namespace CardsAndMonsters.Models
 {
@@ -9,6 +10,8 @@ namespace CardsAndMonsters.Models
             NormalSummonLimit = 1;
             NormalSummonedMonsters = new List<Monster>();
         }
+
+        public Phase Phase { get; set; }
 
         public int NormalSummonLimit { get; set; }
 

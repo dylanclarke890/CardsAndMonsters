@@ -20,9 +20,10 @@
 <div class="container-fluid">
     <div class="row">
         <div class="col-2">
-            <h3 class="text-left">Turn: @(TurnCount + 1)</h3>
+            <h3 class="text-left">Turn: @(TurnCount + 1) (@CurrentTurn.Phase)</h3>
             @if (IsPlayerTurn())
             {
+                <button class="btn" @onclick="() => EnterPhase(Phase.Battle)">BATTLE</button>
                 <button class="btn" @onclick="EndTurn">END TURN</button>
             }
             else
@@ -62,6 +63,10 @@
                         {
                             <div class="card">
                                 <p class="p-3">@card.Attack || @card.Defense</p>
+                                @if(CurrentTurn.Phase is Phase.Battle)
+                                {
+                                    <button @onclick="() => Attack(card)" class="btn btn-primary">ATTACK</button>
+                                }
                             </div>
                         }
                         @for (int i = 0; i < 5 - Board.PlayerMonsters.Count; i++)
@@ -129,6 +134,9 @@ else
         Random rnd = new();
         StartingPlayer = rnd.Next(2) == 1 ? Opponent : Player;
 
+        EnterPhase(Phase.Standby);
+        StateHasChanged();
+
         for (int i = 0; i < 5; i++)
         {
             Opponent.DrawCard();
@@ -136,6 +144,13 @@ else
             StateHasChanged();
             await Task.Delay(300);
         }
+
+        EnterPhase(Phase.Main);
+    }
+
+    private void Attack(Monster monster)
+    {
+        DamageOpponent(monster.Attack);
     }
 
     private int TurnCount = 0;
@@ -155,8 +170,14 @@ else
         }
     }
 
+    private void EnterPhase(Phase phase)
+    {
+        CurrentTurn.Phase = phase;
+    }
+
     private void EndTurn()
     {
+        EnterPhase(Phase.End);
         Turns[TurnCount] = CurrentTurn;
         CurrentTurn = new();
         TurnCount++;
