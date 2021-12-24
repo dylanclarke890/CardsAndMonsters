@@ -1,7 +1,13 @@
 ﻿@page "/new" 
+@inject NavigationManager Navigate
 
 <h3>Pregame Screen</h3>
 
-@code {
+<button class="btn btn-primary" @onclick="StartGame">START</button>
 
+@code {
+    private void StartGame()
+    {
+        Navigate.NavigateTo("/play");
+    }
 }

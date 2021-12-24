@@ -1,8 +1,33 @@
 ﻿@page "/play"
 
-<h3>Game</h3>
+<p>Opponent:</p>
+<p>HP: @Opponent.HP</p>
+
+<p>You:</p>
+<p>HP: @Player.HP</p>
+
+@if (!GameEnded)
+{
+    <button @onclick="() => { Opponent.HP -= 4000; }">Win</button>
+}
+else
+{
+    <p>Game Over</p>
+}
+
+
 
 @code {
-    private Player Player;
-    private Player Opponent;
+    private Player Player = PlayerBuilder.GetNewPlayer();
+    private Player Opponent = PlayerBuilder.GetNewOpponent();
+
+    private bool GameEnded;
+
+    private void CheckForGameOver()
+    {
+        if (Player.OutOfHealth() || Opponent.OutOfHealth())
+        {
+            GameEnded = true;
+        }
+    }
 }
