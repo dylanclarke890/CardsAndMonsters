@@ -1,77 +1,24 @@
 ﻿@page "/play"
 
-<div class="d-flex justify-content-center">
-    <div class="mr-2">
-        <p>Opponent:</p>
-        <p>HP: @Opponent.HP</p>
-        <p>Hand: @Opponent.CurrentHand.Count</p>
-        <p>Deck: @Opponent.Deck.Count</p>
-    </div>
+<GameStateInfo A="Player" B="Opponent" />
 
-    <div class="ml-2">
-        <p>You:</p>
-        <p>HP: @Player.HP</p>
-        <p>Hand: @Player.CurrentHand.Count</p>
-        <p>Deck: @Player.Deck.Count</p>
-    </div>
-</div>
 @if (!GameEnded)
 {
     <button @onclick="() => DamageOpponent(4000)">Win</button>
 
     <div>
         <p>Opponents Hand:</p>
-        <div class="d-flex justify-content-center">
-            @foreach (var card in Opponent.CurrentHand)
-            {
-                if (card.GetType() == typeof(Monster))
-                {
-                    var c = card as Monster;
-                    <div class="card mr-2 ml-2" style="width: 13rem;">
-                        <img class="card-img-top" src="..." alt="Card image cap">
-                        <div class="card-body">
-                            <h5 class="card-title text-center">Monster Name</h5>
-                            <p class="text-center">A: @c.Attack</p>
-                            <p class="text-center">D: @c.Defense</p>
-                        </div>
-                    </div>
-                }
-                else
-                {
-                    <p>Dunno</p>
-                }
-            }
-        </div>
+        <PlayerHand Cards="Opponent.CurrentHand" />
     </div>
 
     <div>
         <p>Your Hand:</p>
-        <div class="d-flex justify-content-center">
-            @foreach (var card in Player.CurrentHand)
-            {
-                if (card.GetType() == typeof(Monster))
-                {
-                    var c = card as Monster;
-                    <div class="card ml-2 mr-2" style="width: 13rem;">
-                        <img class="card-img-top" src="..." alt="Card image cap">
-                        <div class="card-body">
-                            <h5 class="card-title text-center">Monster Name</h5>
-                            <p class="text-center">A: @c.Attack</p>
-                            <p class="text-center">D: @c.Defense</p>
-                        </div>
-                    </div>
-                }
-                else
-                {
-                    <p>Dunno</p>
-                }
-            }
-        </div>
+        <PlayerHand Cards="Player.CurrentHand" />
     </div>
 }
 else
 {
-    <p>Game Over</p>
+    <h3 class="text-center">Game Over</h3>
 }
 
 @code {

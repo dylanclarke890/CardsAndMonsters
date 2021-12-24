@@ -1,0 +1,23 @@
+﻿<div class="d-flex justify-content-center">
+    <div class="mr-2">
+        <p>Opponent:</p>
+        <p>HP: @A.HP</p>
+        <p>Hand: @A.CurrentHand.Count</p>
+        <p>Deck: @A.Deck.Count</p>
+    </div>
+
+    <div class="ml-2">
+        <p>You:</p>
+        <p>HP: @B.HP</p>
+        <p>Hand: @B.CurrentHand.Count</p>
+        <p>Deck: @B.Deck.Count</p>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public Player A { get; set; }
+
+    [Parameter]
+    public Player B { get; set; }
+}
