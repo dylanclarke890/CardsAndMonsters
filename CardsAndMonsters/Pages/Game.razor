@@ -8,7 +8,7 @@
 
 @if (!GameEnded)
 {
-    <button @onclick="() => { Opponent.HP -= 4000; }">Win</button>
+    <button @onclick="() => DamageOpponent(4000)">Win</button>
 }
 else
 {
@@ -22,6 +22,12 @@ else
     private Player Opponent = PlayerBuilder.GetNewOpponent();
 
     private bool GameEnded;
+
+    private void DamageOpponent(decimal amount)
+    {
+        Opponent.HP -= amount;
+        CheckForGameOver();
+    }
 
     private void CheckForGameOver()
     {
