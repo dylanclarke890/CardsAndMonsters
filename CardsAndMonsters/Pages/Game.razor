@@ -111,18 +111,22 @@ else
     private Player Opponent;
 
     private Board Board;
+    private IDictionary<int, TurnState> Turns;
+    private TurnState CurrentTurn;
+
     private Player StartingPlayer;
     private bool GameEnded;
-    private bool Played;
 
     protected override async Task OnInitializedAsync()
     {
+        Turns = new Dictionary<int, TurnState>();
+        CurrentTurn = new();
         Board = new();
+
         Player = PlayerBuilder.GetNewPlayer();
         Opponent = PlayerBuilder.GetNewOpponent();
 
         Random rnd = new();
-
         StartingPlayer = rnd.Next(2) == 1 ? Opponent : Player;
 
         for (int i = 0; i < 5; i++)
@@ -153,13 +157,14 @@ else
 
     private void EndTurn()
     {
+        Turns[TurnCount] = CurrentTurn;
+        CurrentTurn = new();
         TurnCount++;
         StartTurn(IsPlayerTurn() ? Player : Opponent);
     }
 
     private void PlayCard(BaseCard card)
     {
-        Played = true;
         if (card.GetType() == typeof(Monster))
         {
             var monster = card as Monster;
@@ -170,6 +175,12 @@ else
                     return;
                 }
 
+                if (CurrentTurn.NormalSummonedMonsters.Count == CurrentTurn.NormalSummonLimit)
+                {
+                    return;
+                }
+
+                CurrentTurn.NormalSummonedMonsters.Add(monster);
                 Player.PlayMonster(monster, Board);
             }
             else
@@ -179,6 +190,12 @@ else
                     return;
                 }
 
+                if (CurrentTurn.NormalSummonedMonsters.Count == CurrentTurn.NormalSummonLimit)
+                {
+                    return;
+                }
+
+                CurrentTurn.NormalSummonedMonsters.Add(monster);
                 Opponent.PlayMonster(monster, Board);
             }
         }
