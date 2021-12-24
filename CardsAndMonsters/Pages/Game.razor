@@ -1,21 +1,78 @@
 ﻿@page "/play"
 
-<p>Opponent:</p>
-<p>HP: @Opponent.HP</p>
+<div class="d-flex justify-content-center">
+    <div class="mr-2">
+        <p>Opponent:</p>
+        <p>HP: @Opponent.HP</p>
+        <p>Hand: @Opponent.CurrentHand.Count</p>
+        <p>Deck: @Opponent.Deck.Count</p>
+    </div>
 
-<p>You:</p>
-<p>HP: @Player.HP</p>
-
+    <div class="ml-2">
+        <p>You:</p>
+        <p>HP: @Player.HP</p>
+        <p>Hand: @Player.CurrentHand.Count</p>
+        <p>Deck: @Player.Deck.Count</p>
+    </div>
+</div>
 @if (!GameEnded)
 {
     <button @onclick="() => DamageOpponent(4000)">Win</button>
+
+    <div>
+        <p>Opponents Hand:</p>
+        <div class="d-flex justify-content-center">
+            @foreach (var card in Opponent.CurrentHand)
+            {
+                if (card.GetType() == typeof(Monster))
+                {
+                    var c = card as Monster;
+                    <div class="card mr-2 ml-2" style="width: 13rem;">
+                        <img class="card-img-top" src="..." alt="Card image cap">
+                        <div class="card-body">
+                            <h5 class="card-title text-center">Monster Name</h5>
+                            <p class="text-center">A: @c.Attack</p>
+                            <p class="text-center">D: @c.Defense</p>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <p>Dunno</p>
+                }
+            }
+        </div>
+    </div>
+
+    <div>
+        <p>Your Hand:</p>
+        <div class="d-flex justify-content-center">
+            @foreach (var card in Player.CurrentHand)
+            {
+                if (card.GetType() == typeof(Monster))
+                {
+                    var c = card as Monster;
+                    <div class="card ml-2 mr-2" style="width: 13rem;">
+                        <img class="card-img-top" src="..." alt="Card image cap">
+                        <div class="card-body">
+                            <h5 class="card-title text-center">Monster Name</h5>
+                            <p class="text-center">A: @c.Attack</p>
+                            <p class="text-center">D: @c.Defense</p>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <p>Dunno</p>
+                }
+            }
+        </div>
+    </div>
 }
 else
 {
     <p>Game Over</p>
 }
-
-
 
 @code {
     private Player Player = PlayerBuilder.GetNewPlayer();
@@ -23,9 +80,20 @@ else
 
     private bool GameEnded;
 
+    protected override async Task OnInitializedAsync()
+    {
+        for (int i = 0; i < 5; i++)
+        {
+            Opponent.DrawCard();
+            Player.DrawCard();
+            StateHasChanged();
+            await Task.Delay(300);
+        }
+    }
+
     private void DamageOpponent(decimal amount)
     {
-        Opponent.HP -= amount;
+        Opponent.TakeDamage(amount);
         CheckForGameOver();
     }
 
