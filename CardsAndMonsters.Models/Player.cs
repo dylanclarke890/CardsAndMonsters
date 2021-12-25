@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace CardsAndMonsters.Models
 {
-    public class Player : BaseModel, IEqualityComparer<Player>
+    public class Player : BaseModel
     {
         public Player()
         {
@@ -51,16 +51,6 @@ namespace CardsAndMonsters.Models
         {
             HP -= amount;
             HP = HP < 0 ? 0 : HP;
-        }
-
-        public bool Equals(Player x, Player y)
-        {
-            return x.Id == y.Id;
-        }
-
-        public int GetHashCode([DisallowNull] Player obj)
-        {
-            throw new System.NotImplementedException();
         }
     }
 }
