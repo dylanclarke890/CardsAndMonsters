@@ -1,0 +1,28 @@
+﻿@if (DisplayOptions)
+{
+        if (CardPendingPlacement.GetType() == typeof(Monster))
+        {
+            var monster = CardPendingPlacement as Monster;
+            <p>Type: Monster</p>
+            <p>Attack: @monster.Attack</p>
+            <p>Defense: @monster.Defense</p>
+            <button class="btn btn-primary" @onclick="() => SelectionPicked(FieldPosition.VerticalUp)">ATTACK MODE</button>
+            <button class="btn btn-primary" @onclick="() => SelectionPicked(FieldPosition.HorizontalDown)">SET</button>
+        }
+}
+
+@code {
+    [Parameter]
+    public bool DisplayOptions { get; set; }
+
+    [Parameter]
+    public BaseCard CardPendingPlacement { get; set; }
+
+    [Parameter]
+    public EventCallback<FieldPosition> OnPositionPicked { get; set; }
+
+    private async Task SelectionPicked(FieldPosition position)
+    {
+        await OnPositionPicked.InvokeAsync(position);
+    }
+}

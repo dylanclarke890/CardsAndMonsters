@@ -1,0 +1,110 @@
+﻿<div class="board">
+    <div class="opponent-cards">
+        <div class="spell-row">
+            @for (int i = 0; i < 5; i++)
+            {
+                <div class="card">
+                    <p class="p-3">&nbsp;</p>
+                </div>
+            }
+        </div>
+        <div class="monster-row">
+            @foreach (var card in Board.OpponentMonsters)
+            {
+                <div class="card">
+                    <p class="p-3">
+                        @switch (card.FieldPosition)
+                        {
+                            case FieldPosition.VerticalUp:
+                                <h5>Monster</h5>
+                                <span>@card.Attack</span>
+                                break;
+                            case FieldPosition.HorizontalDown:
+                                <h5>Monster</h5>
+                                <span>HIDDEN</span>
+                                break;
+                            case FieldPosition.HorizontalUp:
+                                <h5>Monster</h5>
+                                <span>@card.Defense</span>
+                                break;
+                            default:
+                                break;
+                        }
+                    </p>
+                </div>
+            }
+            @for (int i = 0; i < 5 - Board.OpponentMonsters.Count; i++)
+            {
+                <div class="card">
+                    <p class="p-3">&nbsp;</p>
+                </div>
+            }
+        </div>
+    </div>
+    <div class="player-cards">
+        <div class="monster-row">
+            @foreach (var card in Board.PlayerMonsters)
+            {
+                <div class="card">
+                    <div class="p-3">
+                        @switch (card.FieldPosition)
+                        {
+                            case FieldPosition.VerticalUp:
+                                <h5>Monster</h5>
+                                <span>@card.Attack</span>
+                                @if (CurrentTurn.Phase is Phase.Battle && Turns.Keys.Count > 0)
+                                {
+                                    <button @onclick="() => Attack(card)" class="btn btn-primary">ATTACK</button>
+                                }
+                                break;
+                            case FieldPosition.HorizontalDown:
+                                <h5>Monster</h5>
+                                <p>@card.Attack || @card.Defense</p>
+                                <span>HIDDEN</span>
+                                break;
+                            case FieldPosition.HorizontalUp:
+                                <h5>Monster</h5>
+                                <span>@card.Defense</span>
+                                break;
+                            default:
+                                break;
+                        }
+                    </div>
+                </div>
+            }
+            @for (int i = 0; i < 5 - Board.PlayerMonsters.Count; i++)
+            {
+                <div class="card">
+                    <p class="p-3">&nbsp;</p>
+                </div>
+            }
+        </div>
+        <div class="spell-row">
+            @for (int i = 0; i < 5; i++)
+            {
+                <div class="card">
+                    <p class="p-3">&nbsp;</p>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public Board Board { get; set; }
+
+    [Parameter]
+    public TurnState CurrentTurn { get; set; }
+
+    [Parameter]
+    public IDictionary<int, TurnState> Turns { get; set; }
+
+    [Parameter]
+    public EventCallback<Monster> OnPlayerAttack { get; set; }
+
+    private async Task Attack(Monster monster)
+    {
+        await OnPlayerAttack.InvokeAsync(monster);
+    }
+}

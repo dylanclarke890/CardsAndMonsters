@@ -40,10 +40,11 @@ namespace CardsAndMonsters.Models
             return true;
         }
 
-        public void PlayMonster(Monster monster, Board board)
+        public void PlayMonster(Monster monster, Board board, TurnState turn)
         {
             CurrentHand.Remove(monster);
             board.PlayerMonsters.Add(monster);
+            turn.NormalSummonedMonsters.Add(monster);
         }
 
         public void TakeDamage(decimal amount)

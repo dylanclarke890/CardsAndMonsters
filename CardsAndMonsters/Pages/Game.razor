@@ -23,7 +23,10 @@
             <h3 class="text-left">Turn: @(TurnCount + 1) (@CurrentTurn.Phase)</h3>
             @if (IsPlayerTurn())
             {
-                <button class="btn" @onclick="() => EnterPhase(Phase.Battle)">BATTLE</button>
+                @if (CurrentTurn.Phase < Phase.Battle)
+                {
+                    <button class="btn" @onclick="() => EnterPhase(Phase.Battle)">BATTLE</button>
+                }
                 <button class="btn" @onclick="EndTurn">END TURN</button>
             }
             else
@@ -32,60 +35,7 @@
             }
         </div>
         <div class="col-9">
-            <div class="board">
-                <div class="opponent-cards">
-                    <div class="spell-row">
-                        @for (int i = 0; i < 5; i++)
-                        {
-                            <div class="card">
-                                <p class="p-3">&nbsp;</p>
-                            </div>
-                        }
-                    </div>
-                    <div class="monster-row">
-                        @foreach (var card in Board.OpponentMonsters)
-                        {
-                            <div class="card">
-                                <p class="p-3">@card.Attack || @card.Defense</p>
-                            </div>
-                        }
-                        @for (int i = 0; i < 5 - Board.OpponentMonsters.Count; i++)
-                        {
-                            <div class="card">
-                                <p class="p-3">&nbsp;</p>
-                            </div>
-                        }
-                    </div>
-                </div>
-                <div class="player-cards">
-                    <div class="monster-row">
-                        @foreach (var card in Board.PlayerMonsters)
-                        {
-                            <div class="card">
-                                <p class="p-3">@card.Attack || @card.Defense</p>
-                                @if (CurrentTurn.Phase is Phase.Battle && TurnCount > 0)
-                                {
-                                    <button @onclick="() => DirectAttack(card, Opponent)" class="btn btn-primary">ATTACK</button>
-                                }
-                            </div>
-                        }
-                        @for (int i = 0; i < 5 - Board.PlayerMonsters.Count; i++)
-                        {
-                            <div class="card">
-                                <p class="p-3">&nbsp;</p>
-                            </div>
-                        }
-                    </div>
-                    <div class="spell-row">
-                        @for (int i = 0; i < 5; i++)
-                        {
-                            <div class="card">
-                                <p class="p-3">&nbsp;</p>
-                            </div>
-                        }
-                    </div>
-                </div>
-            </div>
+            <GameBoard CurrentTurn="CurrentTurn" Turns="Turns" OnPlayerAttack="DirectAttack" Board="Board" />
         </div>
         <div class="col-1">
         </div>
@@ -100,11 +50,12 @@
                 <DeckPreview DeckCount="Player.Deck.Count" />
             </div>
             <div class="col-10">
-                <PlayerHand Cards="Player.CurrentHand" CanPlay="IsPlayerTurn() && TurnCount > 0" CardPlayed="PlayCard" Phase="CurrentTurn.Phase"/>
+                <PlayerHand Cards="Player.CurrentHand" CanPlay="CanPlay()" CardPlayed="PlayCard" Phase="CurrentTurn.Phase"/>
             </div>
         </div>
     </div>
 </div>
+<SelectCardPosition CardPendingPlacement="PendingPlacement" DisplayOptions="ChoosingFieldPosition" OnPositionPicked="PlayMonster"/>
 }
 else
 {
@@ -156,6 +107,11 @@ else
         return StartingPlayer.Equals(StartingPlayer, Player) ? isStartingPlayersTurn : !isStartingPlayersTurn;
     }
 
+    private bool CanPlay()
+    {
+        return IsPlayerTurn() && (CurrentTurn.Phase is Phase.Main && !ChoosingFieldPosition || (CurrentTurn.Phase is Phase.Battle && TurnCount > 0));
+    }
+
     private void StartTurn(Player player)
     {
         var success = player.DrawCard();
@@ -195,33 +151,31 @@ else
                     return;
                 }
 
-                CurrentTurn.NormalSummonedMonsters.Add(monster);
-                Player.PlayMonster(monster, Board);
-            }
-            else
-            {
-                if (Board.OpponentMonsters.Count == 5 || CurrentTurn.NormalSummonLimitReached())
-                {
-                    return;
-                }
-
-                CurrentTurn.NormalSummonedMonsters.Add(monster);
-                Opponent.PlayMonster(monster, Board);
+                PlayMonster(monster);
             }
         }
     }
 
-    private void DirectAttack(Monster monster, Player player)
+    private BaseCard PendingPlacement;
+    private void PlayMonster(Monster monster)
+    {
+        ChoosingFieldPosition = true;
+        PendingPlacement = monster;
+    }
+
+    private void PlayMonster(FieldPosition position)
+    {
+        ChoosingFieldPosition = false;
+        var monster = PendingPlacement as Monster;
+        monster.FieldPosition = position;
+        Player.PlayMonster(monster, Board, CurrentTurn);
+        PendingPlacement = null;
+    }
+
+    private void DirectAttack(Monster monster)
     {
         var dmg = monster.Attack;
-        if (player.Equals(Player))
-        {
-            DamagePlayer(dmg);
-        }
-        else
-        {
-            DamageOpponent(dmg);
-        }
+        DamageOpponent(dmg);
     }
 
     private void DamageOpponent(decimal amount)

@@ -5,11 +5,11 @@ VisualStudioVersion = 16.0.32002.261
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CardsAndMonsters", "CardsAndMonsters.csproj", "{026F7D6A-C727-4155-8E41-00C0D5BC7186}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CardsAndMonsters.Models", "..\CardsAndMonsters.Models\CardsAndMonsters.Models.csproj", "{386AA5FC-03E5-4AB6-8FC8-4B6EF2CF6965}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CardsAndMonsters.Models", "..\CardsAndMonsters.Models\CardsAndMonsters.Models.csproj", "{386AA5FC-03E5-4AB6-8FC8-4B6EF2CF6965}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CardsAndMonsters.Data", "..\CardsAndMonsters.Data\CardsAndMonsters.Data.csproj", "{757031C6-BAF6-465F-BBB5-86830C0C1197}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CardsAndMonsters.Data", "..\CardsAndMonsters.Data\CardsAndMonsters.Data.csproj", "{757031C6-BAF6-465F-BBB5-86830C0C1197}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CardsAndMonsters.Features", "..\CardsAndMonsters.Features\CardsAndMonsters.Features.csproj", "{5674CB4A-4F09-452A-9ED9-A0953BA408B2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CardsAndMonsters.Features", "..\CardsAndMonsters.Features\CardsAndMonsters.Features.csproj", "{5674CB4A-4F09-452A-9ED9-A0953BA408B2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
