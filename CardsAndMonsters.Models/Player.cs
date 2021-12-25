@@ -44,7 +44,7 @@ namespace CardsAndMonsters.Models
         {
             CurrentHand.Remove(monster);
             board.PlayerMonsters.Add(monster);
-            turn.NormalSummonedMonsters.Add(monster);
+            turn.MonstersInPlay.Add(monster);
         }
 
         public void TakeDamage(decimal amount)

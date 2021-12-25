@@ -69,6 +69,10 @@
                             default:
                                 break;
                         }
+                        @if (CurrentTurn.AbleToSwitch.TryGetValue(card.Id, out var result) && result && CurrentTurn.Player.Equals(Board.Player))
+                        {
+                            <button @onclick="() => SwitchPosition(card)">SWITCH POSITION</button>
+                        }
                     </div>
                 </div>
             }
@@ -103,8 +107,31 @@
     [Parameter]
     public EventCallback<Monster> OnPlayerAttack { get; set; }
 
+    [Parameter]
+    public EventCallback<Monster> OnPositionSwitch { get; set; }
+
     private async Task Attack(Monster monster)
     {
         await OnPlayerAttack.InvokeAsync(monster);
+    }
+
+    private async Task SwitchPosition(Monster monster)
+    {
+        switch (monster.FieldPosition)
+        {
+            case FieldPosition.HorizontalUp:
+                monster.FieldPosition = FieldPosition.VerticalUp;
+                break;
+            case FieldPosition.HorizontalDown:
+                monster.FieldPosition = FieldPosition.VerticalUp;
+                break;
+            case FieldPosition.VerticalUp:
+                monster.FieldPosition = FieldPosition.HorizontalUp;
+                break;
+            default:
+                throw new InvalidOperationException("Expected a valid position");
+        }
+
+        await OnPositionSwitch.InvokeAsync(monster);
     }
 }

@@ -21,7 +21,7 @@
     <div class="row">
         <div class="col-2">
             <h3 class="text-left">Turn: @(TurnCount + 1) (@CurrentTurn.Phase)</h3>
-            @if (IsPlayerTurn())
+            @if (CurrentTurn.IsCurrentPlayer(Player))
             {
                 @if (CurrentTurn.Phase < Phase.Battle)
                 {
@@ -35,7 +35,7 @@
             }
         </div>
         <div class="col-9">
-            <GameBoard CurrentTurn="CurrentTurn" Turns="Turns" OnPlayerAttack="DirectAttack" Board="Board" />
+            <GameBoard CurrentTurn="CurrentTurn" Turns="Turns" Board="Board" OnPlayerAttack="DirectAttack" OnPositionSwitch="PositionSwitched"/>
         </div>
         <div class="col-1">
         </div>
@@ -77,14 +77,14 @@ else
     protected override async Task OnInitializedAsync()
     {
         Turns = new Dictionary<int, TurnState>();
-        CurrentTurn = new();
-        Board = new();
 
         Player = PlayerBuilder.GetNewPlayer();
         Opponent = PlayerBuilder.GetNewOpponent();
+        Board = new(Player, Opponent);
 
         Random rnd = new();
         StartingPlayer = rnd.Next(2) == 1 ? Opponent : Player;
+        CurrentTurn = new(StartingPlayer);
 
         EnterPhase(Phase.Standby);
         StateHasChanged();
@@ -101,19 +101,15 @@ else
     }
 
     private int TurnCount = 0;
-    private bool IsPlayerTurn()
-    {
-        var isStartingPlayersTurn = TurnCount % 2 == 0;
-        return StartingPlayer.Equals(StartingPlayer, Player) ? isStartingPlayersTurn : !isStartingPlayersTurn;
-    }
 
     private bool CanPlay()
     {
-        return IsPlayerTurn() && (CurrentTurn.Phase is Phase.Main && !ChoosingFieldPosition || (CurrentTurn.Phase is Phase.Battle && TurnCount > 0));
+        return CurrentTurn.IsCurrentPlayer(Player) && (CurrentTurn.Phase is Phase.Main && !ChoosingFieldPosition || (CurrentTurn.Phase is Phase.Battle && TurnCount > 0));
     }
 
     private void StartTurn(Player player)
     {
+        CurrentTurn.Player = player;
         var success = player.DrawCard();
 
         if (!success)
@@ -133,10 +129,10 @@ else
     {
         EnterPhase(Phase.End);
         Turns[TurnCount] = CurrentTurn;
-        CurrentTurn = new();
+        CurrentTurn = new(CurrentTurn.MonstersInPlay);
         TurnCount++;
         EnterPhase(Phase.Standby);
-        StartTurn(IsPlayerTurn() ? Player : Opponent);
+        StartTurn(Turns.Last().Value.Player.Equals(Player) ? Opponent : Player);
     }
 
     private void PlayCard(BaseCard card)
@@ -144,7 +140,7 @@ else
         if (card.GetType() == typeof(Monster))
         {
             var monster = card as Monster;
-            if (IsPlayerTurn())
+            if (CurrentTurn.IsCurrentPlayer(Player))
             {
                 if (Board.PlayerMonsters.Count == 5 || CurrentTurn.NormalSummonLimitReached())
                 {
@@ -176,6 +172,13 @@ else
     {
         var dmg = monster.Attack;
         DamageOpponent(dmg);
+    }
+
+    private void PositionSwitched(Monster monster)
+    {
+        var currentMonster = Board.PlayerMonsters.FirstOrDefault(m => Monster.Equals(m, monster));
+        Board.PlayerMonsters[Board.PlayerMonsters.IndexOf(currentMonster)] = monster;
+        CurrentTurn.AbleToSwitch[monster.Id] = false;
     }
 
     private void DamageOpponent(decimal amount)
