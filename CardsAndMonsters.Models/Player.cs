@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 
 namespace CardsAndMonsters.Models
 {
@@ -20,6 +21,36 @@ namespace CardsAndMonsters.Models
         public IList<BaseCard> CurrentHand { get; set; }
 
         public IList<BaseCard> Deck {get; set;}
+
+        public bool OutOfHealth()
+        {
+            return HP <= 0;
+        }
+
+        public bool DrawCard()
+        {
+            if (!Deck.Any())
+            {
+                return false;
+            }
+
+            CurrentHand.Add(Deck[0]);
+            Deck.Remove(Deck[0]);
+
+            return true;
+        }
+
+        public void PlayMonster(Monster monster, Board board)
+        {
+            CurrentHand.Remove(monster);
+            board.PlayerMonsters.Add(monster);
+        }
+
+        public void TakeDamage(decimal amount)
+        {
+            HP -= amount;
+            HP = HP < 0 ? 0 : HP;
+        }
 
         public bool Equals(Player x, Player y)
         {

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CardsAndMonsters.Models.Enums;
+using System;
 
 namespace CardsAndMonsters.Models
 {
@@ -17,6 +18,9 @@ namespace CardsAndMonsters.Models
         }
 
         public decimal Attack { get; set; }
+
         public decimal Defense { get; set; }
+
+        public MonsterFieldPosition FieldPosition { get; set; }
     }
 }

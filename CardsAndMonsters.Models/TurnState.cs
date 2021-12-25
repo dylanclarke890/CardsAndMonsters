@@ -16,5 +16,10 @@ namespace CardsAndMonsters.Models
         public int NormalSummonLimit { get; set; }
 
         public IList<Monster> NormalSummonedMonsters { get; set; }
+
+        public bool NormalSummonLimitReached()
+        {
+            return NormalSummonedMonsters.Count == NormalSummonLimit;
+        }
     }
 }

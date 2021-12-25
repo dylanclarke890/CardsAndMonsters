@@ -100,7 +100,7 @@
                 <DeckPreview DeckCount="Player.Deck.Count" />
             </div>
             <div class="col-10">
-                <PlayerHand Cards="Player.CurrentHand" CanPlay="IsPlayerTurn()" CardPlayed="PlayCard" Phase="CurrentTurn.Phase"/>
+                <PlayerHand Cards="Player.CurrentHand" CanPlay="IsPlayerTurn() && TurnCount > 0" CardPlayed="PlayCard" Phase="CurrentTurn.Phase"/>
             </div>
         </div>
     </div>
@@ -120,6 +120,7 @@ else
     private TurnState CurrentTurn;
 
     private Player StartingPlayer;
+    private bool ChoosingFieldPosition;
     private bool GameEnded;
 
     protected override async Task OnInitializedAsync()
@@ -152,7 +153,7 @@ else
     private bool IsPlayerTurn()
     {
         var isStartingPlayersTurn = TurnCount % 2 == 0;
-        return StartingPlayer.Equals(Player) ? isStartingPlayersTurn : !isStartingPlayersTurn;
+        return StartingPlayer.Equals(StartingPlayer, Player) ? isStartingPlayersTurn : !isStartingPlayersTurn;
     }
 
     private void StartTurn(Player player)

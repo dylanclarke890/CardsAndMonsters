@@ -11,7 +11,7 @@
                         <h5 class="card-title text-center">Monster Name</h5>
                         <p class="text-center">A: @c.Attack</p>
                         <p class="text-center">D: @c.Defense</p>
-                        @if (Phase is Phase.Main)
+                        @if (Phase is Phase.Main && CanPlay)
                         {
                             <button @onclick="() => PlayCard(c)">PLAY</button>
                         }    
@@ -79,9 +79,6 @@
 
     private async Task PlayCard(BaseCard card)
     {
-        if (CanPlay)
-        {
-            await CardPlayed.InvokeAsync(card);
-        }
+        await CardPlayed.InvokeAsync(card);
     }
 }
