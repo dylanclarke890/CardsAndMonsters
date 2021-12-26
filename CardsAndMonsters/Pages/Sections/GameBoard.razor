@@ -77,11 +77,11 @@
                             default:
                                 break;
                         }
-                        @if (AbleToSwitch(card.Id))
-                        {
-                            <button @onclick="() => SwitchPosition(card)">SWITCH POSITION</button>
-                        }
                     </div>
+                    @if (AbleToSwitch(card.Id))
+                    {
+                        <button class="btn btn-primary" @onclick="() => SwitchPosition(card)">SWITCH POSITION</button>
+                    }
                 </div>
             }
             @for (int i = 0; i < 5 - Board.PlayerMonsters.Count; i++)
