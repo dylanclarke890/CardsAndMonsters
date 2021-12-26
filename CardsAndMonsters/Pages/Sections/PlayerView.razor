@@ -1,0 +1,82 @@
+﻿<div class="container-fluid">
+    <div class="player-display">
+        <div class="row">
+            <div class="col-2">
+                <h3 class="text-left">You - @Player.HP</h3>
+                <DeckPreview DeckCount="Player.Deck.Count" />
+            </div>
+            <div class="col-10">
+                <PlayerHand Cards="Player.CurrentHand" CanPlay="DisplayPlayOptions" CardPlayed="PlayCard" Phase="CurrentTurn.Phase" />
+            </div>
+        </div>
+    </div>
+</div>
+<SelectCardPosition CardPendingPlacement="PendingPlacement" DisplayOptions="DisplayFieldOptions" OnPositionPicked="PlayMonster" />
+
+@code {
+    [Parameter]
+    public Player Player { get; set; }
+
+    [Parameter]
+    public bool DisplayPlayOptions { get; set; }
+
+    [Parameter]
+    public bool DisplayFieldOptions { get; set; }
+
+    [Parameter]
+    public TurnState CurrentTurn { get; set; }
+
+    [Parameter]
+    public BaseCard PendingPlacement { get; set; }
+
+    [Parameter]
+    public EventCallback<FieldPosition> OnPositionPicked { get; set; }
+
+    [Parameter]
+    public EventCallback<BaseCard> CardPlayed { get; set; }
+
+    private async Task PlayCard(BaseCard card)
+    {
+        await CardPlayed.InvokeAsync(card);
+    }
+
+    private async Task PlayMonster(FieldPosition fieldPosition)
+    {
+        await OnPositionPicked.InvokeAsync(fieldPosition);
+    }
+
+    public override Task SetParametersAsync(ParameterView parameters)
+    {
+        foreach (var parameter in parameters)
+        {
+            switch (parameter.Name)
+            {
+                case nameof(Player):
+                    Player = (Player)parameter.Value;
+                    break;
+                case nameof(DisplayPlayOptions):
+                    DisplayPlayOptions = (bool)parameter.Value;
+                    break;
+                case nameof(DisplayFieldOptions):
+                    DisplayFieldOptions = (bool)parameter.Value;
+                    break;
+                case nameof(CurrentTurn):
+                    CurrentTurn = (TurnState)parameter.Value;
+                    break;
+                case nameof(PendingPlacement):
+                    PendingPlacement = (BaseCard)parameter.Value;
+                    break;
+                case nameof(OnPositionPicked):
+                    OnPositionPicked = (EventCallback<FieldPosition>)parameter.Value;
+                    break;
+                case nameof(CardPlayed):
+                    CardPlayed = (EventCallback<BaseCard>)parameter.Value;
+                    break;
+                default:
+                    throw new ArgumentException($"Unknown parameter: {parameter.Name}");
+            }
+        }
+
+        return base.SetParametersAsync(ParameterView.Empty);
+    }
+}

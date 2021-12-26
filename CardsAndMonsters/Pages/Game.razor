@@ -3,19 +3,7 @@
 
 @if (!GameEnded)
 {
-<div class="container-fluid">
-    <div class="opponent-display">
-        <div class="row">
-            <div class="col-10">
-                <PlayerHand Cards="Opponent.CurrentHand" HideInfo />
-            </div>
-            <div class="col-2">
-                <h3 class="text-right">Opponent - @Opponent.HP</h3>
-                <DeckPreview DeckCount="Opponent.Deck.Count" />
-            </div>
-        </div>
-    </div>
-</div>
+<OpponentView Opponent="Opponent" />
 
 <div class="container-fluid">
     <div class="row">
@@ -42,20 +30,8 @@
     </div>
 </div>
 
-<div class="container-fluid">
-    <div class="player-display">
-        <div class="row">
-            <div class="col-2">
-                <h3 class="text-left">You - @Player.HP</h3>
-                <DeckPreview DeckCount="Player.Deck.Count" />
-            </div>
-            <div class="col-10">
-                <PlayerHand Cards="Player.CurrentHand" CanPlay="CanPlay()" CardPlayed="PlayCard" Phase="CurrentTurn.Phase"/>
-            </div>
-        </div>
-    </div>
-</div>
-<SelectCardPosition CardPendingPlacement="PendingPlacement" DisplayOptions="ChoosingFieldPosition" OnPositionPicked="PlayMonster"/>
+<PlayerView Player="Player" PendingPlacement="PendingPlacement" CardPlayed="PlayCard" CurrentTurn="CurrentTurn" 
+            DisplayFieldOptions="ChoosingFieldPosition" DisplayPlayOptions="CanPlay()" OnPositionPicked="PlayMonster" />
 }
 else
 {
