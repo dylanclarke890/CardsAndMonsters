@@ -42,7 +42,15 @@ namespace CardsAndMonsters.Models
         public void PlayMonster(Monster monster, Board board, TurnState turn)
         {
             CurrentHand.Remove(monster);
-            board.PlayerMonsters.Add(monster);
+
+            if (turn.IsCurrentPlayer(board.Player))
+            {
+                board.PlayerMonsters.Add(monster);
+            }
+            else
+            {
+                board.OpponentMonsters.Add(monster);
+            }
             turn.SummonedThisTurn.Add(monster);
             turn.MonsterState[monster.Id] = new() 
             { 

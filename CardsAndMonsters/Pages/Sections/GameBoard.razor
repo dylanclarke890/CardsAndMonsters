@@ -1,4 +1,4 @@
-﻿@if (DeclaringAttack)
+﻿@if (DeclaringAttack && !Board.OpponentMonsters.Any())
 {
     <button class="btn btn-primary" @onclick="() => Attack(BattleTarget.Direct)">ATTACK OPPONENT</button>
 }
@@ -22,10 +22,6 @@
                             case FieldPosition.VerticalUp:
                                 <h5>Monster</h5>
                                 <span>A: @card.Attack</span>
-                                @if (DeclaringAttack)
-                                {
-                                    <button class="btn btn-primary" @onclick="() => Attack(BattleTarget.Monster, card)">ATTACK MONSTER</button>
-                                }
                                 break;
                             case FieldPosition.HorizontalDown:
                                 <h5>Monster</h5>
@@ -37,6 +33,10 @@
                                 break;
                             default:
                                 break;
+                        }
+                        @if (DeclaringAttack)
+                        {
+                            <button class="btn btn-primary" @onclick="() => Attack(BattleTarget.Monster, card)">ATTACK MONSTER</button>
                         }
                     </p>
                 </div>
