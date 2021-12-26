@@ -12,7 +12,7 @@ namespace CardsAndMonsters.Models
             NormalSummonLimit = 1;
             SummonedThisTurn = new List<Monster>();
             MonstersInPlay = new List<Monster>();
-            AbleToSwitch = new Dictionary<Guid, bool>();
+            MonsterState = new Dictionary<Guid, MonsterTurnState>();
         }
 
         public TurnState(IList<Monster> monsters)
@@ -20,11 +20,16 @@ namespace CardsAndMonsters.Models
             NormalSummonLimit = 1;
             SummonedThisTurn = new List<Monster>();
             MonstersInPlay = monsters;
-            AbleToSwitch = new Dictionary<Guid, bool>();
+            MonsterState = new Dictionary<Guid, MonsterTurnState>();
 
             foreach (var monster in monsters)
             {
-                AbleToSwitch.Add(monster.Id, true);
+                MonsterState.Add(monster.Id, new() 
+                {
+                    Monster = monster,
+                    AbleToSwitch = true,
+                    TimesAttacked = 0
+                });
             }
         }
 
@@ -38,9 +43,10 @@ namespace CardsAndMonsters.Models
         public int NormalSummonLimit { get; set; }
 
         public IList<Monster> SummonedThisTurn { get; set; }
+
         public IList<Monster> MonstersInPlay { get; set; }
 
-        public IDictionary<Guid, bool> AbleToSwitch { get; set; }
+        public IDictionary<Guid, MonsterTurnState> MonsterState { get; set; }
 
         public bool NormalSummonLimitReached()
         {

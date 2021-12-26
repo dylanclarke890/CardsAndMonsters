@@ -45,6 +45,12 @@ namespace CardsAndMonsters.Models
             board.PlayerMonsters.Add(monster);
             turn.MonstersInPlay.Add(monster);
             turn.SummonedThisTurn.Add(monster);
+            turn.MonsterState[monster.Id] = new() 
+            { 
+                AbleToSwitch = false, 
+                TimesAttacked = 0, 
+                Monster = monster
+            };
         }
 
         public void TakeDamage(decimal amount)

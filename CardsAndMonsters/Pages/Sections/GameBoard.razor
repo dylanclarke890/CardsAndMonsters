@@ -52,7 +52,7 @@
                             case FieldPosition.VerticalUp:
                                 <h5>Monster</h5>
                                 <span>A: @card.Attack</span>
-                                @if (AbleToBattle())
+                                @if (AbleToBattle(card.Id))
                                 {
                                     <button @onclick="() => Attack(card)" class="btn btn-primary">ATTACK</button>
                                 }
@@ -115,15 +115,16 @@
         await OnPlayerAttack.InvokeAsync(monster);
     }
 
-    private bool AbleToSwitch(Guid cardId) 
+    private bool AbleToSwitch(Guid cardId)
     {
-        return CurrentTurn.Phase is Phase.Main && CurrentTurn.AbleToSwitch.TryGetValue(cardId, out var result)
-            && result && CurrentTurn.Player.Equals(Board.Player);
+        return CurrentTurn.Phase is Phase.Main && CurrentTurn.MonsterState.TryGetValue(cardId, out var result)
+            && result.AbleToSwitch && CurrentTurn.Player.Equals(Board.Player);
     }
 
-    private bool AbleToBattle()
+    private bool AbleToBattle(Guid cardId)
     {
-        return CurrentTurn.Phase is Phase.Battle && Turns.Keys.Count > 0;
+        return CurrentTurn.Phase is Phase.Battle && CurrentTurn.MonsterState.TryGetValue(cardId, out var result)
+            && result.TimesAttacked < result.Monster.AttacksPerTurn && CurrentTurn.Player.Equals(Board.Player);
     }
 
     private async Task SwitchPosition(Monster monster)

@@ -3,7 +3,7 @@
     {
         if (!HideInfo)
         {
-            if (card.GetType() == typeof(Monster))
+            if (card.IsType(typeof(Monster)))
             {
                 var c = card as Monster;
                 <div class="card ml-2 mr-2" style="width: 13rem;">

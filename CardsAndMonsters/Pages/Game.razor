@@ -137,7 +137,7 @@ else
 
     private void PlayCard(BaseCard card)
     {
-        if (card.GetType() == typeof(Monster))
+        if (card.IsType(typeof(Monster)))
         {
             var monster = card as Monster;
             if (CurrentTurn.IsCurrentPlayer(Player))
@@ -165,12 +165,17 @@ else
         var monster = PendingPlacement as Monster;
         monster.FieldPosition = position;
         Player.PlayMonster(monster, Board, CurrentTurn);
+        if (TurnCount == 0)
+        {
+            CurrentTurn.MonsterState[monster.Id].TimesAttacked = monster.AttacksPerTurn;
+        }
         PendingPlacement = null;
     }
 
     private void DirectAttack(Monster monster)
     {
         var dmg = monster.Attack;
+        CurrentTurn.MonsterState[monster.Id].TimesAttacked++;
         DamageOpponent(dmg);
     }
 
@@ -178,7 +183,7 @@ else
     {
         var currentMonster = Board.PlayerMonsters.FirstOrDefault(m => Monster.Equals(m, monster));
         Board.PlayerMonsters[Board.PlayerMonsters.IndexOf(currentMonster)] = monster;
-        CurrentTurn.AbleToSwitch[monster.Id] = false;
+        CurrentTurn.MonsterState[monster.Id].AbleToSwitch = false;
     }
 
     private void DamageOpponent(decimal amount)
