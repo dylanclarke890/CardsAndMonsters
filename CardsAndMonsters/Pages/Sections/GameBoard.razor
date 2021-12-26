@@ -152,7 +152,8 @@
     private bool AbleToBattle(Guid cardId)
     {
         return CurrentTurn.Phase is Phase.Battle && CurrentTurn.MonsterState.TryGetValue(cardId, out var result)
-            && result.TimesAttacked < result.Monster.AttacksPerTurn && CurrentTurn.Player.Equals(Board.Player);
+            && result.TimesAttacked < result.Monster.AttacksPerTurn && CurrentTurn.Player.Equals(Board.Player)
+            && !DeclaringAttack;
     }
 
     private async Task SwitchPosition(Monster monster)
