@@ -25,4 +25,27 @@
     {
         await OnPositionPicked.InvokeAsync(position);
     }
+
+    public override Task SetParametersAsync(ParameterView parameters)
+    {
+        foreach (var parameter in parameters)
+        {
+            switch (parameter.Name)
+            {
+                case nameof(DisplayOptions):
+                    DisplayOptions = (bool)parameter.Value;
+                    break;
+                case nameof(CardPendingPlacement):
+                    CardPendingPlacement = (BaseCard)parameter.Value;
+                    break;
+                case nameof(OnPositionPicked):
+                    OnPositionPicked = (EventCallback<FieldPosition>)parameter.Value;
+                    break;
+                default:
+                    throw new ArgumentException($"Unknown parameter: {parameter.Name}");
+            }
+        }
+
+        return base.SetParametersAsync(ParameterView.Empty);
+    }
 }

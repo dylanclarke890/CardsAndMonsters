@@ -125,8 +125,8 @@
     {
         DeclaringAttack = true;
         var isPlayer = CurrentTurn.Player.Equals(Board.Player);
-        BattleInfo = new() 
-        { 
+        BattleInfo = new()
+        {
             AttackingMonster = attackingMonster,
             AttackingPlayer = isPlayer ? Board.Player : Board.Opponent,
             DefendingPlayer = isPlayer ? Board.Opponent : Board.Player
@@ -173,5 +173,31 @@
         }
 
         await OnPositionSwitch.InvokeAsync(monster);
+    }
+
+    public override Task SetParametersAsync(ParameterView parameters)
+    {
+        foreach (var parameter in parameters)
+        {
+            switch (parameter.Name)
+            {
+                case nameof(Board):
+                    Board = (Board)parameter.Value;
+                    break;
+                case nameof(CurrentTurn):
+                    CurrentTurn = (TurnState)parameter.Value;
+                    break;
+                case nameof(OnPlayerAttack):
+                    OnPlayerAttack = (EventCallback<BattleInfo>)parameter.Value;
+                    break;
+                case nameof(OnPositionSwitch):
+                    OnPositionSwitch = (EventCallback<Monster>)parameter.Value;
+                    break;
+                default:
+                    throw new ArgumentException($"Unknown parameter: {parameter.Name}");
+            }
+        }
+
+        return base.SetParametersAsync(ParameterView.Empty);
     }
 }
