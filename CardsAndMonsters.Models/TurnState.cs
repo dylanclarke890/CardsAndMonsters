@@ -11,16 +11,15 @@ namespace CardsAndMonsters.Models
             Player = player;
             NormalSummonLimit = 1;
             SummonedThisTurn = new List<Monster>();
-            MonstersInPlay = new List<Monster>();
             MonsterState = new Dictionary<Guid, MonsterTurnState>();
         }
 
-        public TurnState(IList<Monster> monsters)
+        public TurnState(IList<Monster> monsters, Player player)
         {
             NormalSummonLimit = 1;
             SummonedThisTurn = new List<Monster>();
-            MonstersInPlay = monsters;
             MonsterState = new Dictionary<Guid, MonsterTurnState>();
+            Player = player;
 
             foreach (var monster in monsters)
             {
@@ -43,8 +42,6 @@ namespace CardsAndMonsters.Models
         public int NormalSummonLimit { get; set; }
 
         public IList<Monster> SummonedThisTurn { get; set; }
-
-        public IList<Monster> MonstersInPlay { get; set; }
 
         public IDictionary<Guid, MonsterTurnState> MonsterState { get; set; }
 

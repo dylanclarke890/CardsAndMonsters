@@ -1,4 +1,8 @@
-﻿<div class="board">
+﻿@if (DeclaringAttack)
+{
+    <button class="btn btn-primary" @onclick="() => Attack(BattleTarget.Direct)">ATTACK OPPONENT</button>
+}
+<div class="board">
     <div class="opponent-cards">
         <div class="spell-row">
             @for (int i = 0; i < 5; i++)
@@ -18,6 +22,10 @@
                             case FieldPosition.VerticalUp:
                                 <h5>Monster</h5>
                                 <span>A: @card.Attack</span>
+                                @if (DeclaringAttack)
+                                {
+                                    <button class="btn btn-primary" @onclick="() => Attack(BattleTarget.Monster, card)">ATTACK MONSTER</button>
+                                }
                                 break;
                             case FieldPosition.HorizontalDown:
                                 <h5>Monster</h5>
@@ -54,7 +62,7 @@
                                 <span>A: @card.Attack</span>
                                 @if (AbleToBattle(card.Id))
                                 {
-                                    <button @onclick="() => Attack(card)" class="btn btn-primary">ATTACK</button>
+                                    <button @onclick="() => DeclareAttack(card)" class="btn btn-primary">ATTACK</button>
                                 }
                                 break;
                             case FieldPosition.HorizontalDown:
@@ -105,14 +113,34 @@
     public IDictionary<int, TurnState> Turns { get; set; }
 
     [Parameter]
-    public EventCallback<Monster> OnPlayerAttack { get; set; }
+    public EventCallback<BattleInfo> OnPlayerAttack { get; set; }
 
     [Parameter]
     public EventCallback<Monster> OnPositionSwitch { get; set; }
 
-    private async Task Attack(Monster monster)
+    private bool DeclaringAttack;
+    private BattleInfo BattleInfo;
+
+    private void DeclareAttack(Monster attackingMonster)
     {
-        await OnPlayerAttack.InvokeAsync(monster);
+        DeclaringAttack = true;
+        var isPlayer = CurrentTurn.Player.Equals(Board.Player);
+        BattleInfo = new() 
+        { 
+            AttackingMonster = attackingMonster,
+            AttackingPlayer = isPlayer ? Board.Player : Board.Opponent,
+            DefendingPlayer = isPlayer ? Board.Opponent : Board.Player
+        };
+    }
+
+    private async Task Attack(BattleTarget target, Monster monster = null)
+    {
+        BattleInfo.Target = target;
+        BattleInfo.TargetMonster = monster;
+
+        await OnPlayerAttack.InvokeAsync(BattleInfo);
+        DeclaringAttack = false;
+        BattleInfo = null;
     }
 
     private bool AbleToSwitch(Guid cardId)

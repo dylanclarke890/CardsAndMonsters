@@ -43,7 +43,6 @@ namespace CardsAndMonsters.Models
         {
             CurrentHand.Remove(monster);
             board.PlayerMonsters.Add(monster);
-            turn.MonstersInPlay.Add(monster);
             turn.SummonedThisTurn.Add(monster);
             turn.MonsterState[monster.Id] = new() 
             { 
