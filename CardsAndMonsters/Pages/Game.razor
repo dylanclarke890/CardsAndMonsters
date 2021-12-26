@@ -233,7 +233,7 @@ else
                     }
                     else
                     {
-                        DirectAttack(battleInfo.AttackingMonster, battleInfo.DefendingPlayer);
+                        DirectAttack(battleInfo);
                     }
                     break;
                 }
@@ -270,6 +270,7 @@ else
             default:
                 break;
         }
+        MonsterAttacked(battleInfo.AttackingMonster.Id);
     }
 
     private void CalculateAtkVsAtk(BattleInfo battleInfo)
@@ -337,10 +338,15 @@ else
         return CurrentTurn.Player.Equals(Player) ? Opponent : Player;
     }
 
-    private void DirectAttack(Monster monster, Player player)
+    private void DirectAttack(BattleInfo battleInfo)
     {
-        CurrentTurn.MonsterState[monster.Id].TimesAttacked++;
-        DamageDuelist(player, monster.Attack);
+        MonsterAttacked(battleInfo.AttackingMonster.Id);
+        DamageDuelist(battleInfo.DefendingPlayer, battleInfo.AttackingMonster.Attack);
+    }
+
+    private void MonsterAttacked(Guid monsterId)
+    {
+        CurrentTurn.MonsterState[monsterId].TimesAttacked++;
     }
 
     private void PositionSwitched(Monster monster)
