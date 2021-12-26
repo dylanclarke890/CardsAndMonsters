@@ -49,10 +49,5 @@ namespace CardsAndMonsters.Models
         {
             return SummonedThisTurn.Count == NormalSummonLimit;
         }
-
-        public bool IsCurrentPlayer(Player player)
-        {
-            return Player == player;
-        }
     }
 }

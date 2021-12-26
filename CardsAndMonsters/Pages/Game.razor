@@ -21,7 +21,7 @@
     <div class="row">
         <div class="col-2">
             <h3 class="text-left">Turn: @(TurnCount + 1) (@CurrentTurn.Phase)</h3>
-            @if (CurrentTurn.IsCurrentPlayer(Player))
+            @if (Player.IsCurrentPlayer(CurrentTurn.Player))
             {
                 @if (CurrentTurn.Phase < Phase.Battle)
                 {
@@ -105,7 +105,7 @@ else
 
     private bool CanPlay()
     {
-        return CurrentTurn.IsCurrentPlayer(Player) && (CurrentTurn.Phase is Phase.Main && !ChoosingFieldPosition || (CurrentTurn.Phase is Phase.Battle && TurnCount > 0));
+        return Player.IsCurrentPlayer(CurrentTurn.Player) && (CurrentTurn.Phase is Phase.Main && !ChoosingFieldPosition || (CurrentTurn.Phase is Phase.Battle && TurnCount > 0));
     }
 
     private void StartTurn(Player player, bool drawCard)
@@ -190,7 +190,7 @@ else
         if (card.IsType(typeof(Monster)))
         {
             var monster = card as Monster;
-            if (CurrentTurn.IsCurrentPlayer(Player))
+            if (Player.IsCurrentPlayer(CurrentTurn.Player))
             {
                 if (Board.PlayerMonsters.Count == 5 || CurrentTurn.NormalSummonLimitReached())
                 {
