@@ -31,25 +31,28 @@
 </div>
 
 <PlayerView Player="Player" PendingPlacement="PendingPlacement" CardPlayed="PlayCard" CurrentTurn="CurrentTurn" 
-            DisplayFieldOptions="ChoosingFieldPosition" DisplayPlayOptions="CanPlay()" OnPositionPicked="PlayMonster" />
+            DisplayFieldOptions="ChoosingFieldPosition" DisplayPlayOptions="CanPlayCard()" OnPositionPicked="PlayMonster" />
 }
 else
 {
-    <h5 class="text-center">Game Over</h5>
+    <h2 class="text-center">Game Over</h2>
+    <h3>@(LosingPlayer.Equals(Player) ? "You win!" : "Opponent wins")</h3>
     <h4 class="text-center">@(LosingPlayer.Equals(Player) ? "You" : "Opponent") lost due to @Reason</h4>
 }
 
 @code {
     private Player Player;
     private Player Opponent;
-
     private Board Board;
     private IDictionary<int, TurnState> Turns;
     private TurnState CurrentTurn;
-
     private Player StartingPlayer;
     private bool ChoosingFieldPosition;
     private bool GameEnded;
+    private int TurnCount = 0;
+    private BaseCard PendingPlacement;
+    private Player LosingPlayer;
+    private LossReason Reason;
 
     protected override async Task OnInitializedAsync()
     {
@@ -77,13 +80,6 @@ else
         StartTurn(StartingPlayer, false);
     }
 
-    private int TurnCount = 0;
-
-    private bool CanPlay()
-    {
-        return Player.IsCurrentPlayer(CurrentTurn.Player) && (CurrentTurn.Phase is Phase.Main && !ChoosingFieldPosition || (CurrentTurn.Phase is Phase.Battle && TurnCount > 0));
-    }
-
     private void StartTurn(Player player, bool drawCard)
     {
         var isPlayer = Player.Equals(player);
@@ -107,46 +103,6 @@ else
         }
     }
 
-    private void FakeOpponentsTurn()
-    {
-        foreach(var monster in Board.OpponentMonsters)
-        {
-            monster.FieldPosition = NewPosition(monster.FieldPosition);
-            CurrentTurn.MonsterState[monster.Id].AbleToSwitch = false;
-        }
-
-        Random rnd = new();
-
-        var card = Opponent.CurrentHand[rnd.Next(Opponent.CurrentHand.Count)];
-        if (card.IsType(typeof(Monster)) && Board.OpponentMonsters.Count < 5)
-        {
-            var monster = card as Monster;
-            monster.FieldPosition = rnd.Next(2) == 1 ? FieldPosition.VerticalUp : FieldPosition.HorizontalDown;
-            Opponent.PlayMonster(monster, Board, CurrentTurn);
-
-            if (TurnCount == 0)
-            {
-                CurrentTurn.MonsterState[monster.Id].TimesAttacked = monster.AttacksPerTurn;
-            }
-        }
-
-        EnterPhase(Phase.Battle);
-
-        EndTurn();
-    }
-
-    private FieldPosition NewPosition(FieldPosition old)
-    {
-        return old switch
-        {
-            FieldPosition.HorizontalUp => FieldPosition.VerticalUp,
-            FieldPosition.HorizontalDown => FieldPosition.VerticalUp,
-            FieldPosition.VerticalUp => FieldPosition.HorizontalUp,
-            FieldPosition.VerticalDown => FieldPosition.VerticalUp,
-            _ => throw new IndexOutOfRangeException("couldn't work out the new position")
-        };
-    }
-
     private void EnterPhase(Phase phase)
     {
         CurrentTurn.Phase = phase;
@@ -161,12 +117,17 @@ else
         StartTurn(Turns.Last().Value.Player.Equals(Player) ? Opponent : Player, true);
     }
 
+    private bool CanPlayCard()
+    {
+        return Player.Equals(CurrentTurn.Player) && (CurrentTurn.Phase is Phase.Main && !ChoosingFieldPosition || (CurrentTurn.Phase is Phase.Battle && TurnCount > 0));
+    }
+
     private void PlayCard(BaseCard card)
     {
         if (card.IsType(typeof(Monster)))
         {
             var monster = card as Monster;
-            if (Player.IsCurrentPlayer(CurrentTurn.Player))
+            if (Player.Equals(CurrentTurn.Player))
             {
                 if (Board.PlayerMonsters.Count == 5 || CurrentTurn.NormalSummonLimitReached())
                 {
@@ -178,7 +139,6 @@ else
         }
     }
 
-    private BaseCard PendingPlacement;
     private void PlayMonster(Monster monster)
     {
         ChoosingFieldPosition = true;
@@ -196,6 +156,25 @@ else
             CurrentTurn.MonsterState[monster.Id].TimesAttacked = monster.AttacksPerTurn;
         }
         PendingPlacement = null;
+    }
+
+    private FieldPosition NewPosition(FieldPosition old)
+    {
+        return old switch
+        {
+            FieldPosition.HorizontalUp => FieldPosition.VerticalUp,
+            FieldPosition.HorizontalDown => FieldPosition.VerticalUp,
+            FieldPosition.VerticalUp => FieldPosition.HorizontalUp,
+            FieldPosition.VerticalDown => FieldPosition.VerticalUp,
+            _ => throw new IndexOutOfRangeException("couldn't work out the new position")
+        };
+    }
+
+    private void PositionSwitched(Monster monster)
+    {
+        var currentMonster = Board.PlayerMonsters.FirstOrDefault(m => m.Equals(monster));
+        Board.PlayerMonsters[Board.PlayerMonsters.IndexOf(currentMonster)] = monster;
+        CurrentTurn.MonsterState[monster.Id].AbleToSwitch = false;
     }
 
     private void Attack(BattleInfo battleInfo)
@@ -248,6 +227,12 @@ else
                 break;
         }
         MonsterAttacked(battleInfo.AttackingMonster.Id);
+    }
+
+    private void DirectAttack(BattleInfo battleInfo)
+    {
+        MonsterAttacked(battleInfo.AttackingMonster.Id);
+        DamageDuelist(battleInfo.DefendingPlayer, battleInfo.AttackingMonster.Attack);
     }
 
     private void CalculateAtkVsAtk(BattleInfo battleInfo)
@@ -310,27 +295,9 @@ else
         CurrentTurn.MonsterState[monsterId].Destroyed = true;
     }
 
-    private Player OtherPlayer()
-    {
-        return CurrentTurn.Player.Equals(Player) ? Opponent : Player;
-    }
-
-    private void DirectAttack(BattleInfo battleInfo)
-    {
-        MonsterAttacked(battleInfo.AttackingMonster.Id);
-        DamageDuelist(battleInfo.DefendingPlayer, battleInfo.AttackingMonster.Attack);
-    }
-
     private void MonsterAttacked(Guid monsterId)
     {
         CurrentTurn.MonsterState[monsterId].TimesAttacked++;
-    }
-
-    private void PositionSwitched(Monster monster)
-    {
-        var currentMonster = Board.PlayerMonsters.FirstOrDefault(m => m.Equals(monster));
-        Board.PlayerMonsters[Board.PlayerMonsters.IndexOf(currentMonster)] = monster;
-        CurrentTurn.MonsterState[monster.Id].AbleToSwitch = false;
     }
 
     private void DamageDuelist(Player player, decimal dmg)
@@ -369,13 +336,44 @@ else
         }
     }
 
-    private Player LosingPlayer;
-    private LossReason Reason;
     private void EndGame(Player player, LossReason reason)
     {
         Reason = reason;
         LosingPlayer = player;
         GameEnded = true;
+    }
+
+    private Player OtherPlayer()
+    {
+        return CurrentTurn.Player.Equals(Player) ? Opponent : Player;
+    }
+    
+    private void FakeOpponentsTurn()
+    {
+        foreach(var monster in Board.OpponentMonsters)
+        {
+            monster.FieldPosition = NewPosition(monster.FieldPosition);
+            CurrentTurn.MonsterState[monster.Id].AbleToSwitch = false;
+        }
+
+        Random rnd = new();
+
+        var card = Opponent.CurrentHand[rnd.Next(Opponent.CurrentHand.Count)];
+        if (card.IsType(typeof(Monster)) && Board.OpponentMonsters.Count < 5)
+        {
+            var monster = card as Monster;
+            monster.FieldPosition = rnd.Next(2) == 1 ? FieldPosition.VerticalUp : FieldPosition.HorizontalDown;
+            Opponent.PlayMonster(monster, Board, CurrentTurn);
+
+            if (TurnCount == 0)
+            {
+                CurrentTurn.MonsterState[monster.Id].TimesAttacked = monster.AttacksPerTurn;
+            }
+        }
+
+        EnterPhase(Phase.Battle);
+
+        EndTurn();
     }
 }
 
