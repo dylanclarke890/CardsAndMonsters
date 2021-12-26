@@ -59,7 +59,8 @@
 }
 else
 {
-    <h3 class="text-center">Game Over</h3>
+    <h5 class="text-center">Game Over</h5>
+    <h4 class="text-center">@(LosingPlayer.Equals(Player) ? "You" : "Opponent") lost due to @Reason</h4>
 }
 
 @code {
@@ -117,7 +118,7 @@ else
             var success = player.DrawCard();
             if (!success)
             {
-                EndGame();
+                EndGame(player, LossReason.DeckOut);
                 return;
             }
         }
@@ -382,14 +383,22 @@ else
 
     private void CheckForGameOver()
     {
-        if (Player.OutOfHealth() || Opponent.OutOfHealth())
+        if (Player.OutOfHealth())
         {
-            EndGame();
+            EndGame(Player, LossReason.NoHP);
+        }
+        if (Opponent.OutOfHealth())
+        {
+            EndGame(Opponent, LossReason.NoHP);
         }
     }
 
-    private void EndGame()
+    private Player LosingPlayer;
+    private LossReason Reason;
+    private void EndGame(Player player, LossReason reason)
     {
+        Reason = reason;
+        LosingPlayer = player;
         GameEnded = true;
     }
 }
