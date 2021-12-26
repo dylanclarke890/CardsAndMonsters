@@ -17,7 +17,7 @@
                         {
                             case FieldPosition.VerticalUp:
                                 <h5>Monster</h5>
-                                <span>@card.Attack</span>
+                                <span>A: @card.Attack</span>
                                 break;
                             case FieldPosition.HorizontalDown:
                                 <h5>Monster</h5>
@@ -25,7 +25,7 @@
                                 break;
                             case FieldPosition.HorizontalUp:
                                 <h5>Monster</h5>
-                                <span>@card.Defense</span>
+                                <span>D: @card.Defense</span>
                                 break;
                             default:
                                 break;
@@ -51,25 +51,25 @@
                         {
                             case FieldPosition.VerticalUp:
                                 <h5>Monster</h5>
-                                <span>@card.Attack</span>
-                                @if (CurrentTurn.Phase is Phase.Battle && Turns.Keys.Count > 0)
+                                <span>A: @card.Attack</span>
+                                @if (AbleToBattle())
                                 {
                                     <button @onclick="() => Attack(card)" class="btn btn-primary">ATTACK</button>
                                 }
                                 break;
                             case FieldPosition.HorizontalDown:
                                 <h5>Monster</h5>
-                                <p>@card.Attack || @card.Defense</p>
+                                <p>A: @card.Attack || D: @card.Defense</p>
                                 <span>HIDDEN</span>
                                 break;
                             case FieldPosition.HorizontalUp:
                                 <h5>Monster</h5>
-                                <span>@card.Defense</span>
+                                <span>D: @card.Defense</span>
                                 break;
                             default:
                                 break;
                         }
-                        @if (CurrentTurn.Phase is Phase.Main && CurrentTurn.AbleToSwitch.TryGetValue(card.Id, out var result) && result && CurrentTurn.Player.Equals(Board.Player))
+                        @if (AbleToSwitch(card.Id))
                         {
                             <button @onclick="() => SwitchPosition(card)">SWITCH POSITION</button>
                         }
@@ -113,6 +113,17 @@
     private async Task Attack(Monster monster)
     {
         await OnPlayerAttack.InvokeAsync(monster);
+    }
+
+    private bool AbleToSwitch(Guid cardId) 
+    {
+        return CurrentTurn.Phase is Phase.Main && CurrentTurn.AbleToSwitch.TryGetValue(cardId, out var result)
+            && result && CurrentTurn.Player.Equals(Board.Player);
+    }
+
+    private bool AbleToBattle()
+    {
+        return CurrentTurn.Phase is Phase.Battle && Turns.Keys.Count > 0;
     }
 
     private async Task SwitchPosition(Monster monster)
