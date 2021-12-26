@@ -11,9 +11,9 @@
                         <h5 class="card-title text-center">Monster Name</h5>
                         <p class="text-center">A: @c.Attack</p>
                         <p class="text-center">D: @c.Defense</p>
-                        @if (Phase is Phase.Main && CanPlay)
+                        @if (Phase is Phase.Main && CanPlay && !CurrentTurn.NormalSummonLimitReached())
                         {
-                            <button @onclick="() => PlayCard(c)">PLAY</button>
+                            <button class="btn btn-primary" @onclick="() => PlayCard(c)">PLAY</button>
                         }    
                     </div>
                 </div>
@@ -33,6 +33,9 @@
 </div>
 
 @code {
+    [CascadingParameter]
+    public TurnState CurrentTurn { get; set; }
+
     [Parameter]
     public IList<BaseCard> Cards { get; set; }
 
@@ -48,12 +51,20 @@
     [Parameter]
     public EventCallback<BaseCard> CardPlayed { get; set; }
 
+    private async Task PlayCard(BaseCard card)
+    {
+        await CardPlayed.InvokeAsync(card);
+    }
+
     public override Task SetParametersAsync(ParameterView parameters)
     {
         foreach (var parameter in parameters)
         {
             switch (parameter.Name)
             {
+                case nameof(CurrentTurn):
+                    CurrentTurn = (TurnState)parameter.Value;
+                    break;
                 case nameof(Cards):
                     Cards = (IList<BaseCard>)parameter.Value;
                     break;
@@ -75,10 +86,5 @@
         }
 
         return base.SetParametersAsync(ParameterView.Empty);
-    }
-
-    private async Task PlayCard(BaseCard card)
-    {
-        await CardPlayed.InvokeAsync(card);
     }
 }

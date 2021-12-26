@@ -187,6 +187,9 @@
                 case nameof(CurrentTurn):
                     CurrentTurn = (TurnState)parameter.Value;
                     break;
+                case nameof(Turns):
+                    Turns = (IDictionary<int, TurnState>)parameter.Value;
+                    break;
                 case nameof(OnPlayerAttack):
                     OnPlayerAttack = (EventCallback<BattleInfo>)parameter.Value;
                     break;

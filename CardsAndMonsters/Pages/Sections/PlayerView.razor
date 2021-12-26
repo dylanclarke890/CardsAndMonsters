@@ -14,6 +14,9 @@
 <SelectCardPosition CardPendingPlacement="PendingPlacement" DisplayOptions="DisplayFieldOptions" OnPositionPicked="PlayMonster" />
 
 @code {
+    [CascadingParameter]
+    public TurnState CurrentTurn { get; set; }
+
     [Parameter]
     public Player Player { get; set; }
 
@@ -22,9 +25,6 @@
 
     [Parameter]
     public bool DisplayFieldOptions { get; set; }
-
-    [Parameter]
-    public TurnState CurrentTurn { get; set; }
 
     [Parameter]
     public BaseCard PendingPlacement { get; set; }
@@ -51,6 +51,9 @@
         {
             switch (parameter.Name)
             {
+                case nameof(CurrentTurn):
+                    CurrentTurn = (TurnState)parameter.Value;
+                    break;
                 case nameof(Player):
                     Player = (Player)parameter.Value;
                     break;
@@ -59,9 +62,6 @@
                     break;
                 case nameof(DisplayFieldOptions):
                     DisplayFieldOptions = (bool)parameter.Value;
-                    break;
-                case nameof(CurrentTurn):
-                    CurrentTurn = (TurnState)parameter.Value;
                     break;
                 case nameof(PendingPlacement):
                     PendingPlacement = (BaseCard)parameter.Value;

@@ -13,9 +13,9 @@
             {
                 @if (CurrentTurn.Phase < Phase.Battle)
                 {
-                    <button class="btn" @onclick="() => EnterPhase(Phase.Battle)">BATTLE</button>
+                    <button class="btn btn-outline-primary" @onclick="() => EnterPhase(Phase.Battle)">BATTLE</button>
                 }
-                <button class="btn" @onclick="EndTurn">END TURN</button>
+                <button class="btn btn-outline-primary" @onclick="EndTurn">END TURN</button>
             }
             else
             {
@@ -29,9 +29,10 @@
         </div>
     </div>
 </div>
-
-<PlayerView Player="Player" PendingPlacement="PendingPlacement" CardPlayed="PlayCard" CurrentTurn="CurrentTurn" 
-            DisplayFieldOptions="ChoosingFieldPosition" DisplayPlayOptions="CanPlayCard()" OnPositionPicked="PlayMonster" />
+<CascadingValue Value="CurrentTurn">
+    <PlayerView Player="Player" PendingPlacement="PendingPlacement" CardPlayed="PlayCard" DisplayFieldOptions="ChoosingFieldPosition"
+                DisplayPlayOptions="CanPlayCard()" OnPositionPicked="PlayMonster" />
+</CascadingValue>
 }
 else
 {
