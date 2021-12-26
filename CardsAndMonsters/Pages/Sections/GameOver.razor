@@ -1,0 +1,36 @@
+﻿<h2 class="text-center">Game Over</h2>
+<h3>@(LosingPlayer.Equals(Player) ? "You win!" : "Opponent wins")</h3>
+<h4 class="text-center">@(LosingPlayer.Equals(Player) ? "You" : "Opponent") lost due to @LossReason</h4>
+@code {
+    [Parameter]
+    public Player LosingPlayer { get; set; }
+
+    [Parameter]
+    public Player Player { get; set; }
+
+    [Parameter]
+    public LossReason LossReason { get; set; }
+
+    public override Task SetParametersAsync(ParameterView parameters)
+    {
+        foreach (var parameter in parameters)
+        {
+            switch (parameter.Name)
+            {
+                case nameof(LosingPlayer):
+                    LosingPlayer = (Player)parameter.Value;
+                    break;
+                case nameof(Player):
+                    Player = (Player)parameter.Value;
+                    break;
+                case nameof(LossReason):
+                    LossReason = (LossReason)parameter.Value;
+                    break;
+                default:
+                    throw new ArgumentException($"Unknown parameter: {parameter.Name}");
+            }
+        }
+
+        return base.SetParametersAsync(ParameterView.Empty);
+    }
+}

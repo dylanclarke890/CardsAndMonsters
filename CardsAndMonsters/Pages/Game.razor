@@ -35,9 +35,7 @@
 }
 else
 {
-    <h2 class="text-center">Game Over</h2>
-    <h3>@(LosingPlayer.Equals(Player) ? "You win!" : "Opponent wins")</h3>
-    <h4 class="text-center">@(LosingPlayer.Equals(Player) ? "You" : "Opponent") lost due to @Reason</h4>
+    <GameOver LosingPlayer="LosingPlayer" Player="Player" LossReason="Reason" />
 }
 
 @code {
