@@ -97,7 +97,7 @@ else
             await Task.Delay(300);
         }
 
-        EnterPhase(Phase.Main);
+        StartTurn(StartingPlayer, false);
     }
 
     private int TurnCount = 0;
@@ -107,15 +107,19 @@ else
         return CurrentTurn.IsCurrentPlayer(Player) && (CurrentTurn.Phase is Phase.Main && !ChoosingFieldPosition || (CurrentTurn.Phase is Phase.Battle && TurnCount > 0));
     }
 
-    private void StartTurn(Player player)
+    private void StartTurn(Player player, bool drawCard)
     {
         var isPlayer = Player.Equals(player);
         CurrentTurn = new(isPlayer ? Board.PlayerMonsters : Board.OpponentMonsters, player);
-        var success = player.DrawCard();
 
-        if (!success)
+        if (drawCard)
         {
-            EndGame();
+            var success = player.DrawCard();
+            if (!success)
+            {
+                EndGame();
+                return;
+            }
         }
 
         EnterPhase(Phase.Main);
@@ -177,7 +181,7 @@ else
         Turns[TurnCount] = CurrentTurn;
         TurnCount++;
         EnterPhase(Phase.Standby);
-        StartTurn(Turns.Last().Value.Player.Equals(Player) ? Opponent : Player);
+        StartTurn(Turns.Last().Value.Player.Equals(Player) ? Opponent : Player, true);
     }
 
     private void PlayCard(BaseCard card)
