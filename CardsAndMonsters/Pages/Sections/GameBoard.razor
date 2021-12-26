@@ -69,7 +69,7 @@
                             default:
                                 break;
                         }
-                        @if (CurrentTurn.AbleToSwitch.TryGetValue(card.Id, out var result) && result && CurrentTurn.Player.Equals(Board.Player))
+                        @if (CurrentTurn.Phase is Phase.Main && CurrentTurn.AbleToSwitch.TryGetValue(card.Id, out var result) && result && CurrentTurn.Player.Equals(Board.Player))
                         {
                             <button @onclick="() => SwitchPosition(card)">SWITCH POSITION</button>
                         }

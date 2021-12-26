@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
 namespace CardsAndMonsters.Models
@@ -45,6 +44,7 @@ namespace CardsAndMonsters.Models
             CurrentHand.Remove(monster);
             board.PlayerMonsters.Add(monster);
             turn.MonstersInPlay.Add(monster);
+            turn.SummonedThisTurn.Add(monster);
         }
 
         public void TakeDamage(decimal amount)
