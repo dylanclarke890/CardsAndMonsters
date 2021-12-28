@@ -47,7 +47,7 @@ namespace CardsAndMonsters.Models
         {
             CurrentHand.Remove(monster);
 
-            if (board.Player.IsCurrentPlayer(turn.Player))
+            if (board.Player.Equals(turn.Player))
             {
                 board.PlayerMonsters.Add(monster);
             }
@@ -68,11 +68,6 @@ namespace CardsAndMonsters.Models
         {
             HP -= amount;
             HP = HP < 0 ? 0 : HP;
-        }
-
-        public bool IsCurrentPlayer(Duelist player)
-        {
-            return Equals(player);
         }
     }
 }

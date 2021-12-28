@@ -13,7 +13,7 @@
             <div class="col-1">
                 <h3>@(TurnCount + 1)</h3>
                 <h3>@Board.CurrentTurn.Phase</h3>
-                @if (Board.Player.IsCurrentPlayer(Board.CurrentTurn.Player))
+                @if (Board.Player.Equals(Board.CurrentTurn.Player))
                 {
                     @if (Board.CurrentTurn.Phase < Phase.Battle)
                     {
