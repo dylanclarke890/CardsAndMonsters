@@ -1,9 +1,10 @@
 ﻿@page "/play"
 @layout EmptyLayout
+@inject GameOverService _gameOverService
 @inject IBattleService _battleService 
 @inject IPositionService _positionService
 
-@if (!GameEnded)
+@if (!_gameOverService.GameOver)
 {
     <OpponentView Opponent="Board.Opponent" />
 
@@ -33,19 +34,13 @@
                     OnPositionPicked="PlayMonster" />
     </CascadingValue>
 }
-else
-{
-    <GameOver LosingPlayer="LosingPlayer" Player="Board.Player" LossReason="Reason" />
-}
+<GameOver Player="Board.Player"/>
 
 @code {
     private Board Board;
     private bool ChoosingFieldPosition;
-    private bool GameEnded;
     private int TurnCount = 0;
     private BaseCard PendingPlacement;
-    private Player LosingPlayer;
-    private LossReason Reason;
 
     protected override async Task OnInitializedAsync()
     {
@@ -79,7 +74,7 @@ else
             var success = player.DrawCard();
             if (!success)
             {
-                EndGame(player, LossReason.DeckOut);
+                _gameOverService.EndGame(player, LossReason.DeckOut);
                 return;
             }
         }
@@ -145,32 +140,13 @@ else
     private void Attack(BattleInfo battleInfo)
     {
         _battleService.Attack(battleInfo);
-        CheckForGameOver();
+        _gameOverService.CheckForGameOver(Board);
     }
 
     private void SwitchPosition(Monster monster)
     {
         monster.FieldPosition = _positionService.NewPosition(monster.FieldPosition);
         _positionService.PositionSwitched(monster, Board);
-    }
-
-    private void CheckForGameOver()
-    {
-        if (Board.Player.OutOfHealth())
-        {
-            EndGame(Board.Player, LossReason.NoHP);
-        }
-        if (Board.Opponent.OutOfHealth())
-        {
-            EndGame(Board.Opponent, LossReason.NoHP);
-        }
-    }
-
-    private void EndGame(Player player, LossReason reason)
-    {
-        Reason = reason;
-        LosingPlayer = player;
-        GameEnded = true;
     }
 
     private void FakeOpponentsTurn()

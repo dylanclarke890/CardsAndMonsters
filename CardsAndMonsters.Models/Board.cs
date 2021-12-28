@@ -1,7 +1,6 @@
 ﻿using CardsAndMonsters.Core;
 using CardsAndMonsters.Models.Enums;
 using System.Collections.Generic;
-using System.Diagnostics;
 
 namespace CardsAndMonsters.Models
 {

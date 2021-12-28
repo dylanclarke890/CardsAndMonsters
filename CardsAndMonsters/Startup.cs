@@ -1,4 +1,5 @@
 using CardsAndMonsters.Features.Battle;
+using CardsAndMonsters.Features.GameOver;
 using CardsAndMonsters.Features.Position;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -20,6 +21,7 @@ namespace CardsAndMonsters
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddScoped<IPositionService, PositionService>();
+            services.AddScoped<GameOverService>();
             services.AddScoped<IBattleService, BattleService>();
             services.AddRazorPages();
             services.AddServerSideBlazor();

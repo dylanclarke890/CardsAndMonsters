@@ -1,15 +1,21 @@
-﻿<h2 class="text-center">Game Over</h2>
-<h3 class="text-center">@(LosingPlayer.Equals(Player) ? "Opponent wins" : "You win!")</h3>
-<h4 class="text-center">@(LosingPlayer.Equals(Player) ? "You" : "Opponent") lost due to @LossReason</h4>
-@code {
-    [Parameter]
-    public Player LosingPlayer { get; set; }
+﻿@inject GameOverService _gameOverService
+@implements IDisposable
 
+@if (GameOverInfo != null)
+{
+    <h1 class="text-center">@(GameOverInfo.LosingPlayer.Equals(Player) ? "Opponent wins" : "You win!")</h1>
+    <h2 class="text-center">@(GameOverInfo.LosingPlayer.Equals(Player) ? "You" : "Opponent") lost due to @GameOverInfo.LossReason</h2>
+}
+@code {
     [Parameter]
     public Player Player { get; set; }
 
-    [Parameter]
-    public LossReason LossReason { get; set; }
+    private GameOverInfo GameOverInfo;
+
+    protected override void OnInitialized()
+    {
+        _gameOverService.OnLoss += (lossInfo) => GameOverInfo = lossInfo;
+    }
 
     public override Task SetParametersAsync(ParameterView parameters)
     {
@@ -17,14 +23,8 @@
         {
             switch (parameter.Name)
             {
-                case nameof(LosingPlayer):
-                    LosingPlayer = (Player)parameter.Value;
-                    break;
                 case nameof(Player):
                     Player = (Player)parameter.Value;
-                    break;
-                case nameof(LossReason):
-                    LossReason = (LossReason)parameter.Value;
                     break;
                 default:
                     throw new ArgumentException($"Unknown parameter: {parameter.Name}");
@@ -32,5 +32,10 @@
         }
 
         return base.SetParametersAsync(ParameterView.Empty);
+    }
+
+    public void Dispose()
+    {
+        _gameOverService.OnLoss -= (lossInfo) => GameOverInfo = lossInfo;
     }
 }
