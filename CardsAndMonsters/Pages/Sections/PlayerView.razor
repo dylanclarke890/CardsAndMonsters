@@ -2,10 +2,10 @@
     <div class="player-display">
         <div class="row">
             <div class="col-2">
-                <h3 class="text-left">You - @Player.HP</h3>
+                <h3 class="text-left">You - @Board.Player.HP</h3>
             </div>
             <div class="col-10">
-                <PlayerHand Cards="Player.CurrentHand" CardPlayed="PlayCard" />
+                <PlayerHand Cards="Board.Player.CurrentHand" CardPlayed="PlayCard" />
             </div>
         </div>
     </div>
@@ -14,10 +14,7 @@
 
 @code {
     [CascadingParameter]
-    public TurnState CurrentTurn { get; set; }
-
-    [Parameter]
-    public Player Player { get; set; }
+    public Board Board { get; set; }
 
     [Parameter]
     public bool DisplayPlayOptions { get; set; }
@@ -50,11 +47,8 @@
         {
             switch (parameter.Name)
             {
-                case nameof(CurrentTurn):
-                    CurrentTurn = (TurnState)parameter.Value;
-                    break;
-                case nameof(Player):
-                    Player = (Player)parameter.Value;
+                case nameof(Board):
+                    Board = (Board)parameter.Value;
                     break;
                 case nameof(DisplayPlayOptions):
                     DisplayPlayOptions = (bool)parameter.Value;
