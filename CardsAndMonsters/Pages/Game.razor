@@ -3,36 +3,34 @@
 
 @if (!GameEnded)
 {
-<OpponentView Opponent="Opponent" />
+    <OpponentView Opponent="Opponent" />
 
-<div class="container-fluid">
-    <div class="row">
-        <div class="col-2">
-            <h3 class="text-left">Turn: @(TurnCount + 1) (@CurrentTurn.Phase)</h3>
-            @if (Player.IsCurrentPlayer(CurrentTurn.Player))
-            {
-                @if (CurrentTurn.Phase < Phase.Battle)
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-2">
+                <h3 class="text-left">Turn: @(TurnCount + 1) (@CurrentTurn.Phase)</h3>
+                @if (Player.IsCurrentPlayer(CurrentTurn.Player))
                 {
-                    <button class="btn btn-outline-primary" @onclick="() => EnterPhase(Phase.Battle)">BATTLE</button>
+                    @if (CurrentTurn.Phase < Phase.Battle)
+                    {
+                        <button class="btn btn-outline-primary" @onclick="() => EnterPhase(Phase.Battle)">BATTLE</button>
+                    }
+                    <button class="btn btn-outline-primary" @onclick="EndTurn">END TURN</button>
                 }
-                <button class="btn btn-outline-primary" @onclick="EndTurn">END TURN</button>
-            }
-            else
-            {
-                <button class="btn" @onclick="EndTurn">END OPPONENTS TURN</button>
-            }
-        </div>
-        <div class="col-9">
-            <GameBoard CurrentTurn="CurrentTurn" Turns="Turns" Board="Board" OnPlayerAttack="Attack" OnPositionSwitch="PositionSwitched"/>
-        </div>
-        <div class="col-1">
+            </div>
+            <div class="col-10">
+                <CascadingValue Value="Board" TValue="Board">
+                    <CascadingValue Value="CurrentTurn" TValue="TurnState">
+                        <CardField OnPlayerAttack="Attack" OnPositionSwitch="PositionSwitched"/>
+                    </CascadingValue>
+                </CascadingValue>
+            </div>
         </div>
     </div>
-</div>
-<CascadingValue Value="CurrentTurn">
-    <PlayerView Player="Player" PendingPlacement="PendingPlacement" CardPlayed="PlayCard" DisplayFieldOptions="ChoosingFieldPosition"
-                DisplayPlayOptions="CanPlayCard()" OnPositionPicked="PlayMonster" />
-</CascadingValue>
+    <CascadingValue Value="CurrentTurn">
+        <PlayerView Player="Player" PendingPlacement="PendingPlacement" CardPlayed="PlayCard" DisplayFieldOptions="ChoosingFieldPosition"
+                    DisplayPlayOptions="CanPlayCard()" OnPositionPicked="PlayMonster" />
+    </CascadingValue>
 }
 else
 {

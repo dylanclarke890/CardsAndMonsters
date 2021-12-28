@@ -1,0 +1,144 @@
+﻿<div class="deck-card">
+    @switch (Monster.FieldPosition)
+    {
+        case FieldPosition.VerticalUp:
+            <h5>Monster</h5>
+            <span>A: @Monster.Attack</span>
+            break;
+        case FieldPosition.HorizontalDown:
+            <img class="card-img-top horizontal" src="/images/card-cover.jpg" alt="Card image cap">
+            break;
+        case FieldPosition.HorizontalUp:
+            <h5>Monster</h5>
+            <span>D: @Monster.Defense</span>
+            break;
+        default:
+            break;
+    }
+    @if (CurrentTurn.AbleToSwitch(Monster.Id, Board.Player))
+    {
+        <button class="btn btn-primary" @onclick="() => SwitchPosition()">SWITCH</button>
+    }
+    @if (CurrentTurn.AbleToBattle(Monster.Id, Board.Player, DeclaringAttack))
+    {
+        <button class="btn btn-primary" @onclick="() => DeclareAttack()">DECLARE</button>
+    }
+    @if (CurrentTurn.AbleToAttack(Monster.Id, Board.Player, DeclaringAttack))
+    {
+        <button class="btn btn-primary" @onclick="() => Attack()">ATTACK</button>
+    }
+</div>
+
+@code {
+    [CascadingParameter]
+    public TurnState CurrentTurn { get; set; }
+
+    [CascadingParameter]
+    public Board Board { get; set; }
+
+    [Parameter]
+    public Monster Monster { get; set; }
+
+    [Parameter]
+    public EventCallback<BattleInfo> OnMonsterAttack { get; set; }
+
+    [Parameter]
+    public EventCallback<BattleInfo> OnAttackDeclared { get; set; }
+
+    [Parameter]
+    public EventCallback<Monster> OnPositionSwitch { get; set; }
+
+    [Parameter]
+    public bool DeclaringAttack { get; set; }
+
+    private async Task DeclareAttack()
+    {
+        var isPlayer = CurrentTurn.Player.Equals(Board.Player);
+        BattleInfo battleInfo = new()
+        {
+            AttackingMonster = Monster,
+            AttackingPlayer = isPlayer ? Board.Player : Board.Opponent,
+            DefendingPlayer = isPlayer ? Board.Opponent : Board.Player
+        };
+
+        await OnAttackDeclared.InvokeAsync(battleInfo);
+    }
+
+    private async Task Attack()
+    {
+        BattleInfo battleInfo = new()
+        {
+            Target = BattleTarget.Monster,
+            TargetMonster = Monster,
+        };
+
+        await OnMonsterAttack.InvokeAsync(battleInfo);
+    }
+
+    private async Task SwitchPosition()
+    {
+        switch (Monster?.FieldPosition)
+        {
+            case FieldPosition.HorizontalUp:
+                Monster.FieldPosition = FieldPosition.VerticalUp;
+                break;
+            case FieldPosition.HorizontalDown:
+                Monster.FieldPosition = FieldPosition.VerticalUp;
+                break;
+            case FieldPosition.VerticalUp:
+                Monster.FieldPosition = FieldPosition.HorizontalUp;
+                break;
+            default:
+                throw new InvalidOperationException("Expected a valid position");
+        }
+
+        await OnPositionSwitch.InvokeAsync(Monster);
+    }
+
+    public override Task SetParametersAsync(ParameterView parameters)
+    {
+        foreach (var parameter in parameters)
+        {
+            switch (parameter.Name)
+            {
+                case nameof(CurrentTurn):
+                    CurrentTurn = (TurnState)parameter.Value;
+                    break;
+                case nameof(Board):
+                    Board = (Board)parameter.Value;
+                    break;
+                case nameof(Monster):
+                    Monster = (Monster)parameter.Value;
+                    break;
+                case nameof(OnAttackDeclared):
+                    OnAttackDeclared = (EventCallback<BattleInfo>)parameter.Value;
+                    break;
+                case nameof(OnMonsterAttack):
+                    OnMonsterAttack = (EventCallback<BattleInfo>)parameter.Value;
+                    break;
+                case nameof(OnPositionSwitch):
+                    OnPositionSwitch = (EventCallback<Monster>)parameter.Value;
+                    break;
+                case nameof(DeclaringAttack):
+                    DeclaringAttack = (bool)parameter.Value;
+                    break;
+                default:
+                    throw new ArgumentException($"Unknown parameter: {parameter.Name}");
+            }
+        }
+
+        return base.SetParametersAsync(ParameterView.Empty);
+    }
+}
+<style>
+    .deck-card {
+        width: 80px;
+        height: 120px;
+        border: 1px solid #aaa;
+        border-radius: 3px;
+    }
+
+    .horizontal {
+        transform: rotate(-90deg);
+    }
+</style>

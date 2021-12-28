@@ -49,5 +49,24 @@ namespace CardsAndMonsters.Models
         {
             return SummonedThisTurn.Count == NormalSummonLimit;
         }
+
+        public bool AbleToSwitch(Guid monsterId, Player player)
+        {
+            return Phase is Phase.Main && MonsterState.TryGetValue(monsterId, out var result)
+                && result.AbleToSwitch && Player.Equals(player);
+        }
+
+        public bool AbleToBattle(Guid monsterId, Player player, bool declaringAttack)
+        {
+            return Phase is Phase.Battle && MonsterState.TryGetValue(monsterId, out var result)
+                && result.TimesAttacked < result.Monster.AttacksPerTurn && Player.Equals(player)
+                && !declaringAttack;
+        }
+
+        public bool AbleToAttack(Guid monsterId, Player player, bool declaringAttack)
+        {
+            return Phase is Phase.Battle && !MonsterState.TryGetValue(monsterId, out _) && Player.Equals(player)
+                && declaringAttack;
+        }
     }
 }

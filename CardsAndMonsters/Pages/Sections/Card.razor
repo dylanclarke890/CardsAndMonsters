@@ -1,0 +1,22 @@
+﻿<div class="deck-card">
+    @if (WithImage || Position is FieldPosition.VerticalDown)
+    {
+        <img class="card-img-top" src="/images/card-cover.jpg" alt="Card image cap">
+    }
+</div>
+
+@code {
+    [Parameter]
+    public FieldPosition Position { get; set; }
+
+    [Parameter]
+    public bool WithImage { get; set; }
+}
+<style>
+    .deck-card {
+        width: 80px;
+        height: 120px;
+        border: 1px solid #aaa;
+        border-radius: 3px;
+    }
+</style>

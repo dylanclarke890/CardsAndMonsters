@@ -1,0 +1,133 @@
+﻿@if (AttackDeclared && !Board.OpponentMonsters.Any())
+{
+    <button class="btn btn-primary" @onclick="() => AttackTarget(new() { Target = BattleTarget.Direct })">ATTACK OPPONENT</button>
+}
+<div class="container-fluid">
+    <div class="card-row">
+        <Card />
+
+        @for (int i = 0; i < AppConstants.FieldSize; i++)
+        {
+            <Card />
+        }
+
+        <Card />
+    </div>
+    <div class="card-row">
+        <Card />
+
+        @for (int i = 0; i < Board.OpponentMonsters.Count; i++)
+        {
+            <MonsterCard Monster="Board.OpponentMonsters[i]" DeclaringAttack="AttackDeclared"
+                         OnAttackDeclared="DeclareAttack" OnMonsterAttack="AttackTarget" OnPositionSwitch="OnPositionSwitch" />
+        }
+        @for (int i = 0; i < AppConstants.FieldSize - Board.OpponentMonsters.Count; i++)
+        {
+            <Card />
+        }
+
+        <Card />
+    </div>
+
+    <div class="card-row">
+        <Card />
+
+        @for (int i = 0; i < Board.PlayerMonsters.Count; i++)
+        {
+            <MonsterCard Monster="Board.PlayerMonsters[i]" DeclaringAttack="AttackDeclared"
+                         OnAttackDeclared="DeclareAttack" OnMonsterAttack="AttackTarget" OnPositionSwitch="OnPositionSwitch" />
+        }
+        @for (int i = 0; i < AppConstants.FieldSize - Board.PlayerMonsters.Count; i++)
+        {
+            <Card />
+        }
+
+        <Card />
+    </div>
+    <div class="card-row">
+        <Card />
+
+        @for (int i = 0; i < AppConstants.FieldSize; i++)
+        {
+            <Card />
+        }
+
+        <Card />
+    </div>
+</div>
+
+@code {
+    [CascadingParameter]
+    public Board Board { get; set; }
+
+    [Parameter]
+    public EventCallback<BattleInfo> OnPlayerAttack { get; set; }
+
+    [Parameter]
+    public EventCallback<Monster> OnPositionSwitch { get; set; }
+
+    private BattleInfo BattleInfo;
+    private bool AttackDeclared;
+
+    private void DeclareAttack(BattleInfo info)
+    {
+        BattleInfo = new()
+        {
+            AttackingMonster = info.AttackingMonster,
+            AttackingPlayer = info.AttackingPlayer,
+            DefendingPlayer = info.DefendingPlayer
+        };
+        AttackDeclared = true;
+    }
+
+    private async Task AttackTarget(BattleInfo info)
+    {
+        if (BattleInfo == null)
+        {
+            throw new ApplicationException("This should've been filled out.");
+        }
+
+        BattleInfo.Target = info.Target;
+        BattleInfo.TargetMonster = info.TargetMonster;
+
+        await OnPlayerAttack.InvokeAsync(BattleInfo);
+
+        AttackDeclared = false;
+        BattleInfo = null;
+    }
+
+    private async Task OnPositionSwitched(Monster monster)
+    {
+        await OnPositionSwitch.InvokeAsync(monster);
+    }
+
+    public override Task SetParametersAsync(ParameterView parameters)
+    {
+        foreach (var parameter in parameters)
+        {
+            switch (parameter.Name)
+            {
+                case nameof(Board):
+                    Board = (Board)parameter.Value;
+                    break;
+                case nameof(OnPlayerAttack):
+                    OnPlayerAttack = (EventCallback<BattleInfo>)parameter.Value;
+                    break;
+                case nameof(OnPositionSwitch):
+                    OnPositionSwitch = (EventCallback<Monster>)parameter.Value;
+                    break;
+                default:
+                    throw new ArgumentException($"Unknown parameter: {parameter.Name}");
+            }
+        }
+
+        return base.SetParametersAsync(ParameterView.Empty);
+    }
+}
+
+<style>
+    .card-row {
+        display: flex;
+        justify-content: space-evenly;
+    }
+</style>
