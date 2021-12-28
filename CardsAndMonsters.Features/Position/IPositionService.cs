@@ -1,4 +1,5 @@
 ﻿using CardsAndMonsters.Models;
+using CardsAndMonsters.Models.Cards;
 using CardsAndMonsters.Models.Enums;
 
 namespace CardsAndMonsters.Features.Position

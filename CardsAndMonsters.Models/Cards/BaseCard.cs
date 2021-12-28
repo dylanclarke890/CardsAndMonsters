@@ -1,7 +1,8 @@
-﻿using CardsAndMonsters.Models.Enums;
+﻿using CardsAndMonsters.Models.Base;
+using CardsAndMonsters.Models.Enums;
 using System;
 
-namespace CardsAndMonsters.Models
+namespace CardsAndMonsters.Models.Cards
 {
     public abstract class BaseCard : BaseModel
     {

@@ -1,24 +1,25 @@
 ﻿using CardsAndMonsters.Models;
+using CardsAndMonsters.Models.Cards;
 
 namespace CardsAndMonsters.Features
 {
     public class PlayerBuilder
     {
-        public static Player GetNewPlayer()
+        public static Duelist GetNewPlayer()
         {
-            var player = new Player();
+            var player = new Duelist();
             AddCardsToPlayer(player);
             return player;
         }
 
-        public static Player GetNewOpponent()
+        public static Duelist GetNewOpponent()
         {
-            var player = new Player();
+            var player = new Duelist();
             AddCardsToPlayer(player);
             return player;
         }
 
-        public static void AddCardsToPlayer(Player player)
+        public static void AddCardsToPlayer(Duelist player)
         {
             player.Deck.Add(new Monster(1000, 800));
             player.Deck.Add(new Monster(1200, 300));

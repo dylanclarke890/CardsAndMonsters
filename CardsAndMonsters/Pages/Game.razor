@@ -64,7 +64,7 @@
         StartTurn(startingPlayer, false);
     }
 
-    private void StartTurn(Player player, bool drawCard)
+    private void StartTurn(Duelist player, bool drawCard)
     {
         bool isPlayer = Board.Player.Equals(player);
         Board.CurrentTurn = new(isPlayer ? Board.PlayerMonsters : Board.OpponentMonsters, player);

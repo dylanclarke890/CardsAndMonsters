@@ -1,12 +1,15 @@
 ﻿using CardsAndMonsters.Core;
+using CardsAndMonsters.Models.Base;
+using CardsAndMonsters.Models.Cards;
+using CardsAndMonsters.Models.Turns;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace CardsAndMonsters.Models
 {
-    public class Player : BaseModel
+    public class Duelist : BaseModel
     {
-        public Player()
+        public Duelist()
         {
             HP = 4000;
             CardLimit = AppConstants.HandSize;
@@ -67,7 +70,7 @@ namespace CardsAndMonsters.Models
             HP = HP < 0 ? 0 : HP;
         }
 
-        public bool IsCurrentPlayer(Player player)
+        public bool IsCurrentPlayer(Duelist player)
         {
             return Equals(player);
         }

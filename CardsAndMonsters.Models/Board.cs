@@ -1,12 +1,15 @@
 ﻿using CardsAndMonsters.Core;
+using CardsAndMonsters.Models.Base;
+using CardsAndMonsters.Models.Cards;
 using CardsAndMonsters.Models.Enums;
+using CardsAndMonsters.Models.Turns;
 using System.Collections.Generic;
 
 namespace CardsAndMonsters.Models
 {
     public class Board : BaseModel
     {
-        public Board(Player player, Player opponent)
+        public Board(Duelist player, Duelist opponent)
         {
             Player = player;
             Opponent = opponent;
@@ -19,9 +22,9 @@ namespace CardsAndMonsters.Models
 
         public IDictionary<int, TurnState> Turns { get; set; }
 
-        public Player Player { get; set; }
+        public Duelist Player { get; set; }
         
-        public Player Opponent { get; set; }
+        public Duelist Opponent { get; set; }
         
         public IList<Monster> OpponentMonsters { get; set; }
         

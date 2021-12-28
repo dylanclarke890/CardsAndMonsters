@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace CardsAndMonsters.Models
+namespace CardsAndMonsters.Models.Base
 {
     public abstract class BaseModel
     {

@@ -22,7 +22,7 @@ namespace CardsAndMonsters.Features.GameOver
             }
         }
 
-        public void EndGame(Player player, LossReason reason)
+        public void EndGame(Duelist player, LossReason reason)
         {
             GameOverInfo gameOverInfo = new(player, reason);
             GameOver = true;

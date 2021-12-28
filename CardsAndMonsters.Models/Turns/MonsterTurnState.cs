@@ -1,4 +1,6 @@
-﻿namespace CardsAndMonsters.Models
+﻿using CardsAndMonsters.Models.Cards;
+
+namespace CardsAndMonsters.Models.Turns
 {
     public class MonsterTurnState
     {

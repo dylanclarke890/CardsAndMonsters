@@ -1,5 +1,6 @@
 ﻿using CardsAndMonsters.Features.Position;
 using CardsAndMonsters.Models;
+using CardsAndMonsters.Models.Cards;
 using CardsAndMonsters.Models.Enums;
 using System;
 using System.Linq;
@@ -147,7 +148,7 @@ namespace CardsAndMonsters.Features.Battle
             }
         }
 
-        private void DestroyMonster(Monster monster, Player player, Board board)
+        private void DestroyMonster(Monster monster, Duelist player, Board board)
         {
             if (board.Player.Equals(player))
             {
@@ -172,7 +173,7 @@ namespace CardsAndMonsters.Features.Battle
             board.CurrentTurn.MonsterState[monsterId].Destroyed = true;
         }
 
-        private void DamageDuelist(Player player, decimal dmg, Board board)
+        private void DamageDuelist(Duelist player, decimal dmg, Board board)
         {
             if (player.Equals(board.Player))
             {

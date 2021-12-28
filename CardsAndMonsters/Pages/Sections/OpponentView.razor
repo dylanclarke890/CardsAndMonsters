@@ -13,7 +13,7 @@
 
 @code {
     [Parameter]
-    public Player Opponent { get; set; }
+    public Duelist Opponent { get; set; }
 
     public override Task SetParametersAsync(ParameterView parameters)
     {
@@ -22,7 +22,7 @@
             switch (parameter.Name)
             {
                 case nameof(Opponent):
-                    Opponent = (Player)parameter.Value;
+                    Opponent = (Duelist)parameter.Value;
                     break;
                 default:
                     throw new ArgumentException($"Unknown parameter: {parameter.Name}");
