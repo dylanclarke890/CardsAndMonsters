@@ -59,8 +59,8 @@ namespace CardsAndMonsters.Models
         public bool AbleToBattle(Guid monsterId, Player player, bool declaringAttack)
         {
             return Phase is Phase.Battle && MonsterState.TryGetValue(monsterId, out var result)
-                && result.TimesAttacked < result.Monster.AttacksPerTurn && Player.Equals(player)
-                && !declaringAttack;
+                && result.TimesAttacked < result.Monster.AttacksPerTurn && result.Monster.FieldPosition is FieldPosition.VerticalUp 
+                && Player.Equals(player) && !declaringAttack;
         }
 
         public bool AbleToAttack(Guid monsterId, Player player, bool declaringAttack)
