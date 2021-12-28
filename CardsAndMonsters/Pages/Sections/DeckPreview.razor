@@ -1,7 +1,6 @@
-﻿<div class="card ml-2 mr-2 card-cover" style="width: 4rem;">
-    <div class="card-body">
-        <h2 class="text-white">@DeckCount</h2>
-    </div>
+﻿<div class="deck-card">
+    <h2 class="text-white over-img">@DeckCount</h2>
+    <img class="card-img-top" src="/images/card-cover.jpg">
 </div>
 @code {
     [Parameter]
@@ -24,3 +23,17 @@
         return base.SetParametersAsync(ParameterView.Empty);
     }
 }
+
+<style>
+    .deck-card {
+        width: 80px;
+        height: 120px;
+        border: 1px solid #aaa;
+        border-radius: 3px;
+    }
+
+    .over-img {
+        position: absolute;
+        margin:30px;
+    }
+</style>
