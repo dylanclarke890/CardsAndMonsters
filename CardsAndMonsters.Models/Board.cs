@@ -1,4 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using CardsAndMonsters.Core;
+using CardsAndMonsters.Models.Enums;
+using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace CardsAndMonsters.Models
 {
@@ -8,9 +11,14 @@ namespace CardsAndMonsters.Models
         {
             Player = player;
             Opponent = opponent;
+            Turns = new Dictionary<int, TurnState>();
             OpponentMonsters = new List<Monster>();
             PlayerMonsters = new List<Monster>();
         }
+
+        public TurnState CurrentTurn { get; set; }
+
+        public IDictionary<int, TurnState> Turns { get; set; }
 
         public Player Player { get; set; }
         
@@ -19,5 +27,11 @@ namespace CardsAndMonsters.Models
         public IList<Monster> OpponentMonsters { get; set; }
         
         public IList<Monster> PlayerMonsters { get; set; }
+
+        public bool AbleToPlayMonster(Monster monster)
+        {
+            return CurrentTurn?.Phase is Phase.Main && (bool)CurrentTurn?.Player.Equals(Player) 
+                && PlayerMonsters.Count < AppConstants.FieldSize && Player.CurrentHand.Contains(monster);
+        }
     }
 }

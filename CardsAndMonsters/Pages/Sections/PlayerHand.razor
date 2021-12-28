@@ -5,18 +5,7 @@
         {
             if (card.IsType(typeof(Monster)))
             {
-                var c = card as Monster;
-                <div class="card ml-2 mr-2" style="width: 13rem;">
-                    <div class="card-body">
-                        <h5 class="card-title text-center">Monster Name</h5>
-                        <p class="text-center">A: @c.Attack</p>
-                        <p class="text-center">D: @c.Defense</p>
-                        @if (Phase is Phase.Main && CanPlay && !CurrentTurn.NormalSummonLimitReached())
-                        {
-                            <button class="btn btn-primary" @onclick="() => PlayCard(c)">PLAY</button>
-                        }    
-                    </div>
-                </div>
+                <MonsterCard Monster="(Monster)card" OnMonsterPlayed="PlayCard"/>
             }
             else
             {
@@ -31,20 +20,11 @@
 </div>
 
 @code {
-    [CascadingParameter]
-    public TurnState CurrentTurn { get; set; }
-
     [Parameter]
     public IList<BaseCard> Cards { get; set; }
 
     [Parameter]
-    public bool CanPlay { get; set; }
-
-    [Parameter]
     public bool HideInfo { get; set; }
-
-    [Parameter]
-    public Phase Phase { get; set; }
 
     [Parameter]
     public EventCallback<BaseCard> CardPlayed { get; set; }
@@ -60,20 +40,11 @@
         {
             switch (parameter.Name)
             {
-                case nameof(CurrentTurn):
-                    CurrentTurn = (TurnState)parameter.Value;
-                    break;
                 case nameof(Cards):
                     Cards = (IList<BaseCard>)parameter.Value;
                     break;
-                case nameof(CanPlay):
-                    CanPlay = (bool)parameter.Value;
-                    break;
                 case nameof(HideInfo):
                     HideInfo = (bool)parameter.Value;
-                    break;
-                case nameof(Phase):
-                    Phase = (Phase)parameter.Value;
                     break;
                 case nameof(CardPlayed):
                     CardPlayed = (EventCallback<BaseCard>)parameter.Value;

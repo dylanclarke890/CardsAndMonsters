@@ -2,9 +2,9 @@
 {
     public enum FieldPosition
     {
-        HorizontalUp, // defense position monsters
-        HorizontalDown, // set defense position monsters
         VerticalUp, // attacking monsters/activated spells & traps 
+        HorizontalDown, // set defense position monsters
+        HorizontalUp, // defense position monsters
         VerticalDown // spell and traps set in back row
     }
 }

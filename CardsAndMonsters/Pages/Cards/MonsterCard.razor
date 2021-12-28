@@ -1,38 +1,43 @@
-﻿<div class="deck-card">
+﻿@if (Monster != null)
+{
+<div class="deck-card">
     @switch (Monster.FieldPosition)
     {
         case FieldPosition.VerticalUp:
             <h5>Monster</h5>
-            <span>A: @Monster.Attack</span>
+            <span>@Monster.Attack | @Monster.Defense</span>
             break;
         case FieldPosition.HorizontalDown:
             <img class="card-img-top horizontal" src="/images/card-cover.jpg">
             break;
         case FieldPosition.HorizontalUp:
             <h5>Monster</h5>
-            <span>D: @Monster.Defense</span>
+            <span>@Monster.Attack | @Monster.Defense</span>
+            <span>@FieldPositionConverter.MonsterPositionToString(Monster.FieldPosition)</span>
             break;
         default:
             break;
     }
-    @if (CurrentTurn.AbleToSwitch(Monster.Id, Board.Player))
+    @if ((Board?.CurrentTurn?.AbleToSwitch(Monster.Id, Board?.Player)).GetValueOrDefault())
     {
         <button class="btn btn-primary" @onclick="() => SwitchPosition()">SWITCH</button>
     }
-    @if (CurrentTurn.AbleToBattle(Monster.Id, Board.Player, DeclaringAttack))
+    @if ((Board?.CurrentTurn?.AbleToBattle(Monster.Id, Board?.Player, DeclaringAttack)).GetValueOrDefault())
     {
         <button class="btn btn-primary" @onclick="() => DeclareAttack()">DECLARE</button>
     }
-    @if (CurrentTurn.AbleToAttack(Monster.Id, Board.Player, DeclaringAttack))
+    @if ((Board?.CurrentTurn?.AbleToAttack(Monster.Id, Board?.Player, DeclaringAttack)).GetValueOrDefault())
     {
         <button class="btn btn-primary" @onclick="() => Attack()">ATTACK</button>
     }
+    @if ((Board?.AbleToPlayMonster(Monster)).GetValueOrDefault())
+    {
+        <button class="btn btn-primary" @onclick="() => Play()">PLAY</button>
+    }
 </div>
+}
 
 @code {
-    [CascadingParameter]
-    public TurnState CurrentTurn { get; set; }
-
     [CascadingParameter]
     public Board Board { get; set; }
 
@@ -49,11 +54,14 @@
     public EventCallback<Monster> OnPositionSwitch { get; set; }
 
     [Parameter]
+    public EventCallback<Monster> OnMonsterPlayed { get; set; }
+
+    [Parameter]
     public bool DeclaringAttack { get; set; }
 
     private async Task DeclareAttack()
     {
-        var isPlayer = CurrentTurn.Player.Equals(Board.Player);
+        var isPlayer = Board.CurrentTurn.Player.Equals(Board.Player);
         BattleInfo battleInfo = new()
         {
             AttackingMonster = Monster,
@@ -95,15 +103,17 @@
         await OnPositionSwitch.InvokeAsync(Monster);
     }
 
+    private async Task Play()
+    {
+        await OnMonsterPlayed.InvokeAsync(Monster);
+    }
+
     public override Task SetParametersAsync(ParameterView parameters)
     {
         foreach (var parameter in parameters)
         {
             switch (parameter.Name)
             {
-                case nameof(CurrentTurn):
-                    CurrentTurn = (TurnState)parameter.Value;
-                    break;
                 case nameof(Board):
                     Board = (Board)parameter.Value;
                     break;
@@ -119,6 +129,9 @@
                 case nameof(OnPositionSwitch):
                     OnPositionSwitch = (EventCallback<Monster>)parameter.Value;
                     break;
+                case nameof(OnMonsterPlayed):
+                    OnMonsterPlayed = (EventCallback<Monster>)parameter.Value;
+                    break;
                 case nameof(DeclaringAttack):
                     DeclaringAttack = (bool)parameter.Value;
                     break;
@@ -132,7 +145,7 @@
 }
 <style>
     .deck-card {
-        width: 80px;
+        width: 90px;
         height: 120px;
         border: 1px solid #aaa;
         border-radius: 3px;
