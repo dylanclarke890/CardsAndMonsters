@@ -3,23 +3,23 @@ using CardsAndMonsters.Models.Cards;
 
 namespace CardsAndMonsters.Features
 {
-    public class PlayerBuilder
+    public class DuelistBuilder
     {
         public static Duelist GetNewPlayer()
         {
-            var player = new Duelist();
-            AddCardsToPlayer(player);
-            return player;
+            var duelist = new Duelist();
+            AddCardsToDuelist(duelist);
+            return duelist;
         }
 
         public static Duelist GetNewOpponent()
         {
-            var player = new Duelist();
-            AddCardsToPlayer(player);
-            return player;
+            var duelist = new Duelist();
+            AddCardsToDuelist(duelist);
+            return duelist;
         }
 
-        public static void AddCardsToPlayer(Duelist player)
+        public static void AddCardsToDuelist(Duelist player)
         {
             player.Deck.Add(new Monster(1000, 800));
             player.Deck.Add(new Monster(1200, 300));

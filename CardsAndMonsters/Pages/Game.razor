@@ -3,6 +3,7 @@
 @inject GameOverService _gameOverService
 @inject IBattleService _battleService 
 @inject IPositionService _positionService
+@inject IPhaseService _phaseService
 
 @if (!_gameOverService.GameOver)
 {
@@ -17,7 +18,7 @@
                 {
                     @if (Board.CurrentTurn.Phase < Phase.Battle)
                     {
-                        <button class="btn btn-outline-primary" @onclick="() => EnterPhase(Phase.Battle)">BATTLE</button>
+                        <button class="btn btn-outline-primary" @onclick="() => _phaseService.EnterPhase(Phase.Battle, Board)">BATTLE</button>
                     }
                     <button class="btn btn-outline-primary" @onclick="EndTurn">END</button>
                 }
@@ -44,13 +45,13 @@
 
     protected override async Task OnInitializedAsync()
     {
-        Board = new(PlayerBuilder.GetNewPlayer(), PlayerBuilder.GetNewOpponent());
+        Board = new(DuelistBuilder.GetNewPlayer(), DuelistBuilder.GetNewOpponent());
 
         Random rnd = new();
         var startingPlayer = rnd.Next(2) == 1 ? Board.Opponent : Board.Player;
         Board.CurrentTurn = new(startingPlayer);
 
-        EnterPhase(Phase.Standby);
+        _phaseService.EnterPhase(Phase.Standby, Board);
         StateHasChanged();
 
         for (int i = 0; i < AppConstants.HandSize; i++)
@@ -79,7 +80,7 @@
             }
         }
 
-        EnterPhase(Phase.Main);
+        _phaseService.EnterPhase(Phase.Main, Board);
 
         if (!isPlayer)
         {
@@ -87,17 +88,14 @@
         }
     }
 
-    private void EnterPhase(Phase phase)
-    {
-        Board.CurrentTurn.Phase = phase;
-    }
+
 
     private void EndTurn()
     {
-        EnterPhase(Phase.End);
+        _phaseService.EnterPhase(Phase.End, Board);
         Board.Turns[TurnCount] = Board.CurrentTurn;
         TurnCount++;
-        EnterPhase(Phase.Standby);
+        _phaseService.EnterPhase(Phase.Standby, Board);
         StartTurn(Board.Turns.Last().Value.Player.Equals(Board.Player) ? Board.Opponent : Board.Player, true);
     }
 
@@ -172,7 +170,7 @@
             }
         }
 
-        EnterPhase(Phase.Battle);
+        _phaseService.EnterPhase(Phase.Battle, Board);
 
         EndTurn();
     }
