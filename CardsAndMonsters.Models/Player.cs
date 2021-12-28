@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using CardsAndMonsters.Core;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace CardsAndMonsters.Models
@@ -8,7 +9,7 @@ namespace CardsAndMonsters.Models
         public Player()
         {
             HP = 4000;
-            CardLimit = 6;
+            CardLimit = AppConstants.HandSize;
             CurrentHand = new List<BaseCard>();
             Deck = new List<BaseCard>();
         }
