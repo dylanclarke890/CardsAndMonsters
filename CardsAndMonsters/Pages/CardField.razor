@@ -1,6 +1,8 @@
-﻿@if (AttackDeclared && !Board.OpponentMonsters.Any())
+﻿@inject IBattleService _battleService
+
+@if (_battleService.DeclaringAttack && !Board.OpponentMonsters.Any())
 {
-    <button class="btn btn-primary" @onclick="() => AttackTarget(new() { Target = BattleTarget.Direct })">ATTACK OPPONENT</button>
+    <button class="btn btn-primary" @onclick="() => AttackTarget(new() { Target = BattleTarget.Direct})">ATTACK OPPONENT</button>
 }
 <div>
     <div class="card-row">
@@ -18,8 +20,8 @@
 
         @for (int i = 0; i < Board.OpponentMonsters.Count; i++)
         {
-            <MonsterCard Monster="Board.OpponentMonsters[i]" DeclaringAttack="AttackDeclared"
-                         OnAttackDeclared="DeclareAttack" OnMonsterAttack="AttackTarget" OnPositionSwitch="OnPositionSwitch" />
+            <MonsterCard Monster="Board.OpponentMonsters[i]" DeclaringAttack="_battleService.DeclaringAttack"
+                         OnAttackDeclared="_battleService.DeclareAttack" OnMonsterAttack="AttackTarget" OnPositionSwitch="SwitchPosition" />
         }
         @for (int i = 0; i < AppConstants.FieldSize - Board.OpponentMonsters.Count; i++)
         {
@@ -34,8 +36,8 @@
 
         @for (int i = 0; i < Board.PlayerMonsters.Count; i++)
         {
-            <MonsterCard Monster="Board.PlayerMonsters[i]" DeclaringAttack="AttackDeclared"
-                         OnAttackDeclared="DeclareAttack" OnMonsterAttack="AttackTarget" OnPositionSwitch="OnPositionSwitch" />
+            <MonsterCard Monster="Board.PlayerMonsters[i]" DeclaringAttack="_battleService.DeclaringAttack"
+                         OnAttackDeclared="_battleService.DeclareAttack" OnMonsterAttack="AttackTarget" OnPositionSwitch="SwitchPosition" />
         }
         @for (int i = 0; i < AppConstants.FieldSize - Board.PlayerMonsters.Count; i++)
         {
@@ -66,39 +68,16 @@
     [Parameter]
     public EventCallback<Monster> OnPositionSwitch { get; set; }
 
-    private BattleInfo BattleInfo;
-    private bool AttackDeclared;
-
-    private void DeclareAttack(BattleInfo info)
-    {
-        BattleInfo = new()
-        {
-            AttackingMonster = info.AttackingMonster,
-            AttackingPlayer = info.AttackingPlayer,
-            DefendingPlayer = info.DefendingPlayer
-        };
-        AttackDeclared = true;
-    }
-
-    private async Task AttackTarget(BattleInfo info)
-    {
-        if (BattleInfo == null)
-        {
-            throw new ApplicationException("This should've been filled out.");
-        }
-
-        BattleInfo.Target = info.Target;
-        BattleInfo.TargetMonster = info.TargetMonster;
-
-        await OnPlayerAttack.InvokeAsync(BattleInfo);
-
-        AttackDeclared = false;
-        BattleInfo = null;
-    }
-
-    private async Task OnPositionSwitched(Monster monster)
+    private async Task SwitchPosition(Monster monster)
     {
         await OnPositionSwitch.InvokeAsync(monster);
+    }
+
+    private async Task AttackTarget(BattleInfo battleInfo)
+    {
+        _battleService.AttackTarget(battleInfo);
+        await OnPlayerAttack.InvokeAsync(_battleService.CurrentBattle);
+        _battleService.ClearCurrentBattle();
     }
 
     public override Task SetParametersAsync(ParameterView parameters)
