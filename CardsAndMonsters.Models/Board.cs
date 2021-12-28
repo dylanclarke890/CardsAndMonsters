@@ -31,7 +31,8 @@ namespace CardsAndMonsters.Models
         public bool AbleToPlayMonster(Monster monster)
         {
             return CurrentTurn?.Phase is Phase.Main && (bool)CurrentTurn?.Player.Equals(Player) 
-                && PlayerMonsters.Count < AppConstants.FieldSize && Player.CurrentHand.Contains(monster);
+                && (bool)!CurrentTurn?.NormalSummonLimitReached() && PlayerMonsters.Count < AppConstants.FieldSize 
+                && Player.CurrentHand.Contains(monster);
         }
     }
 }
