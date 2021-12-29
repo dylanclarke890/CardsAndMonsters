@@ -7,6 +7,7 @@ namespace CardsAndMonsters.Features.TurnPhase
 {
     public interface IPhaseService
     {
+        Action PhaseChanged { get; set; }
         Action<int, Phase> OnShow { get; set; }
         Action OnHide { get; set; }
 

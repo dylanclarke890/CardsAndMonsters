@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace CardsAndMonsters.Features
 {
-    public class GameService : IGameService
+    public class GameService : IGameService, IDisposable
     {
         private readonly IDuelistFactory _duelistFactory;
         private readonly IBattleService _battleService;
@@ -23,6 +23,7 @@ namespace CardsAndMonsters.Features
         private readonly IPositionService _positionService;
         private readonly IFakeOpponentService _fakeOpponentService;
         private readonly IGameOverService _gameOverService;
+        private bool disposedValue;
 
         public GameService(IDuelistFactory duelistFactory, IBattleService battleService,
             ITurnService turnService, IPhaseService phaseService, IPositionService positionService,
@@ -35,6 +36,8 @@ namespace CardsAndMonsters.Features
             _positionService = positionService;
             _fakeOpponentService = fakeOpponentService;
             _gameOverService = gameOverService;
+
+            _phaseService.PhaseChanged += StateHasChanged;
         }
 
         public Board Board { get; set; }
@@ -59,7 +62,6 @@ namespace CardsAndMonsters.Features
             {
                 Board.Opponent.DrawCard();
                 Board.Player.DrawCard();
-                StateHasChanged();
                 await Task.Delay(300);
             }
 
@@ -67,14 +69,13 @@ namespace CardsAndMonsters.Features
 
             if (!startingPlayer.Equals(Board.Player))
             {
-                await _fakeOpponentService.FakeOpponentsTurn(Board);
+                await FakeOpponentsTurn();
             }
         }
 
         public async Task EnterPhase(Phase phase)
         {
             await _phaseService.EnterPhase(phase, Board);
-            StateHasChanged();
         }
 
         public void PlayCard(BaseCard card)
@@ -131,14 +132,39 @@ namespace CardsAndMonsters.Features
 
             if (Board.CurrentTurn.Player.Equals(Board.Opponent))
             {
-                await _fakeOpponentService.FakeOpponentsTurn(Board);
+                await FakeOpponentsTurn();
             }
-            StateHasChanged();
+        }
+
+        private async Task FakeOpponentsTurn()
+        {
+            await _fakeOpponentService.FakeMainPhase(Board);
+            await _fakeOpponentService.FakeBattlePhase(Board);
+            await _fakeOpponentService.FakeEndPhase(Board);
         }
 
         private void StateHasChanged()
         {
             OnAction?.Invoke();
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    _phaseService.PhaseChanged -= StateHasChanged;
+                }
+
+                disposedValue = true;
+            }
+        }
+
+        public void Dispose()
+        {
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
         }
     }
 }

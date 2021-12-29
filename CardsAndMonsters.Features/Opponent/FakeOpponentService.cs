@@ -23,7 +23,7 @@ namespace CardsAndMonsters.Features.Opponent
             _positionService = positionService;
         }
 
-        public async Task FakeOpponentsTurn(Board board)
+        public async Task FakeMainPhase(Board board)
         {
             foreach (var monster in board.OpponentField.Monsters)
             {
@@ -46,8 +46,16 @@ namespace CardsAndMonsters.Features.Opponent
                 }
             }
 
-            await _phaseService.EnterPhase(Phase.Battle, board);
+            await Task.Delay(0);
+        }
 
+        public async Task FakeBattlePhase(Board board)
+        {
+            await _phaseService.EnterPhase(Phase.Battle, board);
+        }
+
+        public async Task FakeEndPhase(Board board)
+        {
             await _turnService.EndTurn(board);
         }
     }
