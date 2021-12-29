@@ -13,10 +13,13 @@ namespace CardsAndMonsters.Models
         {
             Player = player;
             Opponent = opponent;
+            TurnCount = 0;
             Turns = new Dictionary<int, TurnState>();
             OpponentMonsters = new List<Monster>();
             PlayerMonsters = new List<Monster>();
         }
+
+        public int TurnCount { get; set; }
 
         public TurnState CurrentTurn { get; set; }
 

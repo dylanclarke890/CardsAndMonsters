@@ -11,7 +11,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CardsAndMonsters.Data", "..
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CardsAndMonsters.Features", "..\CardsAndMonsters.Features\CardsAndMonsters.Features.csproj", "{5674CB4A-4F09-452A-9ED9-A0953BA408B2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CardsAndMonsters.Core", "..\CardsAndMonsters.Core\CardsAndMonsters.Core.csproj", "{905054B4-727C-4791-B836-62B46B5728DB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CardsAndMonsters.Core", "..\CardsAndMonsters.Core\CardsAndMonsters.Core.csproj", "{905054B4-727C-4791-B836-62B46B5728DB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

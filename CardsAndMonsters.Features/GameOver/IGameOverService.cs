@@ -7,6 +7,7 @@ namespace CardsAndMonsters.Features.GameOver
     public interface IGameOverService
     {
         Action<GameOverInfo> OnLoss { get; set; }
+        bool GameOver { get; set; }
 
         void CheckForGameOver(Board board);
         void EndGame(Duelist player, LossReason reason);

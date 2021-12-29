@@ -8,7 +8,7 @@ namespace CardsAndMonsters.Features.GameOver
     {
         public Action<GameOverInfo> OnLoss { get; set; }
 
-        public bool GameOver = false;
+        public bool GameOver { get; set; }
 
         public void CheckForGameOver(Board board)
         {

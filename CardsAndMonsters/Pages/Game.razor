@@ -1,9 +1,11 @@
 ﻿@page "/play"
 @layout EmptyLayout
 @inject IGameOverService _gameOverService
-@inject IBattleService _battleService 
+@inject IBattleService _battleService
 @inject IPositionService _positionService
 @inject IPhaseService _phaseService
+@inject ITurnService _turnService
+@inject IFakeOpponentService _fakeOpponentService;
 
 @if (!_gameOverService.GameOver)
 {
@@ -12,20 +14,11 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col-1">
-                <h3>@(TurnCount + 1)</h3>
-                <h3>@Board.CurrentTurn.Phase</h3>
-                @if (Board.Player.Equals(Board.CurrentTurn.Player))
-                {
-                    @if (Board.CurrentTurn.Phase < Phase.Battle)
-                    {
-                        <button class="btn btn-outline-primary" @onclick="() => _phaseService.EnterPhase(Phase.Battle, Board)">BATTLE</button>
-                    }
-                    <button class="btn btn-outline-primary" @onclick="EndTurn">END</button>
-                }
+                <TurnInfoDisplay Board="Board" />
             </div>
             <div class="col-10">
                 <CascadingValue Value="Board" TValue="Board">
-                    <CardField OnPlayerAttack="Attack" OnPositionSwitch="SwitchPosition"/>
+                    <CardField OnPlayerAttack="Attack" OnPositionSwitch="SwitchPosition" />
                 </CascadingValue>
             </div>
         </div>
@@ -35,12 +28,11 @@
                     OnPositionPicked="PlayMonster" />
     </CascadingValue>
 }
-<GameOver Player="Board.Player"/>
+<GameOver Player="Board.Player" />
 
 @code {
     private Board Board;
     private bool ChoosingFieldPosition;
-    private int TurnCount = 0;
     private BaseCard PendingPlacement;
 
     protected override async Task OnInitializedAsync()
@@ -62,10 +54,13 @@
             await Task.Delay(300);
         }
 
-        StartTurn(startingPlayer, false);
+        _turnService.StartTurn(startingPlayer, false, Board);
+
+        if (!startingPlayer.Equals(Board.Player))
+        {
+            _fakeOpponentService.FakeOpponentsTurn(Board);
+        }
     }
-
-
 
     private void PlayCard(BaseCard card)
     {
@@ -96,7 +91,7 @@
         var monster = PendingPlacement as Monster;
         monster.FieldPosition = position;
         Board.Player.PlayMonster(monster, Board, Board.CurrentTurn);
-        if (TurnCount == 0)
+        if (Board.TurnCount == 0)
         {
             Board.CurrentTurn.MonsterState[monster.Id].TimesAttacked = monster.AttacksPerTurn;
         }
@@ -114,40 +109,13 @@
         monster.FieldPosition = _positionService.NewPosition(monster.FieldPosition);
         _positionService.PositionSwitched(monster, Board);
     }
-
-    private void FakeOpponentsTurn()
-    {
-        foreach(var monster in Board.OpponentMonsters)
-        {
-            monster.FieldPosition = _positionService.NewPosition(monster.FieldPosition);
-            Board.CurrentTurn.MonsterState[monster.Id].AbleToSwitch = false;
-        }
-
-        Random rnd = new();
-
-        var card = Board.Opponent.CurrentHand[rnd.Next(Board.Opponent.CurrentHand.Count)];
-        if (card.IsType(typeof(Monster)) && Board.OpponentMonsters.Count < AppConstants.FieldSize)
-        {
-            var monster = card as Monster;
-            monster.FieldPosition = rnd.Next(2) == 1 ? FieldPosition.VerticalUp : FieldPosition.HorizontalDown;
-            Board.Opponent.PlayMonster(monster, Board, Board.CurrentTurn);
-
-            if (TurnCount == 0)
-            {
-                Board.CurrentTurn.MonsterState[monster.Id].TimesAttacked = monster.AttacksPerTurn;
-            }
-        }
-
-        _phaseService.EnterPhase(Phase.Battle, Board);
-
-        EndTurn();
-    }
 }
 
 <style>
     .opponent-display {
         margin-bottom: 1em;
     }
+
     .player-display {
         margin-top: 1em;
     }
