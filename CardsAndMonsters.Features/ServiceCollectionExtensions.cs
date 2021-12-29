@@ -14,6 +14,7 @@ namespace CardsAndMonsters.Features
         {
             services.AddScoped<IPositionService, PositionService>();
             services.AddScoped<IPhaseService, PhaseService>();
+            services.AddScoped<IGameService, GameService>();
             services.AddScoped<IGameOverService, GameOverService>();
             services.AddScoped<IBattleService, BattleService>();
             services.AddScoped<ITurnService, TurnService>();

@@ -9,6 +9,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\CardsAndMonsters.Data\CardsAndMonsters.Data.csproj" />
     <ProjectReference Include="..\CardsAndMonsters.Models\CardsAndMonsters.Models.csproj" />
   </ItemGroup>
 

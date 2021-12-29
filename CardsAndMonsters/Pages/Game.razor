@@ -1,113 +1,46 @@
 ﻿@page "/play"
 @layout EmptyLayout
+@inject IGameService _gameService
 @inject IGameOverService _gameOverService
-@inject IBattleService _battleService
-@inject IPositionService _positionService
-@inject IPhaseService _phaseService
-@inject ITurnService _turnService
-@inject IFakeOpponentService _fakeOpponentService;
+@implements IDisposable
 
 @if (!_gameOverService.GameOver)
 {
-    <OpponentView Opponent="Board.Opponent" />
+    <OpponentView Opponent="_gameService.Board.Opponent" />
 
     <div class="container-fluid">
         <div class="row">
             <div class="col-1">
-                <TurnInfoDisplay Board="Board" />
+                <TurnInfoDisplay Board="_gameService.Board" />
             </div>
             <div class="col-10">
-                <CascadingValue Value="Board" TValue="Board">
-                    <CardField OnPlayerAttack="Attack" OnPositionSwitch="SwitchPosition" />
+                <CascadingValue Value="_gameService.Board" TValue="Board">
+                    <CardField OnPlayerAttack="_gameService.Attack" OnPositionSwitch="_gameService.SwitchPosition" />
                 </CascadingValue>
             </div>
         </div>
     </div>
-    <CascadingValue Value="Board" TValue="Board">
-        <PlayerView PendingPlacement="PendingPlacement" CardPlayed="PlayCard" DisplayFieldOptions="ChoosingFieldPosition"
-                    OnPositionPicked="PlayMonster" />
+    <CascadingValue Value="_gameService.Board" TValue="Board">
+        <PlayerView PendingPlacement="_gameService.PendingPlacement" CardPlayed="_gameService.PlayCard" DisplayFieldOptions="_gameService.ChoosingFieldPosition"
+                    OnPositionPicked="_gameService.PlayMonster" />
     </CascadingValue>
 }
-<GameOver Player="Board.Player" />
+<GameOver Player="_gameService.Board.Player" />
 
-@code {
-    private Board Board;
-    private bool ChoosingFieldPosition;
-    private BaseCard PendingPlacement;
+@code {        
+    protected override void OnInitialized()
+    {
+        _gameService.OnAction += StateHasChanged;
+    }
 
     protected override async Task OnInitializedAsync()
     {
-        Board = new(DuelistBuilder.GetNewPlayer(), DuelistBuilder.GetNewOpponent());
-
-        Random rnd = new();
-        var startingPlayer = rnd.Next(2) == 1 ? Board.Opponent : Board.Player;
-        Board.CurrentTurn = new(startingPlayer);
-
-        _phaseService.EnterPhase(Phase.Standby, Board);
-        StateHasChanged();
-
-        for (int i = 0; i < AppConstants.HandSize; i++)
-        {
-            Board.Opponent.DrawCard();
-            Board.Player.DrawCard();
-            StateHasChanged();
-            await Task.Delay(300);
-        }
-
-        _turnService.StartTurn(startingPlayer, false, Board);
-
-        if (!startingPlayer.Equals(Board.Player))
-        {
-            _fakeOpponentService.FakeOpponentsTurn(Board);
-        }
+        await _gameService.StartGame();
     }
 
-    private void PlayCard(BaseCard card)
+    public void Dispose()
     {
-        if (card.IsType(typeof(Monster)))
-        {
-            var monster = card as Monster;
-            if (Board.Player.Equals(Board.CurrentTurn.Player))
-            {
-                if (Board.PlayerMonsters.Count == AppConstants.FieldSize || Board.CurrentTurn.NormalSummonLimitReached())
-                {
-                    return;
-                }
-
-                PlayMonster(monster);
-            }
-        }
-    }
-
-    private void PlayMonster(Monster monster)
-    {
-        ChoosingFieldPosition = true;
-        PendingPlacement = monster;
-    }
-
-    private void PlayMonster(FieldPosition position)
-    {
-        ChoosingFieldPosition = false;
-        var monster = PendingPlacement as Monster;
-        monster.FieldPosition = position;
-        Board.Player.PlayMonster(monster, Board, Board.CurrentTurn);
-        if (Board.TurnCount == 0)
-        {
-            Board.CurrentTurn.MonsterState[monster.Id].TimesAttacked = monster.AttacksPerTurn;
-        }
-        PendingPlacement = null;
-    }
-
-    private void Attack(BattleInfo battleInfo)
-    {
-        _battleService.Attack(battleInfo);
-        _gameOverService.CheckForGameOver(Board);
-    }
-
-    private void SwitchPosition(Monster monster)
-    {
-        monster.FieldPosition = _positionService.NewPosition(monster.FieldPosition);
-        _positionService.PositionSwitched(monster, Board);
+        _gameService.OnAction -= StateHasChanged;
     }
 }
 
