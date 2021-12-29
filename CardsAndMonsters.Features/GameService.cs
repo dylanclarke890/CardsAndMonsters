@@ -85,7 +85,7 @@ namespace CardsAndMonsters.Features
                 var monster = card as Monster;
                 if (Board.Player.Equals(Board.CurrentTurn.Player))
                 {
-                    if (Board.PlayerMonsters.Count == AppConstants.FieldSize || Board.CurrentTurn.NormalSummonLimitReached())
+                    if (Board.PlayerField.Monsters.Count == AppConstants.FieldSize || Board.CurrentTurn.NormalSummonLimitReached())
                     {
                         return;
                     }

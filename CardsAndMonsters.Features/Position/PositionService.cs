@@ -22,8 +22,8 @@ namespace CardsAndMonsters.Features.Position
 
         public void PositionSwitched(Monster monster, Board board)
         {
-            var currentMonster = board.PlayerMonsters.FirstOrDefault(m => m.Equals(monster));
-            board.PlayerMonsters[board.PlayerMonsters.IndexOf(currentMonster)] = monster;
+            var currentMonster = board.PlayerField.Monsters.FirstOrDefault(m => m.Equals(monster));
+            board.PlayerField.Monsters[board.PlayerField.Monsters.IndexOf(currentMonster)] = monster;
             board.CurrentTurn.MonsterState[monster.Id].AbleToSwitch = false;
         }
     }

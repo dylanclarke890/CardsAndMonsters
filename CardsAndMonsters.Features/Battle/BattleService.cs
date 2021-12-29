@@ -56,7 +56,7 @@ namespace CardsAndMonsters.Features.Battle
             {
                 case BattleTarget.Direct:
                     {
-                        if (battleInfo.Board.OpponentMonsters.Any())
+                        if (battleInfo.Board.OpponentField.Monsters.Any())
                         {
                             throw new InvalidOperationException("Cannot attack directly if opponent has monsters");
                         }
@@ -102,18 +102,18 @@ namespace CardsAndMonsters.Features.Battle
             MonsterAttacked(battleInfo.AttackingMonster.Id, battleInfo.Board);
         }
 
-        private void DirectAttack(BattleInfo battleInfo)
+        private static void DirectAttack(BattleInfo battleInfo)
         {
             MonsterAttacked(battleInfo.AttackingMonster.Id, battleInfo.Board);
             DamageDuelist(battleInfo.DefendingPlayer, battleInfo.AttackingMonster.Attack, battleInfo.Board);
         }
 
-        private void MonsterAttacked(Guid monsterId, Board board)
+        private static void MonsterAttacked(Guid monsterId, Board board)
         {
             board.CurrentTurn.MonsterState[monsterId].TimesAttacked++;
         }
 
-        private void CalculateAtkVsAtk(BattleInfo battleInfo)
+        private static void CalculateAtkVsAtk(BattleInfo battleInfo)
         {
             if (battleInfo.AttackingMonster.Attack > battleInfo.TargetMonster.Attack)
             {
@@ -134,7 +134,7 @@ namespace CardsAndMonsters.Features.Battle
             }
         }
 
-        private void CalculateAtkVsDef(BattleInfo battleInfo)
+        private static void CalculateAtkVsDef(BattleInfo battleInfo)
         {
             if (battleInfo.AttackingMonster.Attack > battleInfo.TargetMonster.Defense)
             {
@@ -148,12 +148,12 @@ namespace CardsAndMonsters.Features.Battle
             }
         }
 
-        private void DestroyMonster(Monster monster, Duelist player, Board board)
+        private static void DestroyMonster(Monster monster, Duelist player, Board board)
         {
             if (board.Player.Equals(player))
             {
-                board.PlayerMonsters.Remove(monster);
-                board.PlayerGraveyard.Add(monster);
+                board.PlayerField.Monsters.Remove(monster);
+                board.PlayerField.Graveyard.Add(monster);
                 if (board.CurrentTurn.Player.Equals(board.Player))
                 {
                     MarkAsDestroyed(monster.Id, board);
@@ -161,8 +161,8 @@ namespace CardsAndMonsters.Features.Battle
             }
             else
             {
-                board.OpponentMonsters.Remove(monster);
-                board.OpponentGraveyard.Add(monster);
+                board.OpponentField.Monsters.Remove(monster);
+                board.OpponentField.Graveyard.Add(monster);
                 if (board.CurrentTurn.Player.Equals(board.Opponent))
                 {
                     MarkAsDestroyed(monster.Id, board);
@@ -170,12 +170,12 @@ namespace CardsAndMonsters.Features.Battle
             }
         }
 
-        private void MarkAsDestroyed(Guid monsterId, Board board)
+        private static void MarkAsDestroyed(Guid monsterId, Board board)
         {
             board.CurrentTurn.MonsterState[monsterId].Destroyed = true;
         }
 
-        private void DamageDuelist(Duelist player, decimal dmg, Board board)
+        private static void DamageDuelist(Duelist player, decimal dmg, Board board)
         {
             if (player.Equals(board.Player))
             {
@@ -187,12 +187,12 @@ namespace CardsAndMonsters.Features.Battle
             }
         }
 
-        private void DamageOpponent(decimal amount, Board board)
+        private static void DamageOpponent(decimal amount, Board board)
         {
             board.Opponent.TakeDamage(amount);
         }
 
-        private void DamagePlayer(decimal amount, Board board)
+        private static void DamagePlayer(decimal amount, Board board)
         {
             board.Player.TakeDamage(amount);
         }

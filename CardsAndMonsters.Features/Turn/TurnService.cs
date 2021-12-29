@@ -21,7 +21,7 @@ namespace CardsAndMonsters.Features.Turn
         public void StartTurn(Duelist player, bool drawCard, Board board)
         {
             bool isPlayer = board.Player.Equals(player);
-            board.CurrentTurn = new(isPlayer ? board.PlayerMonsters : board.OpponentMonsters, player);
+            board.CurrentTurn = new(isPlayer ? board.PlayerField.Monsters : board.OpponentField.Monsters, player);
 
             if (drawCard)
             {

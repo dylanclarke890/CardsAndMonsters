@@ -25,7 +25,7 @@ namespace CardsAndMonsters.Features.Opponent
 
         public void FakeOpponentsTurn(Board board)
         {
-            foreach (var monster in board.OpponentMonsters)
+            foreach (var monster in board.OpponentField.Monsters)
             {
                 monster.FieldPosition = _positionService.NewPosition(monster.FieldPosition);
                 board.CurrentTurn.MonsterState[monster.Id].AbleToSwitch = false;
@@ -34,7 +34,7 @@ namespace CardsAndMonsters.Features.Opponent
             Random rnd = new();
 
             var card = board.Opponent.CurrentHand[rnd.Next(board.Opponent.CurrentHand.Count)];
-            if (card.IsType(typeof(Monster)) && board.OpponentMonsters.Count < AppConstants.FieldSize)
+            if (card.IsType(typeof(Monster)) && board.OpponentField.Monsters.Count < AppConstants.FieldSize)
             {
                 var monster = card as Monster;
                 monster.FieldPosition = rnd.Next(2) == 1 ? FieldPosition.VerticalUp : FieldPosition.HorizontalDown;

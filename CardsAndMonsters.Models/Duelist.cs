@@ -47,13 +47,13 @@ namespace CardsAndMonsters.Models
         {
             CurrentHand.Remove(monster);
 
-            if (board.Player.Equals(turn.Player))
+            if (turn.Player.Equals(board.Player))
             {
-                board.PlayerMonsters.Add(monster);
+                board.PlayerField.Monsters.Add(monster);
             }
             else
             {
-                board.OpponentMonsters.Add(monster);
+                board.OpponentField.Monsters.Add(monster);
             }
             turn.SummonedThisTurn.Add(monster);
             turn.MonsterState[monster.Id] = new() 

@@ -1,6 +1,6 @@
 ﻿@inject IBattleService _battleService
 
-@if (_battleService.DeclaringAttack && !Board.OpponentMonsters.Any())
+@if (_battleService.DeclaringAttack && !Board.OpponentField.Monsters.Any())
 {
     <button class="btn btn-primary" @onclick="() => AttackTarget(new() { Target = BattleTarget.Direct})">ATTACK OPPONENT</button>
 }
@@ -13,17 +13,17 @@
             <Card />
         }
 
-        <Graveyard CardCount="Board.OpponentGraveyard.Count" />
+        <Graveyard CardCount="Board.OpponentField.Graveyard.Count" />
     </div>
     <div class="card-row">
         <Card />
 
-        @for (int i = 0; i < Board.OpponentMonsters.Count; i++)
+        @for (int i = 0; i < Board.OpponentField.Monsters.Count; i++)
         {
-            <MonsterCard Monster="Board.OpponentMonsters[i]" DeclaringAttack="_battleService.DeclaringAttack"
+            <MonsterCard Monster="Board.OpponentField.Monsters[i]" DeclaringAttack="_battleService.DeclaringAttack"
                          OnAttackDeclared="_battleService.DeclareAttack" OnMonsterAttack="AttackTarget" OnPositionSwitch="SwitchPosition" />
         }
-        @for (int i = 0; i < AppConstants.FieldSize - Board.OpponentMonsters.Count; i++)
+        @for (int i = 0; i < AppConstants.FieldSize - Board.OpponentField.Monsters.Count; i++)
         {
             <Card />
         }
@@ -34,12 +34,12 @@
     <div class="card-row">
         <Card />
 
-        @for (int i = 0; i < Board.PlayerMonsters.Count; i++)
+        @for (int i = 0; i < Board.PlayerField.Monsters.Count; i++)
         {
-            <MonsterCard Monster="Board.PlayerMonsters[i]" DeclaringAttack="_battleService.DeclaringAttack"
+            <MonsterCard Monster="Board.PlayerField.Monsters[i]" DeclaringAttack="_battleService.DeclaringAttack"
                          OnAttackDeclared="_battleService.DeclareAttack" OnMonsterAttack="AttackTarget" OnPositionSwitch="SwitchPosition" />
         }
-        @for (int i = 0; i < AppConstants.FieldSize - Board.PlayerMonsters.Count; i++)
+        @for (int i = 0; i < AppConstants.FieldSize - Board.PlayerField.Monsters.Count; i++)
         {
             <Card />
         }
@@ -47,7 +47,7 @@
         <Card />
     </div>
     <div class="card-row">
-        <Graveyard CardCount="Board.PlayerGraveyard.Count" />
+        <Graveyard CardCount="Board.PlayerField.Graveyard.Count" />
 
         @for (int i = 0; i < AppConstants.FieldSize; i++)
         {
