@@ -5,6 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\CardsAndMonsters.Data\CardsAndMonsters.Data.csproj" />
     <ProjectReference Include="..\CardsAndMonsters.Features\CardsAndMonsters.Features.csproj" />
     <ProjectReference Include="..\CardsAndMonsters.Models\CardsAndMonsters.Models.csproj" />
     <ProjectReference Include="..\CardsAndMonsters.Core\CardsAndMonsters.Core.csproj" />
