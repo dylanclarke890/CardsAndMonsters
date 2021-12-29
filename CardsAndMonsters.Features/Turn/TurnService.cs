@@ -3,6 +3,7 @@ using CardsAndMonsters.Features.TurnPhase;
 using CardsAndMonsters.Models;
 using CardsAndMonsters.Models.Enums;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace CardsAndMonsters.Features.Turn
 {
@@ -18,7 +19,7 @@ namespace CardsAndMonsters.Features.Turn
             _gameOverService = gameOverService;
         }
 
-        public void StartTurn(Duelist player, bool drawCard, Board board)
+        public async Task StartTurn(Duelist player, bool drawCard, Board board)
         {
             bool isPlayer = board.Player.Equals(player);
             board.CurrentTurn = new(isPlayer ? board.PlayerField.Monsters : board.OpponentField.Monsters, player);
@@ -33,17 +34,17 @@ namespace CardsAndMonsters.Features.Turn
                 }
             }
 
-            _phaseService.EnterPhase(Phase.Main, board);
+            await _phaseService.EnterPhase(Phase.Main, board);
         }
 
 
-        public void EndTurn(Board board)
+        public async Task EndTurn(Board board)
         {
-            _phaseService.EnterPhase(Phase.End, board);
+            await _phaseService.EnterPhase(Phase.End, board);
             board.Turns[board.TurnCount] = board.CurrentTurn;
             board.TurnCount++;
-            _phaseService.EnterPhase(Phase.Standby, board);
-            StartTurn(board.Turns.Last().Value.Player.Equals(board.Player) ? board.Opponent : board.Player, true, board);
+            await _phaseService.EnterPhase(Phase.Standby, board);
+            await StartTurn(board.Turns.Last().Value.Player.Equals(board.Player) ? board.Opponent : board.Player, true, board);
         }
     }
 }

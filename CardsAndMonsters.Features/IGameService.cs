@@ -14,8 +14,8 @@ namespace CardsAndMonsters.Features
         BaseCard PendingPlacement { get; set; }
 
         void Attack(BattleInfo battleInfo);
-        void EnterPhase(Phase phase);
-        void EndTurn();
+        Task EnterPhase(Phase phase);
+        Task EndTurn();
         void PlayCard(BaseCard card);
         void PlayMonster(FieldPosition position);
         void PlayMonster(Monster monster);

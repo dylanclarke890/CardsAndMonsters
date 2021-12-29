@@ -6,6 +6,7 @@ using CardsAndMonsters.Models;
 using CardsAndMonsters.Models.Cards;
 using CardsAndMonsters.Models.Enums;
 using System;
+using System.Threading.Tasks;
 
 namespace CardsAndMonsters.Features.Opponent
 {
@@ -22,8 +23,7 @@ namespace CardsAndMonsters.Features.Opponent
             _positionService = positionService;
         }
 
-
-        public void FakeOpponentsTurn(Board board)
+        public async Task FakeOpponentsTurn(Board board)
         {
             foreach (var monster in board.OpponentField.Monsters)
             {
@@ -46,9 +46,9 @@ namespace CardsAndMonsters.Features.Opponent
                 }
             }
 
-            _phaseService.EnterPhase(Phase.Battle, board);
+            await _phaseService.EnterPhase(Phase.Battle, board);
 
-            _turnService.EndTurn(board);
+            await _turnService.EndTurn(board);
         }
     }
 }

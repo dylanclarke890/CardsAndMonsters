@@ -1,9 +1,11 @@
 ﻿using CardsAndMonsters.Models;
+using System;
+using System.Threading.Tasks;
 
 namespace CardsAndMonsters.Features.Opponent
 {
     public interface IFakeOpponentService
     {
-        void FakeOpponentsTurn(Board board);
+        Task FakeOpponentsTurn(Board board);
     }
 }

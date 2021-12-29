@@ -1,35 +1,106 @@
-﻿<style>
-.scroll-left {
- height: 50px;
- overflow: hidden;
- position: relative;
- background: yellow;
- color: orange;
- border: 1px solid orange;
+﻿@inject IPhaseService _phaseService
+@implements IDisposable
+
+@if (Show)
+{
+    <div class="absolutely">
+        <div class="scroll-left">
+            <p>@Phase.ToString().ToUpper() PHASE... </p>
+        </div>
+    </div>
 }
-.scroll-left p {
- position: absolute;
- width: 100%;
- height: 100%;
- margin: 0;
- line-height: 50px;
- text-align: center;
- /* Starting position */
- transform:translateX(100%);
- /* Apply animation to this element */
- animation: scroll-left 15s linear infinite;
+
+@code {
+    private Phase Phase;
+    private int AnimationDuration;
+    private bool Show;
+
+    protected override void OnInitialized()
+    {
+        _phaseService.OnShow += (len, phase) =>
+        {
+            Phase = phase;
+            AnimationDuration = len;
+            Show = true;
+            StateHasChanged();
+        };
+        _phaseService.OnHide += () =>
+        {
+            Show = false;
+            StateHasChanged();
+        };
+    }
+
+    public override Task SetParametersAsync(ParameterView parameters)
+    {
+        foreach (var parameter in parameters)
+        {
+            switch (parameter.Name)
+            {
+                case nameof(Phase):
+                    Phase = (Phase)parameter.Value;
+                    break;
+                default:
+                    throw new ArgumentException($"Unknown parameter: {parameter.Name}");
+            }
+        }
+
+        return base.SetParametersAsync(ParameterView.Empty);
+    }
+
+    public void Dispose()
+    {
+        _phaseService.OnShow -= (len, phase) =>
+        {
+            Phase = phase;
+            AnimationDuration = len;
+            Show = true;
+        };
+        _phaseService.OnHide -= () =>
+        {
+            Show = false;
+            StateHasChanged();
+        };
+    }
 }
-/* Move it (define the animation) */
-@@keyframes scroll-left {
- 0%   {
- transform: translateX(100%);
- }
- 100% {
- transform: translateX(-100%);
- }
-}
+<style>
+    .absolutely {
+        position: absolute;
+        z-index: 1000;
+        top: 40vh;
+        width: 100%;
+    }
+
+    .scroll-left {
+        height: 100px;
+        overflow: hidden;
+        position: relative;
+        background: blue;
+        color: white;
+        border: 1px solid black;
+    }
+
+        .scroll-left p {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            line-height: 100px;
+            text-align: center;
+            /* Starting position */
+            transform: translateX(-100%);
+            /* Apply animation to this element */
+            animation: scroll-left @(AnimationDuration)s linear infinite;
+        }
+    /* Move it (define the animation) */
+    @@keyframes scroll-left {
+        0% {
+            transform: translateX(-100%);
+        }
+
+        100% {
+            transform: translateX(100%);
+        }
+    }
 </style>
 
-<div class="scroll-left">
-    <p>Scroll left... </p>
-</div>

@@ -53,8 +53,7 @@ namespace CardsAndMonsters.Features
             var startingPlayer = rnd.Next(2) == 1 ? Board.Opponent : Board.Player;
             Board.CurrentTurn = new(startingPlayer);
 
-            _phaseService.EnterPhase(Phase.Standby, Board);
-            StateHasChanged();
+            await EnterPhase(Phase.Standby);
 
             for (int i = 0; i < AppConstants.HandSize; i++)
             {
@@ -64,17 +63,17 @@ namespace CardsAndMonsters.Features
                 await Task.Delay(300);
             }
 
-            _turnService.StartTurn(startingPlayer, false, Board);
+            await _turnService.StartTurn(startingPlayer, false, Board);
 
             if (!startingPlayer.Equals(Board.Player))
             {
-                _fakeOpponentService.FakeOpponentsTurn(Board);
+                await _fakeOpponentService.FakeOpponentsTurn(Board);
             }
         }
 
-        public void EnterPhase(Phase phase)
+        public async Task EnterPhase(Phase phase)
         {
-            _phaseService.EnterPhase(phase, Board);
+            await _phaseService.EnterPhase(phase, Board);
             StateHasChanged();
         }
 
@@ -126,13 +125,13 @@ namespace CardsAndMonsters.Features
             _positionService.PositionSwitched(monster, Board);
         }
 
-        public void EndTurn()
+        public async Task EndTurn()
         {
-            _turnService.EndTurn(Board);
+            await _turnService.EndTurn(Board);
 
             if (Board.CurrentTurn.Player.Equals(Board.Opponent))
             {
-                _fakeOpponentService.FakeOpponentsTurn(Board);
+                await _fakeOpponentService.FakeOpponentsTurn(Board);
             }
             StateHasChanged();
         }
