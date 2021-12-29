@@ -153,6 +153,7 @@ namespace CardsAndMonsters.Features.Battle
             if (board.Player.Equals(player))
             {
                 board.PlayerMonsters.Remove(monster);
+                board.PlayerGraveyard.Add(monster);
                 if (board.CurrentTurn.Player.Equals(board.Player))
                 {
                     MarkAsDestroyed(monster.Id, board);
@@ -161,6 +162,7 @@ namespace CardsAndMonsters.Features.Battle
             else
             {
                 board.OpponentMonsters.Remove(monster);
+                board.OpponentGraveyard.Add(monster);
                 if (board.CurrentTurn.Player.Equals(board.Opponent))
                 {
                     MarkAsDestroyed(monster.Id, board);

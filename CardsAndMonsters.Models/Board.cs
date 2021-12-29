@@ -15,6 +15,8 @@ namespace CardsAndMonsters.Models
             Opponent = opponent;
             TurnCount = 0;
             Turns = new Dictionary<int, TurnState>();
+            PlayerGraveyard = new List<BaseCard>();
+            OpponentGraveyard = new List<BaseCard>();
             OpponentMonsters = new List<Monster>();
             PlayerMonsters = new List<Monster>();
         }
@@ -30,8 +32,12 @@ namespace CardsAndMonsters.Models
         public Duelist Opponent { get; set; }
         
         public IList<Monster> OpponentMonsters { get; set; }
+
+        public IList<BaseCard> OpponentGraveyard { get; set; }
         
         public IList<Monster> PlayerMonsters { get; set; }
+
+        public IList<BaseCard> PlayerGraveyard { get; set; }
 
         public bool AbleToPlayMonster(Monster monster)
         {

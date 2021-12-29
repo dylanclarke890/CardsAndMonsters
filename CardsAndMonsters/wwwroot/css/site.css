@@ -5,7 +5,23 @@
     background-size: contain;
     background-repeat: no-repeat;
 }
-
+.monster-card {
+    box-shadow: 0px 0px 0px 1px #ddd;
+    transition: box-shadow 0.6s linear;
+}
+.playable {
+    box-shadow: 0px 0px 0px 3px #13DC72;
+    cursor: pointer;
+}
+.deck-card {
+    width: 90px;
+    height: 120px;
+    border: 1px solid #aaa;
+    border-radius: 3px;
+}
+.horizontal {
+    transform: rotate(-90deg);
+}
 .pointer {
     cursor: pointer;
 }

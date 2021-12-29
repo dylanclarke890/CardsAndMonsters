@@ -13,7 +13,7 @@
             <Card />
         }
 
-        <Card />
+        <Graveyard CardCount="Board.OpponentGraveyard.Count" />
     </div>
     <div class="card-row">
         <Card />
@@ -47,7 +47,7 @@
         <Card />
     </div>
     <div class="card-row">
-        <Card />
+        <Graveyard CardCount="Board.PlayerGraveyard.Count" />
 
         @for (int i = 0; i < AppConstants.FieldSize; i++)
         {
