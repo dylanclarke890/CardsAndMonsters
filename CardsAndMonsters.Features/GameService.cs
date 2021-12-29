@@ -84,6 +84,13 @@ namespace CardsAndMonsters.Features
             }
         }
 
+        public async Task RestartGame()
+        {
+            _gameOverService.ClearGameOverInfo();
+            StateHasChanged();
+            await StartGame();
+        }
+
         public async Task EnterPhase(Phase phase)
         {
             await _phaseService.EnterPhase(phase, Board);

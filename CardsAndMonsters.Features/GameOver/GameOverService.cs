@@ -39,5 +39,12 @@ namespace CardsAndMonsters.Features.GameOver
 
             OnLoss.Invoke(gameOverInfo);
         }
+
+        public void ClearGameOverInfo()
+        {
+            GameOver = false;
+            GameOverInfo gameOverInfo = null;
+            OnLoss.Invoke(gameOverInfo);
+        }
     }
 }

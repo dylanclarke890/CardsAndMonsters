@@ -10,6 +10,7 @@ namespace CardsAndMonsters.Features.GameOver
         bool GameOver { get; set; }
 
         void CheckForGameOver(Board board);
+        void ClearGameOverInfo();
         void EndGame(Duelist player, LossReason reason);
     }
 }

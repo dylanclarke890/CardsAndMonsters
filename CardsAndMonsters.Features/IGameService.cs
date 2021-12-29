@@ -20,6 +20,7 @@ namespace CardsAndMonsters.Features
         void PlayMonster(FieldPosition position);
         void PlayMonster(Monster monster);
         Task StartGame();
+        Task RestartGame();
         void SwitchPosition(Monster monster);
     }
 }
