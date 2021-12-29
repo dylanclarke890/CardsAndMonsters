@@ -9,13 +9,16 @@ namespace CardsAndMonsters.Models
 {
     public class Duelist : BaseModel
     {
-        public Duelist()
+        public Duelist(string name)
         {
+            Name = name;
             HP = 4000;
             CardLimit = AppConstants.HandSize;
             CurrentHand = new List<BaseCard>();
             Deck = new List<BaseCard>();
         }
+
+        public string Name { get; set; }
 
         public decimal HP { get; set; }
 
@@ -47,7 +50,7 @@ namespace CardsAndMonsters.Models
         {
             CurrentHand.Remove(monster);
 
-            if (turn.Player.Equals(board.Player))
+            if (turn.Duelist.Equals(board.Player))
             {
                 board.PlayerField.Monsters.Add(monster);
             }

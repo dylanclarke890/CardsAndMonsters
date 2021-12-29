@@ -15,6 +15,8 @@ namespace CardsAndMonsters.Models
 
         public Monster TargetMonster { get; set; }
 
+        public bool Successful { get; set; }
+
         public Board Board { get; set; }
     }
 }

@@ -1,4 +1,5 @@
-﻿using CardsAndMonsters.Models;
+﻿using CardsAndMonsters.Features.Logging;
+using CardsAndMonsters.Models;
 using CardsAndMonsters.Models.Enums;
 using System;
 using System.Threading.Tasks;
@@ -7,7 +8,13 @@ namespace CardsAndMonsters.Features.TurnPhase
 {
     public class PhaseService : IPhaseService
     {
+        private readonly IDuelLogService _duelLogService;
         private readonly int _animationDelay = 3;
+
+        public PhaseService(IDuelLogService duelLogService)
+        {
+            _duelLogService = duelLogService;
+        }
 
         public Action PhaseChanged { get; set; }
 
@@ -19,6 +26,7 @@ namespace CardsAndMonsters.Features.TurnPhase
         {
             board.CurrentTurn.Phase = phase;
             PhaseChanged?.Invoke();
+            _duelLogService.AddNewEventLog(Event.PhaseChange, board.CurrentTurn.Duelist);
             OnShow?.Invoke(_animationDelay, phase);
             await Task.Delay(_animationDelay * 1000);
             OnHide?.Invoke();

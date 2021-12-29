@@ -1,10 +1,33 @@
 ﻿@inject IGameOverService _gameOverService
+@inject NavigationManager Navigate
+@inject IJSRuntime _jsRuntime
 @implements IDisposable
 
 @if (GameOverInfo != null)
 {
     <h1 class="text-center">@(GameOverInfo.LosingPlayer.Equals(Player) ? "Opponent wins" : "You win!")</h1>
     <h2 class="text-center">@(GameOverInfo.LosingPlayer.Equals(Player) ? "You" : "Opponent") lost due to @GameOverInfo.LossReason</h2>
+    <br/>
+    <div id="event-logs-container">
+        <div class="container">
+            <div class="row">
+                @foreach (var eventLog in GameOverInfo.EventLogs)
+                {
+                    <div class="col-3"></div>
+                    <div class="col-6">
+                        <div class="event-log">
+                            <p><b>@eventLog.CreatedAt.ToString("hh:mm:ss"):</b> @eventLog.Description</p>
+                        </div>
+                    </div>
+                    <div class="col-3"></div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="d-flex justify-content-between">
+        <button class="btn btn-primary" @onclick="New">Back</button>
+    </div>
 }
 @code {
     [Parameter]
@@ -15,6 +38,19 @@
     protected override void OnInitialized()
     {
         _gameOverService.OnLoss += (lossInfo) => GameOverInfo = lossInfo;
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (GameOverInfo != null)
+        {
+            await ScrollToBottom();
+        }
+    }
+
+    private void New()
+    {
+        Navigate.NavigateTo("/new");
     }
 
     public override Task SetParametersAsync(ParameterView parameters)
@@ -34,8 +70,20 @@
         return base.SetParametersAsync(ParameterView.Empty);
     }
 
+    private async Task ScrollToBottom()
+    {
+        await _jsRuntime.InvokeVoidAsync("scrollToBottom", "event-logs-container");
+    }
+
     public void Dispose()
     {
         _gameOverService.OnLoss -= (lossInfo) => GameOverInfo = lossInfo;
     }
 }
+
+<style>
+    #event-logs-container {
+        height: 300px;
+        overflow-y: scroll;
+    }
+</style>

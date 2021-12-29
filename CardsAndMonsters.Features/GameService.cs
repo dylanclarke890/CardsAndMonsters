@@ -2,6 +2,7 @@
 using CardsAndMonsters.Data.Factories;
 using CardsAndMonsters.Features.Battle;
 using CardsAndMonsters.Features.GameOver;
+using CardsAndMonsters.Features.Logging;
 using CardsAndMonsters.Features.Opponent;
 using CardsAndMonsters.Features.Position;
 using CardsAndMonsters.Features.Turn;
@@ -23,11 +24,13 @@ namespace CardsAndMonsters.Features
         private readonly IPositionService _positionService;
         private readonly IFakeOpponentService _fakeOpponentService;
         private readonly IGameOverService _gameOverService;
+        private readonly IDuelLogService _duelLogService;
         private bool disposedValue;
 
         public GameService(IDuelistFactory duelistFactory, IBattleService battleService,
             ITurnService turnService, IPhaseService phaseService, IPositionService positionService,
-            IFakeOpponentService fakeOpponentService, IGameOverService gameOverService)
+            IFakeOpponentService fakeOpponentService, IGameOverService gameOverService,
+            IDuelLogService duelLogService)
         {
             _duelistFactory = duelistFactory;
             _battleService = battleService;
@@ -36,6 +39,7 @@ namespace CardsAndMonsters.Features
             _positionService = positionService;
             _fakeOpponentService = fakeOpponentService;
             _gameOverService = gameOverService;
+            _duelLogService = duelLogService;
 
             _phaseService.PhaseChanged += StateHasChanged;
         }
@@ -56,12 +60,19 @@ namespace CardsAndMonsters.Features
             var startingPlayer = rnd.Next(2) == 1 ? Board.Opponent : Board.Player;
             Board.CurrentTurn = new(startingPlayer);
 
+            _duelLogService.AddNewEventLog(Event.GameStarted, startingPlayer);
+
             await EnterPhase(Phase.Standby);
 
             for (int i = 0; i < AppConstants.HandSize; i++)
             {
                 Board.Opponent.DrawCard();
+                _duelLogService.AddNewEventLog(Event.DrawCard, Board.Opponent);
+
                 Board.Player.DrawCard();
+                _duelLogService.AddNewEventLog(Event.DrawCard, Board.Player);
+
+                StateHasChanged();
                 await Task.Delay(300);
             }
 
@@ -83,7 +94,7 @@ namespace CardsAndMonsters.Features
             if (card.IsType(typeof(Monster)))
             {
                 var monster = card as Monster;
-                if (Board.Player.Equals(Board.CurrentTurn.Player))
+                if (Board.Player.Equals(Board.CurrentTurn.Duelist))
                 {
                     if (Board.PlayerField.Monsters.Count == AppConstants.FieldSize || Board.CurrentTurn.NormalSummonLimitReached())
                     {
@@ -106,7 +117,10 @@ namespace CardsAndMonsters.Features
             ChoosingFieldPosition = false;
             var monster = PendingPlacement as Monster;
             monster.FieldPosition = position;
+
             Board.Player.PlayMonster(monster, Board, Board.CurrentTurn);
+            _duelLogService.AddNewEventLog(Event.PlayMonster, Board.Player);
+
             if (Board.TurnCount == 0)
             {
                 Board.CurrentTurn.MonsterState[monster.Id].TimesAttacked = monster.AttacksPerTurn;
@@ -130,7 +144,7 @@ namespace CardsAndMonsters.Features
         {
             await _turnService.EndTurn(Board);
 
-            if (Board.CurrentTurn.Player.Equals(Board.Opponent))
+            if (Board.CurrentTurn.Duelist.Equals(Board.Opponent))
             {
                 await FakeOpponentsTurn();
             }

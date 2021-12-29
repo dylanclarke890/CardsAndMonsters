@@ -1,4 +1,5 @@
-﻿using CardsAndMonsters.Models;
+﻿using CardsAndMonsters.Features.Logging;
+using CardsAndMonsters.Models;
 using CardsAndMonsters.Models.Cards;
 using CardsAndMonsters.Models.Enums;
 using System;
@@ -8,6 +9,13 @@ namespace CardsAndMonsters.Features.Position
 {
     public class PositionService : IPositionService
     {
+        private readonly IDuelLogService _duelLogService;
+
+        public PositionService(IDuelLogService duelLogService)
+        {
+            _duelLogService = duelLogService;
+        }
+
         public FieldPosition NewPosition(FieldPosition old)
         {
             return old switch
@@ -25,6 +33,7 @@ namespace CardsAndMonsters.Features.Position
             var currentMonster = board.PlayerField.Monsters.FirstOrDefault(m => m.Equals(monster));
             board.PlayerField.Monsters[board.PlayerField.Monsters.IndexOf(currentMonster)] = monster;
             board.CurrentTurn.MonsterState[monster.Id].AbleToSwitch = false;
+            _duelLogService.AddNewEventLog(Event.MonsterPositionChange, board.Player);
         }
     }
 }

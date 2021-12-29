@@ -1,4 +1,5 @@
 ﻿using CardsAndMonsters.Core;
+using CardsAndMonsters.Features.Logging;
 using CardsAndMonsters.Features.Position;
 using CardsAndMonsters.Features.Turn;
 using CardsAndMonsters.Features.TurnPhase;
@@ -15,12 +16,15 @@ namespace CardsAndMonsters.Features.Opponent
         private readonly IPhaseService _phaseService;
         private readonly ITurnService _turnService;
         private readonly IPositionService _positionService;
+        private readonly IDuelLogService _duelLogService;
         public FakeOpponentService(IPhaseService phaseService,
-            ITurnService turnService, IPositionService positionService)
+            ITurnService turnService, IPositionService positionService,
+            IDuelLogService duelLogService)
         {
             _phaseService = phaseService;
             _turnService = turnService;
             _positionService = positionService;
+            _duelLogService = duelLogService;
         }
 
         public async Task FakeMainPhase(Board board)
@@ -29,6 +33,7 @@ namespace CardsAndMonsters.Features.Opponent
             {
                 monster.FieldPosition = _positionService.NewPosition(monster.FieldPosition);
                 board.CurrentTurn.MonsterState[monster.Id].AbleToSwitch = false;
+                _duelLogService.AddNewEventLog(Event.MonsterPositionChange, board.Opponent);
             }
 
             Random rnd = new();
@@ -38,7 +43,9 @@ namespace CardsAndMonsters.Features.Opponent
             {
                 var monster = card as Monster;
                 monster.FieldPosition = rnd.Next(2) == 1 ? FieldPosition.VerticalUp : FieldPosition.HorizontalDown;
+
                 board.Opponent.PlayMonster(monster, board, board.CurrentTurn);
+                _duelLogService.AddNewEventLog(Event.PlayMonster, board.Opponent);
 
                 if (board.TurnCount == 0)
                 {

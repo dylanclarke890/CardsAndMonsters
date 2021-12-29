@@ -8,20 +8,22 @@ namespace CardsAndMonsters.Models.Turns
 {
     public class TurnState : BaseModel
     {
-        public TurnState(Duelist player)
+        public TurnState(Duelist duelist)
         {
-            Player = player;
+            Duelist = duelist;
+            Battles = new List<BattleInfo>();
             NormalSummonLimit = 1;
             SummonedThisTurn = new List<Monster>();
             MonsterState = new Dictionary<Guid, MonsterTurnState>();
         }
 
-        public TurnState(IList<Monster> monsters, Duelist player)
+        public TurnState(IList<Monster> monsters, Duelist duelist)
         {
             NormalSummonLimit = 1;
+            Battles = new List<BattleInfo>();
             SummonedThisTurn = new List<Monster>();
             MonsterState = new Dictionary<Guid, MonsterTurnState>();
-            Player = player;
+            Duelist = duelist;
 
             foreach (var monster in monsters)
             {
@@ -34,10 +36,7 @@ namespace CardsAndMonsters.Models.Turns
             }
         }
 
-        /// <summary>
-        /// Who's turn is it?
-        /// </summary>
-        public Duelist Player { get; set; }
+        public Duelist Duelist { get; set; }
 
         public Phase Phase { get; set; }
 
@@ -47,27 +46,31 @@ namespace CardsAndMonsters.Models.Turns
 
         public IDictionary<Guid, MonsterTurnState> MonsterState { get; set; }
 
+        public IList<BattleInfo> Battles { get; set; }
+
+        public int CardsDrawn { get; set; }
+
         public bool NormalSummonLimitReached()
         {
             return SummonedThisTurn.Count == NormalSummonLimit;
         }
 
-        public bool AbleToSwitch(Guid monsterId, Duelist player)
+        public bool AbleToSwitch(Guid monsterId, Duelist duelist)
         {
             return Phase is Phase.Main && MonsterState.TryGetValue(monsterId, out var result)
-                && result.AbleToSwitch && Player.Equals(player);
+                && result.AbleToSwitch && Duelist.Equals(duelist);
         }
 
-        public bool AbleToBattle(Guid monsterId, Duelist player, bool declaringAttack)
+        public bool AbleToBattle(Guid monsterId, Duelist duelist, bool declaringAttack)
         {
             return Phase is Phase.Battle && MonsterState.TryGetValue(monsterId, out var result)
                 && result.TimesAttacked < result.Monster.AttacksPerTurn && result.Monster.FieldPosition is FieldPosition.VerticalUp
-                && Player.Equals(player) && !declaringAttack;
+                && Duelist.Equals(duelist) && !declaringAttack;
         }
 
-        public bool AbleToAttack(Guid monsterId, Duelist player, bool declaringAttack)
+        public bool AbleToAttack(Guid monsterId, Duelist duelist, bool declaringAttack)
         {
-            return Phase is Phase.Battle && !MonsterState.TryGetValue(monsterId, out _) && Player.Equals(player)
+            return Phase is Phase.Battle && !MonsterState.TryGetValue(monsterId, out _) && Duelist.Equals(duelist)
                 && declaringAttack;
         }
     }

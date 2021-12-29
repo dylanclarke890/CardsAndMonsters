@@ -1,4 +1,5 @@
 ﻿using CardsAndMonsters.Features.GameOver;
+using CardsAndMonsters.Features.Logging;
 using CardsAndMonsters.Features.TurnPhase;
 using CardsAndMonsters.Models;
 using CardsAndMonsters.Models.Enums;
@@ -11,25 +12,30 @@ namespace CardsAndMonsters.Features.Turn
     {
         private readonly IPhaseService _phaseService;
         private readonly IGameOverService _gameOverService;
+        private readonly IDuelLogService _duelLogService;
 
         public TurnService(IPhaseService phaseService,
-            IGameOverService gameOverService)
+            IGameOverService gameOverService, IDuelLogService duelLogService)
         {
             _phaseService = phaseService;
             _gameOverService = gameOverService;
+            _duelLogService = duelLogService;
         }
 
-        public async Task StartTurn(Duelist player, bool drawCard, Board board)
+        public async Task StartTurn(Duelist duelist, bool drawCard, Board board)
         {
-            bool isPlayer = board.Player.Equals(player);
-            board.CurrentTurn = new(isPlayer ? board.PlayerField.Monsters : board.OpponentField.Monsters, player);
+            board.CurrentTurn = new(board.Player.Equals(duelist) ? board.PlayerField.Monsters : board.OpponentField.Monsters, duelist);
+            await _phaseService.EnterPhase(Phase.Standby, board);
 
             if (drawCard)
             {
-                var success = player.DrawCard();
+                var success = duelist.DrawCard();
+                board.CurrentTurn.CardsDrawn++;
+                _duelLogService.AddNewEventLog(Event.DrawCard, duelist);
+
                 if (!success)
                 {
-                    _gameOverService.EndGame(player, LossReason.DeckOut);
+                    _gameOverService.EndGame(duelist, LossReason.DeckOut);
                     return;
                 }
             }
@@ -41,10 +47,12 @@ namespace CardsAndMonsters.Features.Turn
         public async Task EndTurn(Board board)
         {
             await _phaseService.EnterPhase(Phase.End, board);
+
+            _duelLogService.AddNewEventLog(Event.TurnChange, board.CurrentTurn.Duelist);
             board.Turns[board.TurnCount] = board.CurrentTurn;
             board.TurnCount++;
-            await _phaseService.EnterPhase(Phase.Standby, board);
-            await StartTurn(board.Turns.Last().Value.Player.Equals(board.Player) ? board.Opponent : board.Player, true, board);
+
+            await StartTurn(board.Turns.Last().Value.Duelist.Equals(board.Player) ? board.Opponent : board.Player, true, board);
         }
     }
 }

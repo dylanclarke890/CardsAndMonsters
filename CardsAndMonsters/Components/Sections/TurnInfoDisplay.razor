@@ -4,7 +4,7 @@
 <div>
     <h3>@(Board.TurnCount + 1)</h3>
     <h3>@Board.CurrentTurn.Phase</h3>
-    @if (Board.Player.Equals(Board.CurrentTurn.Player))
+    @if (Board.Player.Equals(Board.CurrentTurn.Duelist))
     {
         @if (Board.CurrentTurn.Phase < Phase.Battle)
         {

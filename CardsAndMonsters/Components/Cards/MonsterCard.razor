@@ -46,7 +46,7 @@
 
     private async Task DeclareAttack()
     {
-        var isPlayer = Board.CurrentTurn.Player.Equals(Board.Player);
+        var isPlayer = Board.CurrentTurn.Duelist.Equals(Board.Player);
         BattleInfo battleInfo = new()
         {
             Board = Board,
