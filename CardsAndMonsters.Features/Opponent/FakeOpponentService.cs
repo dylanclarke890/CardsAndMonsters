@@ -1,4 +1,5 @@
 ﻿using CardsAndMonsters.Core;
+using CardsAndMonsters.Features.Battle;
 using CardsAndMonsters.Features.Logging;
 using CardsAndMonsters.Features.Position;
 using CardsAndMonsters.Features.Turn;
@@ -7,20 +8,23 @@ using CardsAndMonsters.Models;
 using CardsAndMonsters.Models.Cards;
 using CardsAndMonsters.Models.Enums;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace CardsAndMonsters.Features.Opponent
 {
     public class FakeOpponentService : IFakeOpponentService
     {
+        private readonly IBattleService _battleService;
         private readonly IPhaseService _phaseService;
         private readonly ITurnService _turnService;
         private readonly IPositionService _positionService;
         private readonly IDuelLogService _duelLogService;
-        public FakeOpponentService(IPhaseService phaseService,
+        public FakeOpponentService(IBattleService battleService, IPhaseService phaseService,
             ITurnService turnService, IPositionService positionService,
             IDuelLogService duelLogService)
         {
+            _battleService = battleService;
             _phaseService = phaseService;
             _turnService = turnService;
             _positionService = positionService;
@@ -59,6 +63,35 @@ namespace CardsAndMonsters.Features.Opponent
         public async Task FakeBattlePhase(Board board)
         {
             await _phaseService.EnterPhase(Phase.Battle, board);
+
+            foreach (var monster in board.OpponentField.Monsters)
+            {
+                if (monster.FieldPosition is not FieldPosition.VerticalUp) continue;
+                if (board.CurrentTurn.MonsterState[monster.Id].TimesAttacked == monster.AttacksPerTurn) continue;
+
+                BattleInfo battleInfo = new()
+                {
+                    Board = board,
+                    AttackingMonster = monster,
+                    AttackingPlayer = board.Opponent,
+                    DefendingPlayer = board.Player
+                };
+                _duelLogService.AddNewEventLog(Event.AttackDeclared, battleInfo.AttackingPlayer);
+
+                if (board.PlayerField.Monsters.Any())
+                {
+                    battleInfo.Target = BattleTarget.Monster;
+                    Random rnd = new();
+
+                    battleInfo.TargetMonster = board.PlayerField.Monsters[rnd.Next(board.PlayerField.Monsters.Count)];
+                    _battleService.Attack(battleInfo);
+                }
+                else
+                {
+                    battleInfo.Target = BattleTarget.Direct;
+                    _battleService.Attack(battleInfo);
+                }
+            }
         }
 
         public async Task FakeEndPhase(Board board)
