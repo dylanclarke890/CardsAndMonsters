@@ -4,9 +4,9 @@ using System;
 
 namespace CardsAndMonsters.Features.GameOver
 {
-    public class GameOverService
+    public class GameOverService : IGameOverService
     {
-        public Action<GameOverInfo> OnLoss;
+        public Action<GameOverInfo> OnLoss { get; set; }
 
         public bool GameOver = false;
 

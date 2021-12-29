@@ -1,6 +1,6 @@
 ﻿@page "/play"
 @layout EmptyLayout
-@inject GameOverService _gameOverService
+@inject IGameOverService _gameOverService
 @inject IBattleService _battleService 
 @inject IPositionService _positionService
 @inject IPhaseService _phaseService
@@ -65,39 +65,7 @@
         StartTurn(startingPlayer, false);
     }
 
-    private void StartTurn(Duelist player, bool drawCard)
-    {
-        bool isPlayer = Board.Player.Equals(player);
-        Board.CurrentTurn = new(isPlayer ? Board.PlayerMonsters : Board.OpponentMonsters, player);
 
-        if (drawCard)
-        {
-            var success = player.DrawCard();
-            if (!success)
-            {
-                _gameOverService.EndGame(player, LossReason.DeckOut);
-                return;
-            }
-        }
-
-        _phaseService.EnterPhase(Phase.Main, Board);
-
-        if (!isPlayer)
-        {
-            FakeOpponentsTurn();
-        }
-    }
-
-
-
-    private void EndTurn()
-    {
-        _phaseService.EnterPhase(Phase.End, Board);
-        Board.Turns[TurnCount] = Board.CurrentTurn;
-        TurnCount++;
-        _phaseService.EnterPhase(Phase.Standby, Board);
-        StartTurn(Board.Turns.Last().Value.Player.Equals(Board.Player) ? Board.Opponent : Board.Player, true);
-    }
 
     private void PlayCard(BaseCard card)
     {

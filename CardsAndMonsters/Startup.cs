@@ -23,7 +23,7 @@ namespace CardsAndMonsters
         {
             services.AddScoped<IPositionService, PositionService>();
             services.AddScoped<IPhaseService, PhaseService>();
-            services.AddScoped<GameOverService>();
+            services.AddScoped<IGameOverService, GameOverService>();
             services.AddScoped<IBattleService, BattleService>();
             services.AddRazorPages();
             services.AddServerSideBlazor();
