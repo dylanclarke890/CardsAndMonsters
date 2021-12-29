@@ -1,9 +1,10 @@
-﻿using CardsAndMonsters.Models.Cards;
+﻿using CardsAndMonsters.Models.Base;
+using CardsAndMonsters.Models.Cards;
 using System.Collections.Generic;
 
 namespace CardsAndMonsters.Models
 {
-    public class FieldState
+    public class FieldState : BaseModel
     {
         public FieldState(Duelist duelist)
         {

@@ -98,7 +98,7 @@ namespace CardsAndMonsters.Features
         public void PlayMonster(Monster monster)
         {
             ChoosingFieldPosition = true;
-            PendingPlacement = monster;
+            PendingPlacement = monster ?? throw new ArgumentException("Monster needs a value to be able to select placement.");
         }
 
         public void PlayMonster(FieldPosition position)
