@@ -1,5 +1,4 @@
-﻿@inject IPhaseService _phaseService
-@inject ITurnService _turnService
+﻿@inject IGameService _gameService
 
 <div>
     <h3>@(Board.TurnCount + 1)</h3>
@@ -8,9 +7,9 @@
     {
         @if (Board.CurrentTurn.Phase < Phase.Battle)
         {
-            <button class="btn btn-outline-primary" @onclick="() => _phaseService.EnterPhase(Phase.Battle, Board)">BATTLE</button>
+            <button class="btn btn-outline-primary" @onclick="() => _gameService.EnterPhase(Phase.Battle)">BATTLE</button>
         }
-        <button class="btn btn-outline-primary" @onclick="() => _turnService.EndTurn(Board)">END</button>
+        <button class="btn btn-outline-primary" @onclick="() => _gameService.EndTurn()">END</button>
     }
 </div>
 @code {

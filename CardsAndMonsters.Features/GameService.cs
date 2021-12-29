@@ -72,6 +72,12 @@ namespace CardsAndMonsters.Features
             }
         }
 
+        public void EnterPhase(Phase phase)
+        {
+            _phaseService.EnterPhase(phase, Board);
+            StateHasChanged();
+        }
+
         public void PlayCard(BaseCard card)
         {
             if (card.IsType(typeof(Monster)))
@@ -128,6 +134,7 @@ namespace CardsAndMonsters.Features
             {
                 _fakeOpponentService.FakeOpponentsTurn(Board);
             }
+            StateHasChanged();
         }
 
         private void StateHasChanged()
