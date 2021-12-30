@@ -4,6 +4,7 @@ using CardsAndMonsters.Features.GameOver;
 using CardsAndMonsters.Features.Logging;
 using CardsAndMonsters.Features.Opponent;
 using CardsAndMonsters.Features.Position;
+using CardsAndMonsters.Features.Storage;
 using CardsAndMonsters.Features.Turn;
 using CardsAndMonsters.Features.TurnPhase;
 using Microsoft.Extensions.DependencyInjection;
@@ -20,6 +21,7 @@ namespace CardsAndMonsters.Features
             services.AddScoped<IFakeOpponentService, FakeOpponentService>();
             services.AddScoped<IGameService, GameService>();
             services.AddScoped<IGameOverService, GameOverService>();
+            services.AddScoped<ILocalStorageService, LocalStorageService>();
             services.AddScoped<IPositionService, PositionService>();
             services.AddScoped<IPhaseService, PhaseService>();
             services.AddScoped<ITurnService, TurnService>();

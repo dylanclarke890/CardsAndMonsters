@@ -1,0 +1,28 @@
+﻿@page "/test"
+@inject ILocalStorageService _localStorageService
+
+<h3>Test</h3>
+
+<input @bind="TestKey"/>
+<input @bind="TestVal"/>
+
+<button @onclick="Store">STORE</button>
+
+<button @onclick="Get">RETRIEVE</button>
+
+@code {
+    private string TestKey = "test";
+    private string TestVal = "blah";
+
+    private async Task Store()
+    {
+        await _localStorageService.SetItem(TestKey, TestVal);
+
+        TestVal = "";
+    }
+
+    private async Task Get()
+    {
+        TestVal = (await _localStorageService.GetItem(TestKey)).ToString();
+    }
+}
