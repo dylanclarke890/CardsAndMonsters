@@ -8,6 +8,7 @@ using CardsAndMonsters.Models;
 using CardsAndMonsters.Models.Cards;
 using CardsAndMonsters.Models.Enums;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -64,10 +65,14 @@ namespace CardsAndMonsters.Features.Opponent
         {
             await _phaseService.EnterPhase(Phase.Battle, board);
 
-            foreach (var monster in board.OpponentField.Monsters)
+            Monster[] monsters = new Monster[board.OpponentField.Monsters.Count];
+            board.OpponentField.Monsters.CopyTo(monsters, 0);
+
+            foreach (var monster in monsters)
             {
                 if (monster.FieldPosition is not FieldPosition.VerticalUp) continue;
-                if (board.CurrentTurn.MonsterState[monster.Id].TimesAttacked == monster.AttacksPerTurn) continue;
+                var monsterState = board.CurrentTurn.MonsterState[monster.Id];
+                if (monsterState.Destroyed || monsterState.TimesAttacked == monster.AttacksPerTurn) continue;
 
                 BattleInfo battleInfo = new()
                 {
