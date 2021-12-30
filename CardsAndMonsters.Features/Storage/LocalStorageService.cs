@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace CardsAndMonsters.Features.Storage
 {
-    public class LocalStorageService : ILocalStorageService
+    public class LocalStorageService<T> : ILocalStorageService<T> where T : class
     {
         private readonly IJSRuntime _jSRuntime;
 
@@ -13,7 +13,7 @@ namespace CardsAndMonsters.Features.Storage
             _jSRuntime = jSRuntime;
         }
 
-        public async Task SetItem(string key, object item)
+        public async Task SetItem(string key, T item)
         {
             var itemAsString = JsonConvert.SerializeObject(item);
             if (string.IsNullOrWhiteSpace(key) || string.IsNullOrWhiteSpace(itemAsString))
@@ -24,14 +24,14 @@ namespace CardsAndMonsters.Features.Storage
             await _jSRuntime.InvokeVoidAsync("setItem", key, itemAsString);
         }
 
-        public async Task<object> GetItem(string key)
+        public async Task<T> GetItem(string key)
         {
             if (string.IsNullOrWhiteSpace(key))
             {
                 return null;
             }
 
-            return await _jSRuntime.InvokeAsync<object>("getItem", key);
+            return JsonConvert.DeserializeObject<T>(await _jSRuntime.InvokeAsync<string>("getItem", key));
         }
     }
 }

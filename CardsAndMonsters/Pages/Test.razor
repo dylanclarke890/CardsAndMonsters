@@ -1,28 +1,40 @@
 ﻿@page "/test"
-@inject ILocalStorageService _localStorageService
+@inject ILocalStorageService<TestClass> _localStorageService
 
 <h3>Test</h3>
 
-<input @bind="TestKey"/>
-<input @bind="TestVal"/>
+<input @bind="testClass.TestKey" />
+<input @bind="testClass.TestVal" />
 
 <button @onclick="Store">STORE</button>
 
 <button @onclick="Get">RETRIEVE</button>
 
+@if (retrievedVal is not null)
+{
+    <input @bind="retrievedVal.TestKey" />
+    <input @bind="retrievedVal.TestVal" />
+}
+
 @code {
-    private string TestKey = "test";
-    private string TestVal = "blah";
+    TestClass testClass = new() { TestVal = "test", TestKey = "test" };
+    TestClass retrievedVal;
 
     private async Task Store()
     {
-        await _localStorageService.SetItem(TestKey, TestVal);
+        await _localStorageService.SetItem("test", testClass);
 
-        TestVal = "";
+        testClass = new();
     }
 
     private async Task Get()
     {
-        TestVal = (await _localStorageService.GetItem(TestKey)).ToString();
+        retrievedVal = await _localStorageService.GetItem("test");
+    }
+
+    private class TestClass
+    {
+        public string TestKey;
+        public string TestVal;
     }
 }

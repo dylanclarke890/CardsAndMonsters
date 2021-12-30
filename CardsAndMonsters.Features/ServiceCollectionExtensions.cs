@@ -21,7 +21,7 @@ namespace CardsAndMonsters.Features
             services.AddScoped<IFakeOpponentService, FakeOpponentService>();
             services.AddScoped<IGameService, GameService>();
             services.AddScoped<IGameOverService, GameOverService>();
-            services.AddScoped<ILocalStorageService, LocalStorageService>();
+            services.AddScoped(typeof(ILocalStorageService<>), typeof(LocalStorageService<>));
             services.AddScoped<IPositionService, PositionService>();
             services.AddScoped<IPhaseService, PhaseService>();
             services.AddScoped<ITurnService, TurnService>();

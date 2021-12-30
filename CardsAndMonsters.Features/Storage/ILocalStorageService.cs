@@ -2,9 +2,9 @@
 
 namespace CardsAndMonsters.Features.Storage
 {
-    public interface ILocalStorageService
+    public interface ILocalStorageService<T> where T : class
     {
-        Task<object> GetItem(string key);
-        Task SetItem(string key, object item);
+        Task<T> GetItem(string key);
+        Task SetItem(string key, T item);
     }
 }
