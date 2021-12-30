@@ -2,6 +2,7 @@
 using CardsAndMonsters.Features.Battle;
 using CardsAndMonsters.Features.Logging;
 using CardsAndMonsters.Features.Position;
+using CardsAndMonsters.Features.Storage;
 using CardsAndMonsters.Features.Turn;
 using CardsAndMonsters.Features.TurnPhase;
 using CardsAndMonsters.Models;
@@ -20,15 +21,18 @@ namespace CardsAndMonsters.Features.Opponent
         private readonly ITurnService _turnService;
         private readonly IPositionService _positionService;
         private readonly IDuelLogService _duelLogService;
+        private readonly IBoardManagementService _boardManagementService;
+
         public FakeOpponentService(IBattleService battleService, IPhaseService phaseService,
             ITurnService turnService, IPositionService positionService,
-            IDuelLogService duelLogService)
+            IDuelLogService duelLogService, IBoardManagementService boardManagementService)
         {
             _battleService = battleService;
             _phaseService = phaseService;
             _turnService = turnService;
             _positionService = positionService;
             _duelLogService = duelLogService;
+            _boardManagementService = boardManagementService;
         }
 
         public async Task FakeMainPhase(Board board)
@@ -57,7 +61,7 @@ namespace CardsAndMonsters.Features.Opponent
                 }
             }
 
-            await Task.Delay(0);
+            await _boardManagementService.Save(board);
         }
 
         public async Task FakeBattlePhase(Board board)
@@ -96,11 +100,14 @@ namespace CardsAndMonsters.Features.Opponent
                     _battleService.Attack(battleInfo);
                 }
             }
+
+            await _boardManagementService.Save(board);
         }
 
         public async Task FakeEndPhase(Board board)
         {
             await _turnService.EndTurn(board);
+            await _boardManagementService.Save(board);
         }
     }
 }

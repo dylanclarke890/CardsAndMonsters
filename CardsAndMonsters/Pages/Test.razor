@@ -17,7 +17,7 @@
 }
 
 @code {
-    TestClass testClass = new() { TestVal = "test", TestKey = "test" };
+    TestClass testClass = new() { TestVal = "sdfgsdfgfdsg", TestKey = "sdfgsfdgsfdgfdsgsdfgsdfg" };
     TestClass retrievedVal;
 
     private async Task Store()
@@ -32,7 +32,7 @@
         retrievedVal = await _localStorageService.GetItem("test");
     }
 
-    private class TestClass
+    private class TestClass : BaseModel
     {
         public string TestKey;
         public string TestVal;

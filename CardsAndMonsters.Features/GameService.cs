@@ -6,6 +6,7 @@ using CardsAndMonsters.Features.GameOver;
 using CardsAndMonsters.Features.Logging;
 using CardsAndMonsters.Features.Opponent;
 using CardsAndMonsters.Features.Position;
+using CardsAndMonsters.Features.Storage;
 using CardsAndMonsters.Features.Turn;
 using CardsAndMonsters.Features.TurnPhase;
 using CardsAndMonsters.Models;
@@ -27,12 +28,14 @@ namespace CardsAndMonsters.Features
         private readonly IGameOverService _gameOverService;
         private readonly IDuelLogService _duelLogService;
         private readonly ICardService _cardService;
+        private readonly IBoardManagementService _boardManagementService;
+
         private bool disposedValue;
 
         public GameService(IDuelistFactory duelistFactory, IBattleService battleService,
             ITurnService turnService, IPhaseService phaseService, IPositionService positionService,
             IFakeOpponentService fakeOpponentService, IGameOverService gameOverService,
-            IDuelLogService duelLogService, ICardService cardService)
+            IDuelLogService duelLogService, ICardService cardService, IBoardManagementService boardManagementService)
         {
             _duelistFactory = duelistFactory;
             _battleService = battleService;
@@ -43,6 +46,7 @@ namespace CardsAndMonsters.Features
             _gameOverService = gameOverService;
             _duelLogService = duelLogService;
             _cardService = cardService;
+            _boardManagementService = boardManagementService;
 
             _phaseService.PhaseChanged += StateHasChanged;
         }
@@ -50,6 +54,17 @@ namespace CardsAndMonsters.Features
         public Board Board { get; set; }
 
         public Action OnAction { get; set; }
+
+        public async Task<bool> CheckForExistingGame()
+        {
+            return await _boardManagementService.Load() != null;
+        }
+
+        public async Task ResumeGame()
+        {
+            Board = await _boardManagementService.Load();
+            StateHasChanged();
+        }
 
         public async Task StartGame()
         {
@@ -60,6 +75,7 @@ namespace CardsAndMonsters.Features
             Board.CurrentTurn = new(startingPlayer);
 
             _duelLogService.AddNewEventLog(Event.GameStarted, startingPlayer);
+            await _boardManagementService.Save(Board);
 
             await EnterPhase(Phase.Standby);
 
@@ -74,8 +90,11 @@ namespace CardsAndMonsters.Features
                 StateHasChanged();
                 await Task.Delay(300);
             }
+            await _boardManagementService.Save(Board);
+
 
             await _turnService.StartTurn(startingPlayer, false, Board);
+            await _boardManagementService.Save(Board);
 
             if (!startingPlayer.Equals(Board.Player))
             {
@@ -83,16 +102,19 @@ namespace CardsAndMonsters.Features
             }
         }
 
-        public async Task RestartGame()
+        public async Task ClearGame()
         {
             _gameOverService.ClearGameOverInfo();
+            // need to find a better place than this as this will only delete old board if person clicks restart
+            // if they leave and come back it'll ask to load the end of the last game each time.
+            await _boardManagementService.Delete();
             StateHasChanged();
-            await StartGame();
         }
 
         public async Task EnterPhase(Phase phase)
         {
             await _phaseService.EnterPhase(phase, Board);
+            await _boardManagementService.Save(Board);
         }
 
         public void PlayCard(BaseCard card)
@@ -105,21 +127,24 @@ namespace CardsAndMonsters.Features
             _cardService.PlayMonster(monster);
         }
 
-        public void PlayMonster(FieldPosition position)
+        public async Task PlayMonster(FieldPosition position)
         {
             _cardService.PlayMonster(position, Board);
+            await _boardManagementService.Save(Board);
         }
 
-        public void Attack(BattleInfo battleInfo)
+        public async Task Attack(BattleInfo battleInfo)
         {
             _battleService.Attack(battleInfo);
+            await _boardManagementService.Save(Board);
             _gameOverService.CheckForGameOver(Board);
         }
 
-        public void SwitchPosition(Monster monster)
+        public async Task SwitchPosition(Monster monster)
         {
             monster.FieldPosition = _positionService.NewPosition(monster.FieldPosition);
             _positionService.PositionSwitched(monster, Board);
+            await _boardManagementService.Save(Board);
         }
 
         public async Task EndTurn()

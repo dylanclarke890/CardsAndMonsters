@@ -8,6 +8,13 @@ namespace CardsAndMonsters.Models.Turns
 {
     public class TurnState : BaseModel
     {
+        public TurnState()
+        {
+            Battles = new List<BattleInfo>();
+            SummonedThisTurn = new List<Monster>();
+            MonsterState = new Dictionary<Guid, MonsterTurnState>();
+        }
+
         public TurnState(Duelist duelist)
         {
             Duelist = duelist;

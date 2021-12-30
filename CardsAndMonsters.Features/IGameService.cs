@@ -11,14 +11,16 @@ namespace CardsAndMonsters.Features
         Board Board { get; set; }
         Action OnAction { get; set; }
 
-        void Attack(BattleInfo battleInfo);
+        Task Attack(BattleInfo battleInfo);
+        Task<bool> CheckForExistingGame();
         Task EnterPhase(Phase phase);
         Task EndTurn();
         void PlayCard(BaseCard card);
-        void PlayMonster(FieldPosition position);
+        Task PlayMonster(FieldPosition position);
         void PlayMonster(Monster monster);
         Task StartGame();
-        Task RestartGame();
-        void SwitchPosition(Monster monster);
+        Task ResumeGame();
+        Task ClearGame();
+        Task SwitchPosition(Monster monster);
     }
 }

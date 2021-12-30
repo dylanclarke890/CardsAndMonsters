@@ -16,6 +16,7 @@ namespace CardsAndMonsters.Features
         public static IServiceCollection AddFeatures(this IServiceCollection services)
         {
             services.AddScoped<IBattleService, BattleService>();
+            services.AddScoped<IBoardManagementService, BoardManagementService>();
             services.AddScoped<ICardService, CardService>();
             services.AddScoped<IDuelLogService, DuelLogService>();
             services.AddScoped<IFakeOpponentService, FakeOpponentService>();

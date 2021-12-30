@@ -1,5 +1,6 @@
 ﻿using CardsAndMonsters.Models.Cards;
 using CardsAndMonsters.Models.Enums;
+using System.Text.Json.Serialization;
 
 namespace CardsAndMonsters.Models
 {
@@ -17,6 +18,7 @@ namespace CardsAndMonsters.Models
 
         public bool Successful { get; set; }
 
+        [JsonIgnore]
         public Board Board { get; set; }
     }
 }

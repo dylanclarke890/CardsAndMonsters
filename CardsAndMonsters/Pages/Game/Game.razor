@@ -5,38 +5,82 @@
 @inject IGameOverService _gameOverService
 @implements IDisposable
 
-@if (!_gameOverService.GameOver)
+@if(HasGame)
 {
-    <OpponentView Opponent="_gameService.Board.Opponent" />
+    <h3>You have a game left.</h3>
+<button class="btn btn-primary" @onclick="_gameService.ResumeGame">
+    Resume?
+</button>
+<button class="btn btn-primary" @onclick="_gameService.ClearGame">
+    Restart?
+</button>
+}
+@if (_gameService.Board != null)
+{
+    if (!_gameOverService.GameOver && !HasGame)
+    {
+        <OpponentView Opponent="_gameService.Board.Opponent" />
 
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-1">
-                <TurnInfoDisplay Board="_gameService.Board" />
-            </div>
-            <div class="col-10">
-                <CascadingValue Value="_gameService.Board" TValue="Board">
-                    <CardField OnPlayerAttack="_gameService.Attack" OnPositionSwitch="_gameService.SwitchPosition" />
-                </CascadingValue>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-1">
+                    <TurnInfoDisplay Board="_gameService.Board" />
+                </div>
+                <div class="col-10">
+                    <CascadingValue Value="_gameService.Board" TValue="Board">
+                        <CardField OnPlayerAttack="_gameService.Attack" OnPositionSwitch="_gameService.SwitchPosition" />
+                    </CascadingValue>
+                </div>
             </div>
         </div>
-    </div>
-    <CascadingValue Value="_gameService.Board" TValue="Board">
-        <PlayerView PendingPlacement="_cardService.PendingPlacement" CardPlayed="_gameService.PlayCard" DisplayFieldOptions="_cardService.ChoosingFieldPosition"
-                    OnPositionPicked="_gameService.PlayMonster" />
-    </CascadingValue>
-}
-<GameOver Player="_gameService.Board.Player" />
+        <CascadingValue Value="_gameService.Board" TValue="Board">
+            <PlayerView PendingPlacement="_cardService.PendingPlacement" CardPlayed="_gameService.PlayCard" DisplayFieldOptions="_cardService.ChoosingFieldPosition"
+                        OnPositionPicked="_gameService.PlayMonster" />
+        </CascadingValue>
+    }
 
-@code {        
+    <GameOver Player="_gameService.Board.Player" />
+}
+
+@code {
+    private bool HasGame;
+
     protected override void OnInitialized()
     {
         _gameService.OnAction += StateHasChanged;
     }
 
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
+        if (firstRender)
+        {
+            if (await _gameService.CheckForExistingGame())
+            {
+                HasGame = true;
+                StateHasChanged();
+            }
+            else
+            {
+                await _gameService.StartGame();
+            }
+            firstRender = false;
+        }
+    }
+
+    private async Task Resume()
+    {
+        HasGame = false;
+        await _gameService.ResumeGame();
+        StateHasChanged();
+    }
+
+    private async Task Restart()
+    {
+        HasGame = false;
+        await _gameService.ClearGame();
+
         await _gameService.StartGame();
+        StateHasChanged();
     }
 
     public void Dispose()

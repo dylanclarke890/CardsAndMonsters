@@ -1,10 +1,11 @@
-﻿using Microsoft.JSInterop;
+﻿using CardsAndMonsters.Models.Base;
+using Microsoft.JSInterop;
 using Newtonsoft.Json;
 using System.Threading.Tasks;
 
 namespace CardsAndMonsters.Features.Storage
 {
-    public class LocalStorageService<T> : ILocalStorageService<T> where T : class
+    public class LocalStorageService<T> : ILocalStorageService<T> where T : BaseModel
     {
         private readonly IJSRuntime _jSRuntime;
 
@@ -31,7 +32,19 @@ namespace CardsAndMonsters.Features.Storage
                 return null;
             }
 
-            return JsonConvert.DeserializeObject<T>(await _jSRuntime.InvokeAsync<string>("getItem", key));
+            var item = await _jSRuntime.InvokeAsync<string>("getItem", key);
+
+            return item != null ? JsonConvert.DeserializeObject<T>(item) : null;
+        }
+
+        public async Task DeleteItem(string key)
+        {
+            if (string.IsNullOrWhiteSpace(key))
+            {
+                return;
+            }
+
+            await _jSRuntime.InvokeVoidAsync("deleteItem", key);
         }
     }
 }

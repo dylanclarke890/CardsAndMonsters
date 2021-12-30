@@ -9,6 +9,16 @@ namespace CardsAndMonsters.Models
 {
     public class Board : BaseModel
     {
+        public Board()
+        {
+            Player = new("Player");
+            PlayerField = new(Player);
+            Opponent = new("Opponent");
+            OpponentField = new(Opponent);
+            TurnCount = 0;
+            Turns = new Dictionary<int, TurnState>();
+        }
+
         public Board(Duelist player, Duelist opponent)
         {
             Player = player;

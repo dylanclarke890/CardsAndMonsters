@@ -9,6 +9,12 @@ namespace CardsAndMonsters.Models
 {
     public class Duelist : BaseModel
     {
+        public Duelist()
+        {
+            CurrentHand = new List<BaseCard>();
+            Deck = new List<BaseCard>();
+        }
+
         public Duelist(string name)
         {
             Name = name;
