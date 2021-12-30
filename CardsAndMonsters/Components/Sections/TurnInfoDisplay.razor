@@ -1,12 +1,13 @@
 ﻿@inject IGameService _gameService
+@inject IPhaseService _phaseService
 @implements IDisposable
 
 <div>
     <h3>@(Board.TurnCount + 1)</h3>
     <h3>@Board.CurrentTurn.Phase</h3>
-    @if (Board.Player.Equals(Board.CurrentTurn.Duelist))
+    @if (Board.Player.Equals(Board.CurrentTurn.Duelist) && !_phaseService.ChangingPhase)
     {
-        @if (Board.CurrentTurn.Phase < Phase.Battle)
+        @if (Board.CurrentTurn.Phase < Phase.Battle && Board.TurnCount > 0)
         {
             <button class="btn btn-outline-primary" @onclick="() => _gameService.EnterPhase(Phase.Battle)">BATTLE</button>
         }

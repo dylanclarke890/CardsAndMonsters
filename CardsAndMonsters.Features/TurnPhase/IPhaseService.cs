@@ -10,6 +10,7 @@ namespace CardsAndMonsters.Features.TurnPhase
         Action PhaseChanged { get; set; }
         Action<int, Phase> OnShow { get; set; }
         Action OnHide { get; set; }
+        bool ChangingPhase { get; set; }
 
         Task EnterPhase(Phase phase, Board board);
     }

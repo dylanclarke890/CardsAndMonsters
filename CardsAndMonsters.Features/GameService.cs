@@ -1,6 +1,7 @@
 ﻿using CardsAndMonsters.Core;
 using CardsAndMonsters.Data.Factories;
 using CardsAndMonsters.Features.Battle;
+using CardsAndMonsters.Features.Card;
 using CardsAndMonsters.Features.GameOver;
 using CardsAndMonsters.Features.Logging;
 using CardsAndMonsters.Features.Opponent;
@@ -25,12 +26,13 @@ namespace CardsAndMonsters.Features
         private readonly IFakeOpponentService _fakeOpponentService;
         private readonly IGameOverService _gameOverService;
         private readonly IDuelLogService _duelLogService;
+        private readonly ICardService _cardService;
         private bool disposedValue;
 
         public GameService(IDuelistFactory duelistFactory, IBattleService battleService,
             ITurnService turnService, IPhaseService phaseService, IPositionService positionService,
             IFakeOpponentService fakeOpponentService, IGameOverService gameOverService,
-            IDuelLogService duelLogService)
+            IDuelLogService duelLogService, ICardService cardService)
         {
             _duelistFactory = duelistFactory;
             _battleService = battleService;
@@ -40,6 +42,7 @@ namespace CardsAndMonsters.Features
             _fakeOpponentService = fakeOpponentService;
             _gameOverService = gameOverService;
             _duelLogService = duelLogService;
+            _cardService = cardService;
 
             _phaseService.PhaseChanged += StateHasChanged;
         }
@@ -47,10 +50,6 @@ namespace CardsAndMonsters.Features
         public Board Board { get; set; }
 
         public Action OnAction { get; set; }
-
-        public bool ChoosingFieldPosition { get; set; }
-
-        public BaseCard PendingPlacement { get; set; }
 
         public async Task StartGame()
         {
@@ -98,41 +97,17 @@ namespace CardsAndMonsters.Features
 
         public void PlayCard(BaseCard card)
         {
-            if (card.IsType(typeof(Monster)))
-            {
-                var monster = card as Monster;
-                if (Board.Player.Equals(Board.CurrentTurn.Duelist))
-                {
-                    if (Board.PlayerField.Monsters.Count == AppConstants.FieldSize || Board.CurrentTurn.NormalSummonLimitReached())
-                    {
-                        return;
-                    }
-
-                    PlayMonster(monster);
-                }
-            }
+            _cardService.PlayCard(card, Board);
         }
 
         public void PlayMonster(Monster monster)
         {
-            ChoosingFieldPosition = true;
-            PendingPlacement = monster ?? throw new ArgumentException("Monster needs a value to be able to select placement.");
+            _cardService.PlayMonster(monster);
         }
 
         public void PlayMonster(FieldPosition position)
         {
-            ChoosingFieldPosition = false;
-            var monster = PendingPlacement as Monster;
-            monster.FieldPosition = position;
-
-            Board.Player.PlayMonster(monster, Board, Board.CurrentTurn);
-            _duelLogService.AddNewEventLog(Event.PlayMonster, Board.Player);
-
-            if (Board.TurnCount == 0)
-            {
-                Board.CurrentTurn.MonsterState[monster.Id].TimesAttacked = monster.AttacksPerTurn;
-            }
-            PendingPlacement = null;
+            _cardService.PlayMonster(position, Board);
         }
 
         public void Attack(BattleInfo battleInfo)

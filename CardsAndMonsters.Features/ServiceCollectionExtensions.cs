@@ -1,4 +1,5 @@
 ﻿using CardsAndMonsters.Features.Battle;
+using CardsAndMonsters.Features.Card;
 using CardsAndMonsters.Features.GameOver;
 using CardsAndMonsters.Features.Logging;
 using CardsAndMonsters.Features.Opponent;
@@ -14,6 +15,7 @@ namespace CardsAndMonsters.Features
         public static IServiceCollection AddFeatures(this IServiceCollection services)
         {
             services.AddScoped<IBattleService, BattleService>();
+            services.AddScoped<ICardService, CardService>();
             services.AddScoped<IDuelLogService, DuelLogService>();
             services.AddScoped<IFakeOpponentService, FakeOpponentService>();
             services.AddScoped<IGameService, GameService>();

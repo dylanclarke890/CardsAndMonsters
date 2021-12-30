@@ -9,9 +9,7 @@ namespace CardsAndMonsters.Features
     public interface IGameService
     {
         Board Board { get; set; }
-        bool ChoosingFieldPosition { get; set; }
         Action OnAction { get; set; }
-        BaseCard PendingPlacement { get; set; }
 
         void Attack(BattleInfo battleInfo);
         Task EnterPhase(Phase phase);

@@ -1,6 +1,7 @@
 ﻿@page "/play"
 @layout GameLayout
 @inject IGameService _gameService
+@inject ICardService _cardService
 @inject IGameOverService _gameOverService
 @implements IDisposable
 
@@ -21,7 +22,7 @@
         </div>
     </div>
     <CascadingValue Value="_gameService.Board" TValue="Board">
-        <PlayerView PendingPlacement="_gameService.PendingPlacement" CardPlayed="_gameService.PlayCard" DisplayFieldOptions="_gameService.ChoosingFieldPosition"
+        <PlayerView PendingPlacement="_cardService.PendingPlacement" CardPlayed="_gameService.PlayCard" DisplayFieldOptions="_cardService.ChoosingFieldPosition"
                     OnPositionPicked="_gameService.PlayMonster" />
     </CascadingValue>
 }
