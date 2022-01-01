@@ -1,8 +1,9 @@
-﻿using CardsAndMonsters.Models.Cards;
+﻿using CardsAndMonsters.Models.Base;
+using CardsAndMonsters.Models.Cards;
 
 namespace CardsAndMonsters.Models.Turns
 {
-    public class MonsterTurnState
+    public class MonsterTurnState : BaseModel
     {
         public Monster Monster { get; set; }
 

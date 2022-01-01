@@ -4,7 +4,7 @@ using System;
 
 namespace CardsAndMonsters.Models.Cards
 {
-    public class BaseCard : BaseModel
+    public abstract class BaseCard : BaseModel
     {
         public FieldPosition FieldPosition { get; set; }
 

@@ -1,10 +1,11 @@
-﻿using CardsAndMonsters.Models.Cards;
+﻿using CardsAndMonsters.Models.Base;
+using CardsAndMonsters.Models.Cards;
 using CardsAndMonsters.Models.Enums;
 using System.Text.Json.Serialization;
 
 namespace CardsAndMonsters.Models
 {
-    public class BattleInfo
+    public class BattleInfo : BaseModel
     {
         public Duelist AttackingPlayer { get; set; }
 

@@ -8,6 +8,11 @@ namespace CardsAndMonsters.Features.Storage
     public class LocalStorageService<T> : ILocalStorageService<T> where T : BaseModel
     {
         private readonly IJSRuntime _jSRuntime;
+        private readonly JsonSerializerSettings _serializerSettings = new() 
+        { 
+            TypeNameHandling = TypeNameHandling.Auto,
+            ObjectCreationHandling = ObjectCreationHandling.Replace
+        };
 
         public LocalStorageService(IJSRuntime jSRuntime)
         {
@@ -16,7 +21,7 @@ namespace CardsAndMonsters.Features.Storage
 
         public async Task SetItem(string key, T item)
         {
-            var itemAsString = JsonConvert.SerializeObject(item);
+            var itemAsString = JsonConvert.SerializeObject(item, _serializerSettings);
             if (string.IsNullOrWhiteSpace(key) || string.IsNullOrWhiteSpace(itemAsString))
             {
                 return;
@@ -34,7 +39,7 @@ namespace CardsAndMonsters.Features.Storage
 
             var item = await _jSRuntime.InvokeAsync<string>("getItem", key);
 
-            return item != null ? JsonConvert.DeserializeObject<T>(item) : null;
+            return item != null ? JsonConvert.DeserializeObject<T>(item, _serializerSettings) : null;
         }
 
         public async Task DeleteItem(string key)

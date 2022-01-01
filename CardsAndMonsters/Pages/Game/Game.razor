@@ -8,10 +8,10 @@
 @if(HasGame)
 {
     <h3>You have a game left.</h3>
-<button class="btn btn-primary" @onclick="_gameService.ResumeGame">
+<button class="btn btn-primary" @onclick="Resume">
     Resume?
 </button>
-<button class="btn btn-primary" @onclick="_gameService.ClearGame">
+<button class="btn btn-primary" @onclick="Restart">
     Restart?
 </button>
 }
