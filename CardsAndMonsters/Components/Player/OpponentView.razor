@@ -1,15 +1,15 @@
-﻿<div class="container-fluid">
+﻿
     <div class="opponent-display">
-        <div class="row">
-            <div class="col-10">
+        
+            <div class="opponent-hand">
                 <PlayerHand Cards="Opponent.CurrentHand" HideInfo />
             </div>
-            <div class="col-2">
-                <h3 class="text-right">Opponent - @Opponent.HP</h3>
+            <div class="opponent-hp">
+                <p class="text-right">Opponent - @Opponent.HP</p>
             </div>
-        </div>
+        
     </div>
-</div>
+
 
 @code {
     [Parameter]
@@ -32,3 +32,4 @@
         return base.SetParametersAsync(ParameterView.Empty);
     }
 }
+

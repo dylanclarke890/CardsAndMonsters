@@ -5,7 +5,7 @@
 {
     <div class="absolutely">
         <div class="scroll-left">
-            <h2>@Phase.ToString().ToUpper() PHASE... </h2>
+            <p class="mb-0">@Phase.ToString().ToUpper() PHASE... </p>
         </div>
     </div>
 }
@@ -67,27 +67,29 @@
     .absolutely {
         position: absolute;
         z-index: 1000;
-        top: 15vh;
+        top: 46vh;
         width: 100%;
     }
 
     .scroll-left {
-        height: 100px;
+        height: 5em;
         overflow: hidden;
         position: relative;
-        background: lightblue;
-        border:16px black;
+        background: rgba(173, 216, 230, 0.6);
+        border: 16px black;
         color: white;
         border: 1px solid black;
+        font-family: 'Bangers', cursive;
     }
 
-        .scroll-left h2 {
+        .scroll-left p {
             position: absolute;
+            top:-0.12em;
             width: 100%;
             height: 100%;
             margin: 0;
-            line-height: 100px;
             text-align: center;
+            font-size:4em;
             /* Starting position */
             transform: translateX(-100%);
             /* Apply animation to this element */

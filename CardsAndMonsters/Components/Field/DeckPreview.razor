@@ -1,6 +1,6 @@
 ﻿<div class="deck-card">
     <h2 class="text-white over-img">@DeckCount</h2>
-    <img class="card-img-top" src="/images/card-cover.jpg">
+    <img class="deck-card-img" src="/images/vortex1a.png">
 </div>
 @code {
     [Parameter]
@@ -26,14 +26,19 @@
 
 <style>
     .deck-card {
-        width: 80px;
-        height: 120px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        width: 5.5em;
+        height: 7.5em;
         border: 1px solid #aaa;
-        border-radius: 3px;
+        border-radius: 10px;
     }
 
     .over-img {
         position: absolute;
         margin:30px;
+        border-radius:10px;
     }
 </style>

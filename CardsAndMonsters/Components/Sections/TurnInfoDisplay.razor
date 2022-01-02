@@ -2,16 +2,16 @@
 @inject IPhaseService _phaseService
 @implements IDisposable
 
-<div>
-    <h3>@(Board.TurnCount + 1)</h3>
-    <h3>@Board.CurrentTurn.Phase</h3>
+<div class="info-panel">
+    <p>@(Board.TurnCount + 1)</p>
+    <p>@Board.CurrentTurn.Phase</p>
     @if (Board.Player.Equals(Board.CurrentTurn.Duelist) && !_phaseService.ChangingPhase)
     {
         @if (Board.CurrentTurn.Phase < Phase.Battle && Board.TurnCount > 0)
         {
-            <button class="btn btn-outline-primary" @onclick="() => _gameService.EnterPhase(Phase.Battle)">BATTLE</button>
+            <button class="btn btn-outline-primary button-size" @onclick="() => _gameService.EnterPhase(Phase.Battle)">BATTLE</button>
         }
-        <button class="btn btn-outline-primary" @onclick="() => _gameService.EndTurn()">END</button>
+        <button class="btn btn-outline-primary button-size" @onclick="() => _gameService.EndTurn()">END</button>
     }
 </div>
 @code {

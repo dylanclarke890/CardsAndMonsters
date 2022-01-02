@@ -1,4 +1,4 @@
-﻿<div class="d-flex justify-content-center">
+﻿<div class="bg1">
     @foreach (var card in Cards)
     {
         if (!HideInfo)
@@ -6,7 +6,7 @@
             if (card.IsType(typeof(Monster)))
             {
                 <MonsterCard Monster="(Monster)card" OnMonsterPlayed="PlayCard"/>
-                <span class="mx-2">&nbsp;</span>
+                //<span class="mx-2">&nbsp;</span>//
             }
             else
             {
@@ -58,3 +58,13 @@
         return base.SetParametersAsync(ParameterView.Empty);
     }
 }
+
+<style>
+    .bg1 {
+        display: flex;
+        width: 50vw;
+        justify-content: space-evenly;
+        min-height: 7.5em;
+        padding: 0.2em 0;
+    }
+</style>

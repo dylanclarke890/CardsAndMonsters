@@ -4,7 +4,7 @@
 {
     <button class="btn btn-primary" @onclick="() => AttackTarget(new() { Target = BattleTarget.Direct})">ATTACK OPPONENT</button>
 }
-<div>
+<div id="gameboard">
     <div class="card-row">
         <DeckPreview DeckCount="Board.Opponent.Deck.Count" />
 
@@ -109,4 +109,5 @@
         display: flex;
         justify-content: space-evenly;
     }
+    
 </style>

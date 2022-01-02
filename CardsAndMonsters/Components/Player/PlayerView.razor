@@ -1,15 +1,14 @@
-﻿<div class="container-fluid">
+﻿
     <div class="player-display">
-        <div class="row">
-            <div class="col-2">
-                <h3 class="text-left">You - @Board.Player.HP</h3>
+        
+            <div class="player-hp">
+                <p class="text-left">You - @Board.Player.HP</p>
             </div>
-            <div class="col-10">
+            <div class="player-hand">
                 <PlayerHand Cards="Board.Player.CurrentHand" CardPlayed="PlayCard" />
             </div>
-        </div>
     </div>
-</div>
+
 <SelectCardPosition CardPendingPlacement="PendingPlacement" DisplayOptions="DisplayFieldOptions" OnPositionPicked="PlayMonster" />
 
 @code {
@@ -67,3 +66,5 @@
         return base.SetParametersAsync(ParameterView.Empty);
     }
 }
+
+

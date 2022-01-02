@@ -1,5 +1,6 @@
 ﻿using CardsAndMonsters.Features.Battle;
 using CardsAndMonsters.Features.Card;
+using CardsAndMonsters.Features.Game;
 using CardsAndMonsters.Features.GameOver;
 using CardsAndMonsters.Features.Logging;
 using CardsAndMonsters.Features.Opponent;

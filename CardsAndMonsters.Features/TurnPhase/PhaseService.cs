@@ -9,7 +9,7 @@ namespace CardsAndMonsters.Features.TurnPhase
     public class PhaseService : IPhaseService
     {
         private readonly IDuelLogService _duelLogService;
-        private readonly int _animationDelay = 1;
+        private readonly int _animationDelay = 4;
 
         public PhaseService(IDuelLogService duelLogService)
         {
