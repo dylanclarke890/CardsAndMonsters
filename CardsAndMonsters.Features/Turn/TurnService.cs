@@ -43,6 +43,11 @@ namespace CardsAndMonsters.Features.Turn
             await _phaseService.EnterPhase(Phase.Main, board);
         }
 
+        public async Task ResumeTurn(Board board)
+        {
+            // Re-enter the last phase
+            await _phaseService.EnterPhase(board.CurrentTurn.Phase, board);
+        }
 
         public async Task EndTurn(Board board)
         {

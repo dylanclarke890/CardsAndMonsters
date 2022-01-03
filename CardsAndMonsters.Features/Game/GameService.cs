@@ -63,10 +63,24 @@ namespace CardsAndMonsters.Features.Game
         public async Task ResumeGame()
         {
             Board = await _boardManagementService.Load();
-            StateHasChanged();
+            await _turnService.ResumeTurn(Board);
         }
 
         public async Task StartGame()
+        {
+            await GetNewBoardAsync();
+            await DrawInitialCards();
+
+            await _turnService.StartTurn(Board.CurrentTurn.Duelist, false, Board);
+            await _boardManagementService.Save(Board);
+
+            if (!Board.CurrentTurn.Duelist.Equals(Board.Player))
+            {
+                await FakeOpponentsTurn();
+            }
+        }
+
+        private async Task GetNewBoardAsync()
         {
             Board = new(_duelistFactory.GetNewPlayer(), _duelistFactory.GetNewOpponent());
 
@@ -76,9 +90,10 @@ namespace CardsAndMonsters.Features.Game
 
             _duelLogService.AddNewEventLog(Event.GameStarted, startingPlayer);
             await _boardManagementService.Save(Board);
+        }
 
-            await EnterPhase(Phase.Standby);
-
+        private async Task DrawInitialCards()
+        {
             for (int i = 0; i < AppConstants.HandSize; i++)
             {
                 Board.Opponent.DrawCard();
@@ -91,15 +106,6 @@ namespace CardsAndMonsters.Features.Game
                 await Task.Delay(300);
             }
             await _boardManagementService.Save(Board);
-
-
-            await _turnService.StartTurn(startingPlayer, false, Board);
-            await _boardManagementService.Save(Board);
-
-            if (!startingPlayer.Equals(Board.Player))
-            {
-                await FakeOpponentsTurn();
-            }
         }
 
         public async Task ClearGame()

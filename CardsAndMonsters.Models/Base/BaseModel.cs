@@ -2,7 +2,7 @@
 
 namespace CardsAndMonsters.Models.Base
 {
-    public abstract class BaseModel
+    public abstract class BaseModel : IEquatable<BaseModel>
     {
         public BaseModel()
         {
@@ -10,5 +10,22 @@ namespace CardsAndMonsters.Models.Base
         }
 
         public Guid Id { get; set; }
+
+        public override bool Equals(object obj)
+        {
+            return obj is BaseModel model &&
+                   Id.Equals(model.Id);
+        }
+
+        public bool Equals(BaseModel other)
+        {
+            return other is BaseModel model &&
+                   Id.Equals(model.Id);
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(Id);
+        }
     }
 }
