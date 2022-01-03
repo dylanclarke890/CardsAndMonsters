@@ -18,7 +18,7 @@ namespace CardsAndMonsters.Features.Game
         void PlayCard(BaseCard card);
         Task PlayMonster(FieldPosition position);
         void PlayMonster(Monster monster);
-        Task StartGame();
+        Task NewGame();
         Task ResumeGame();
         Task ClearGame();
         Task SwitchPosition(Monster monster);

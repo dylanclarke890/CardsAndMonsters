@@ -77,7 +77,7 @@ namespace CardsAndMonsters.Features.Game
             }
         }
 
-        public async Task StartGame()
+        public async Task NewGame()
         {
             await GetNewBoardAsync();
             await _turnService.StartTurn(Board.CurrentTurn.Duelist, false, Board);

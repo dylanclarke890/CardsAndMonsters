@@ -72,7 +72,7 @@
             }
             else
             {
-                await _gameService.StartGame();
+                await _gameService.NewGame();
             }
             firstRender = false;
         }
@@ -90,7 +90,7 @@
         HasGame = false;
         await _gameService.ClearGame();
 
-        await _gameService.StartGame();
+        await _gameService.NewGame();
         StateHasChanged();
     }
 
