@@ -1,14 +1,12 @@
-﻿
-    <div class="player-display">
+﻿<div class="player-display">
         
-            <div class="player-hp">
-                <p class="text-left">You - @Board.Player.HP</p>
-            </div>
-            <div class="player-hand">
-                <PlayerHand Cards="Board.Player.CurrentHand" CardPlayed="PlayCard" />
-            </div>
-    </div>
-
+        <div class="player-hp">
+            <p class="text-left">You - @Board.Player.HP</p>
+        </div>
+        <div class="player-hand">
+            <PlayerHand Cards="Board.Player.CurrentHand" CardPlayed="PlayCard" />
+        </div>
+</div>
 <SelectCardPosition CardPendingPlacement="PendingPlacement" DisplayOptions="DisplayFieldOptions" OnPositionPicked="PlayMonster" />
 
 @code {

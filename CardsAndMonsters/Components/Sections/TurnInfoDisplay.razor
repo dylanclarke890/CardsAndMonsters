@@ -6,11 +6,13 @@
     <p>@(Board.TurnCount + 1) - @Board.CurrentTurn.Phase (@Board.CurrentTurn.Duelist.Name)</p>
     @if (Board.Player.Equals(Board.CurrentTurn.Duelist) && !_phaseService.ChangingPhase)
     {
-        @if (Board.CurrentTurn.Phase < Phase.Battle && Board.TurnCount > 0)
-        {
-            <button class="btn btn-outline-danger button-size" @onclick="() => _gameService.EnterPhase(Phase.Battle)">BATTLE</button>
-        }
-        <button class="btn btn-outline-primary button-size" @onclick="() => _gameService.EndTurn()">END</button>
+        <div class="d-flex justify-content-between">
+            @if (Board.CurrentTurn.Phase < Phase.Battle && Board.TurnCount > 0)
+            {
+                <button class="btn btn-outline-danger button-size" @onclick="() => _gameService.EnterPhase(Phase.Battle)">BATTLE</button>
+            }
+            <button class="btn btn-outline-primary button-size" @onclick="() => _gameService.EndTurn()">END</button>
+        </div>
     }
 </div>
 @code {
