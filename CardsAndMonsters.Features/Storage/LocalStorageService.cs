@@ -11,7 +11,8 @@ namespace CardsAndMonsters.Features.Storage
         private readonly JsonSerializerSettings _serializerSettings = new() 
         { 
             TypeNameHandling = TypeNameHandling.Auto,
-            ObjectCreationHandling = ObjectCreationHandling.Replace
+            ObjectCreationHandling = ObjectCreationHandling.Replace,
+            ReferenceLoopHandling = ReferenceLoopHandling.Ignore
         };
 
         public LocalStorageService(IJSRuntime jSRuntime)

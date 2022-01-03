@@ -60,13 +60,27 @@ namespace CardsAndMonsters.Features.Battle
             {
                 case BattleTarget.Direct:
                     {
-                        if (battleInfo.Board.OpponentField.Monsters.Any())
+                        if (battleInfo.Board.CurrentTurn.Duelist.Equals(battleInfo.Board.Player))
                         {
-                            throw new InvalidOperationException("Cannot attack directly if opponent has monsters");
+                            if (battleInfo.Board.OpponentField.Monsters.Any())
+                            {
+                                throw new InvalidOperationException("Cannot attack directly if duelist has monsters");
+                            }
+                            else
+                            {
+                                DirectAttack(battleInfo);
+                            }
                         }
                         else
                         {
-                            DirectAttack(battleInfo);
+                            if (battleInfo.Board.PlayerField.Monsters.Any())
+                            {
+                                throw new InvalidOperationException("Cannot attack directly if duelist has monsters");
+                            }
+                            else
+                            {
+                                DirectAttack(battleInfo);
+                            }
                         }
                         break;
                     }
