@@ -120,8 +120,6 @@ namespace CardsAndMonsters.Features.Game
         public async Task ClearGame()
         {
             _gameOverService.ClearGameOverInfo();
-            // need to find a better place than this as this will only delete old board if person clicks restart
-            // if they leave and come back it'll ask to load the end of the last game each time.
             await _boardManagementService.Delete();
             StateHasChanged();
         }
@@ -152,7 +150,7 @@ namespace CardsAndMonsters.Features.Game
         {
             _battleService.Attack(battleInfo);
             await _boardManagementService.Save(Board);
-            _gameOverService.CheckForGameOver(Board);
+            await _gameOverService.CheckForGameOver(Board);
         }
 
         public async Task SwitchPosition(Monster monster)

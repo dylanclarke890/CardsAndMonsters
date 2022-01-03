@@ -1,6 +1,7 @@
 ﻿using CardsAndMonsters.Models;
 using CardsAndMonsters.Models.Enums;
 using System;
+using System.Threading.Tasks;
 
 namespace CardsAndMonsters.Features.GameOver
 {
@@ -9,8 +10,8 @@ namespace CardsAndMonsters.Features.GameOver
         Action<GameOverInfo> OnLoss { get; set; }
         bool GameOver { get; set; }
 
-        void CheckForGameOver(Board board);
+        Task CheckForGameOver(Board board);
         void ClearGameOverInfo();
-        void EndGame(Duelist player, LossReason reason);
+        Task EndGame(Duelist player, LossReason reason);
     }
 }

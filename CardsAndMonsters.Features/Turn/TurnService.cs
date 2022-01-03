@@ -35,7 +35,7 @@ namespace CardsAndMonsters.Features.Turn
 
                 if (!success)
                 {
-                    _gameOverService.EndGame(duelist, LossReason.DeckOut);
+                    await _gameOverService.EndGame(duelist, LossReason.DeckOut);
                     return;
                 }
             }

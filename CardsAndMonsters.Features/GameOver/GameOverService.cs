@@ -1,42 +1,48 @@
 ﻿using CardsAndMonsters.Features.Logging;
+using CardsAndMonsters.Features.Storage;
 using CardsAndMonsters.Models;
 using CardsAndMonsters.Models.Enums;
 using System;
+using System.Threading.Tasks;
 
 namespace CardsAndMonsters.Features.GameOver
 {
     public class GameOverService : IGameOverService
     {
         private readonly IDuelLogService _duelLogService;
+        private readonly IBoardManagementService _boardManagementService;
 
-        public GameOverService(IDuelLogService duelLogService)
+        public GameOverService(IDuelLogService duelLogService,
+            IBoardManagementService boardManagementService)
         {
             _duelLogService = duelLogService;
+            _boardManagementService = boardManagementService;
         }
 
         public Action<GameOverInfo> OnLoss { get; set; }
 
         public bool GameOver { get; set; }
 
-        public void CheckForGameOver(Board board)
+        public async Task CheckForGameOver(Board board)
         {
             if (board.Player.OutOfHealth())
             {
-                EndGame(board.Player, LossReason.NoHP);
+                await EndGame(board.Player, LossReason.NoHP);
                 _duelLogService.AddNewEventLog(Event.GameEnded, board.Opponent);
             }
             if (board.Opponent.OutOfHealth())
             {
-                EndGame(board.Opponent, LossReason.NoHP);
+                await EndGame(board.Opponent, LossReason.NoHP);
                 _duelLogService.AddNewEventLog(Event.GameEnded, board.Player);
             }
         }
 
-        public void EndGame(Duelist duelist, LossReason reason)
+        public async Task EndGame(Duelist duelist, LossReason reason)
         {
             GameOverInfo gameOverInfo = new(duelist, reason, _duelLogService.GetEventLogs());
             GameOver = true;
 
+            await _boardManagementService.Delete();
             OnLoss.Invoke(gameOverInfo);
         }
 
