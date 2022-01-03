@@ -39,9 +39,13 @@ namespace CardsAndMonsters.Features.Opponent
         {
             foreach (var monster in board.OpponentField.Monsters)
             {
-                monster.FieldPosition = _positionService.NewPosition(monster.FieldPosition);
-                board.CurrentTurn.MonsterState[monster.Id].AbleToSwitch = false;
-                _duelLogService.AddNewEventLog(Event.MonsterPositionChange, board.Opponent);
+                var monsterState = board.CurrentTurn.MonsterState[monster.Id];
+                if (monsterState.AbleToSwitch)
+                {
+                    monster.FieldPosition = _positionService.NewPosition(monster.FieldPosition);
+                    monsterState.AbleToSwitch = false;
+                    _duelLogService.AddNewEventLog(Event.MonsterPositionChange, board.Opponent);
+                }
             }
 
             Random rnd = new();
