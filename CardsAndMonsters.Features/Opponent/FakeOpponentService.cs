@@ -47,7 +47,8 @@ namespace CardsAndMonsters.Features.Opponent
             Random rnd = new();
 
             var card = board.Opponent.CurrentHand[rnd.Next(board.Opponent.CurrentHand.Count)];
-            if (card.IsType(typeof(Monster)) && board.OpponentField.Monsters.Count < AppConstants.FieldSize)
+            if (card.IsType(typeof(Monster)) && board.OpponentField.Monsters.Count < AppConstants.FieldSize
+                && !board.CurrentTurn.NormalSummonLimitReached())
             {
                 var monster = card as Monster;
                 monster.FieldPosition = rnd.Next(2) == 1 ? FieldPosition.VerticalUp : FieldPosition.HorizontalDown;
@@ -108,6 +109,32 @@ namespace CardsAndMonsters.Features.Opponent
         {
             await _turnService.EndTurn(board);
             await _boardManagementService.Save(board);
+        }
+
+        public async Task ResumePhase(Board board)
+        {
+            switch (board.CurrentTurn.Phase)
+            {
+                case Phase.Standby:
+                    await _phaseService.EnterPhase(Phase.Main, board);
+                    await ResumePhase(board);
+                    break;
+                case Phase.Main:
+                    await FakeMainPhase(board);
+                    await _phaseService.EnterPhase(Phase.Battle, board);
+                    await ResumePhase(board);
+                    break;
+                case Phase.Battle:
+                    await FakeBattlePhase(board);
+                    await _phaseService.EnterPhase(Phase.End, board);
+                    await ResumePhase(board);
+                    break;
+                case Phase.End:
+                    await FakeEndPhase(board);
+                    break;
+                default:
+                    throw new ArgumentException("Couldn't figure out the phase");
+            }
         }
     }
 }

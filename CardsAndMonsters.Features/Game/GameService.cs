@@ -13,6 +13,7 @@ using CardsAndMonsters.Models;
 using CardsAndMonsters.Models.Cards;
 using CardsAndMonsters.Models.Enums;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace CardsAndMonsters.Features.Game
@@ -64,17 +65,25 @@ namespace CardsAndMonsters.Features.Game
         {
             Board = await _boardManagementService.Load();
             await _turnService.ResumeTurn(Board);
+            
+            if (Board.TurnCount == 0 && !Board.Player.CurrentHand.Any() && !Board.Opponent.CurrentHand.Any())
+            {
+                await DrawInitialCardsAsync();
+            }
+
+            if (Board.CurrentTurn.Duelist.Equals(Board.Opponent))
+            {
+                await _fakeOpponentService.ResumePhase(Board);
+            }
         }
 
         public async Task StartGame()
         {
             await GetNewBoardAsync();
-            await DrawInitialCards();
-
             await _turnService.StartTurn(Board.CurrentTurn.Duelist, false, Board);
-            await _boardManagementService.Save(Board);
+            await DrawInitialCardsAsync();
 
-            if (!Board.CurrentTurn.Duelist.Equals(Board.Player))
+            if (Board.CurrentTurn.Duelist.Equals(Board.Opponent))
             {
                 await FakeOpponentsTurn();
             }
@@ -92,7 +101,7 @@ namespace CardsAndMonsters.Features.Game
             await _boardManagementService.Save(Board);
         }
 
-        private async Task DrawInitialCards()
+        private async Task DrawInitialCardsAsync()
         {
             for (int i = 0; i < AppConstants.HandSize; i++)
             {

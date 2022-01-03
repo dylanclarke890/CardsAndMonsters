@@ -8,5 +8,6 @@ namespace CardsAndMonsters.Features.Opponent
         Task FakeBattlePhase(Board board);
         Task FakeEndPhase(Board board);
         Task FakeMainPhase(Board board);
+        Task ResumePhase(Board board);
     }
 }
