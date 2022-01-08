@@ -27,18 +27,21 @@ namespace CardsAndMonsters.Features.Tests.TurnPhase
         }
 
         [Fact]
-        public async Task EnterPhase_StateUnderTest_ExpectedBehavior()
+        public async Task EnterPhase_ChangesCurrentTurnPhaseCorrectly()
         {
             // Arrange
             var service = CreateService();
-            Phase phase = default;
-            Board board = null;
+            Phase phase = Phase.Main;
+            Board board = new() { CurrentTurn = new() { Duelist = new(), Phase = Phase.Standby } };
+
+            _mockDuelLogService.Setup(dls => dls.AddNewEventLog(Event.PhaseChange, board.CurrentTurn.Duelist));
 
             // Act
             await service.EnterPhase(phase, board);
 
             // Assert
-            Assert.True(false);
+            Assert.Equal(Phase.Main, board.CurrentTurn.Phase);
+
             _mockRepository.VerifyAll();
         }
     }
