@@ -43,7 +43,7 @@ namespace CardsAndMonsters.Features.GameOver
             GameOver = true;
 
             await _boardManagementService.Delete();
-            OnLoss.Invoke(gameOverInfo);
+            OnLoss?.Invoke(gameOverInfo);
         }
 
         public void ClearGameOverInfo()
