@@ -25,17 +25,20 @@ namespace CardsAndMonsters.Features.Tests.Storage
         }
 
         [Fact]
-        public async Task Save_StateUnderTest_ExpectedBehavior()
+        public async Task Save_NonNullBoard_CompletesSuccessfully()
         {
             // Arrange
+
+            Board board = new();
+            _mockLocalStorageService.Setup(lss => lss.SetItem("boardStorage", board))
+                .Returns(Task.CompletedTask);
+
             var service = CreateService();
-            Board board = null;
 
             // Act
             await service.Save(board);
 
             // Assert
-            Assert.True(false);
             _mockRepository.VerifyAll();
         }
 
@@ -43,13 +46,18 @@ namespace CardsAndMonsters.Features.Tests.Storage
         public async Task Load_StateUnderTest_ExpectedBehavior()
         {
             // Arrange
+            _mockLocalStorageService.Setup(lss => lss.GetItem("boardStorage"))
+                .Returns(Task.FromResult(new Board()));
+
             var service = CreateService();
 
             // Act
             var result = await service.Load();
 
             // Assert
-            Assert.True(false);
+
+            Assert.NotNull(result);
+
             _mockRepository.VerifyAll();
         }
 
@@ -57,13 +65,15 @@ namespace CardsAndMonsters.Features.Tests.Storage
         public async Task Delete_StateUnderTest_ExpectedBehavior()
         {
             // Arrange
+            _mockLocalStorageService.Setup(lss => lss.DeleteItem("boardStorage"))
+                .Returns(Task.CompletedTask);
+
             var service = CreateService();
 
             // Act
             await service.Delete();
 
             // Assert
-            Assert.True(false);
             _mockRepository.VerifyAll();
         }
     }
