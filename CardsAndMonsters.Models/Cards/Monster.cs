@@ -6,7 +6,6 @@ namespace CardsAndMonsters.Models.Cards
     {
         public Monster(decimal attack, decimal defense)
         {
-            Id = Guid.NewGuid();
             Attack = attack;
             Defense = defense;
             AttacksPerTurn = 1;
