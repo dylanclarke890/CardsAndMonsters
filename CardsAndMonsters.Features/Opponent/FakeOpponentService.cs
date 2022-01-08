@@ -48,6 +48,12 @@ namespace CardsAndMonsters.Features.Opponent
                 }
             }
 
+            if (!board.Opponent.CurrentHand.Any())
+            {
+                await _boardManagementService.Save(board);
+                return;
+            }
+
             Random rnd = new();
 
             var card = board.Opponent.CurrentHand[rnd.Next(board.Opponent.CurrentHand.Count)];
