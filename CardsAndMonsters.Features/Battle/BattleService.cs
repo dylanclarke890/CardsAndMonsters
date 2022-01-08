@@ -99,13 +99,13 @@ namespace CardsAndMonsters.Features.Battle
         {
             switch (battleInfo.TargetMonster.FieldPosition)
             {
-                case FieldPosition.HorizontalUp:
+                case FieldPosition.HorizontalDown:
                     {
                         battleInfo.TargetMonster.FieldPosition = _positionService.NewPosition(battleInfo.TargetMonster.FieldPosition);
                         CalculateAtkVsDef(battleInfo);
                     }
                     break;
-                case FieldPosition.HorizontalDown:
+                case FieldPosition.HorizontalUp:
                     {
                         CalculateAtkVsDef(battleInfo);
                     }
@@ -164,9 +164,12 @@ namespace CardsAndMonsters.Features.Battle
                 DestroyMonster(battleInfo.TargetMonster, battleInfo.DefendingPlayer, battleInfo.Board);
                 battleInfo.Successful = true;
             }
+            else if (battleInfo.AttackingMonster.Attack == battleInfo.TargetMonster.Defense)
+            {
+                battleInfo.Successful = false;
+            }
             else if (battleInfo.AttackingMonster.Attack < battleInfo.TargetMonster.Defense)
             {
-                DestroyMonster(battleInfo.AttackingMonster, battleInfo.AttackingPlayer, battleInfo.Board);
                 decimal dmg = battleInfo.TargetMonster.Defense - battleInfo.AttackingMonster.Attack;
                 DamageDuelist(battleInfo.AttackingPlayer, dmg, battleInfo.Board);
                 battleInfo.Successful = false;
@@ -183,6 +186,7 @@ namespace CardsAndMonsters.Features.Battle
                 {
                     MarkAsDestroyed(monster.Id, board);
                 }
+                _duelLogService.AddNewEventLog(Event.MonsterDestroyed, board.Player);
             }
             else
             {
@@ -192,9 +196,8 @@ namespace CardsAndMonsters.Features.Battle
                 {
                     MarkAsDestroyed(monster.Id, board);
                 }
+                _duelLogService.AddNewEventLog(Event.MonsterDestroyed, board.Opponent);
             }
-
-            _duelLogService.AddNewEventLog(Event.MonsterDestroyed, board.CurrentTurn.Duelist);
         }
 
         private static void MarkAsDestroyed(Guid monsterId, Board board)
