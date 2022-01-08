@@ -24,7 +24,7 @@ namespace CardsAndMonsters.Features.Position
                 FieldPosition.HorizontalDown => FieldPosition.VerticalUp,
                 FieldPosition.VerticalUp => FieldPosition.HorizontalUp,
                 FieldPosition.VerticalDown => FieldPosition.VerticalUp,
-                _ => throw new IndexOutOfRangeException("Couldn't work out the new position")
+                _ => throw new ArgumentException("Couldn't work out the new position")
             };
         }
 

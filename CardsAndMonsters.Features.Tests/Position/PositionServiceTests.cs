@@ -3,7 +3,10 @@ using CardsAndMonsters.Features.Position;
 using CardsAndMonsters.Models;
 using CardsAndMonsters.Models.Cards;
 using CardsAndMonsters.Models.Enums;
+using CardsAndMonsters.Models.Turns;
 using Moq;
+using System;
+using System.Collections.Generic;
 using Xunit;
 
 namespace CardsAndMonsters.Features.Tests.Position
@@ -27,33 +30,47 @@ namespace CardsAndMonsters.Features.Tests.Position
         }
 
         [Fact]
-        public void NewPosition_StateUnderTest_ExpectedBehavior()
+        public void NewPosition_ValidPosition_ReturnsCorrectPosition()
         {
             // Arrange
             var service = CreateService();
-            FieldPosition old = default;
+            FieldPosition old = FieldPosition.HorizontalDown;
 
             // Act
             var result = service.NewPosition(old);
 
             // Assert
-            Assert.True(false);
+            Assert.Equal(FieldPosition.VerticalUp, result);
+
             _mockRepository.VerifyAll();
         }
 
         [Fact]
-        public void PositionSwitched_StateUnderTest_ExpectedBehavior()
+        public void PositionSwitched_ValidParameters_SetsAbleToSwitchToFalse()
         {
             // Arrange
+            Duelist player = new("test");
+            _mockDuelLogService.Setup(dls => dls.AddNewEventLog(Event.MonsterPositionChange, player));
+            
             var service = CreateService();
-            Monster monster = null;
-            Board board = null;
+
+            Monster monster = new(100, 100);
+            Board board = new() { Player = player};
+            board.PlayerField.Monsters.Add(monster);
+            board.CurrentTurn = new() 
+            { 
+                MonsterState = new Dictionary<Guid, MonsterTurnState>() 
+                {
+                    [monster.Id] = new() { Monster = monster }
+                }
+                
+            };
 
             // Act
             service.PositionSwitched(monster, board);
 
             // Assert
-            Assert.True(false);
+            Assert.False(board.CurrentTurn.MonsterState[monster.Id].AbleToSwitch);
             _mockRepository.VerifyAll();
         }
     }
