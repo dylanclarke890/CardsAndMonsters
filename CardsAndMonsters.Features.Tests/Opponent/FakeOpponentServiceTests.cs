@@ -1,4 +1,5 @@
-﻿using CardsAndMonsters.Features.Battle;
+﻿using CardsAndMonsters.Core.Exceptions;
+using CardsAndMonsters.Features.Battle;
 using CardsAndMonsters.Features.Logging;
 using CardsAndMonsters.Features.Opponent;
 using CardsAndMonsters.Features.Position;
@@ -67,6 +68,22 @@ namespace CardsAndMonsters.Features.Tests.Opponent
         }
 
         [Fact]
+        public async Task FakeMainPhase_NullBoard_ThrowsGameArgumentException()
+        {
+            // Arrange
+            var service = CreateService();
+            Board board = null;
+
+            // Act
+            async Task act() => await service.FakeMainPhase(board);
+
+            // Assert
+            await Assert.ThrowsAsync<GameArgumentException<Board>>(act);
+
+            _mockRepository.VerifyAll();
+        }
+
+        [Fact]
         public async Task FakeBattlePhase_NoPlayableActions_CompletesSuccessfully()
         {
             // Arrange
@@ -83,6 +100,22 @@ namespace CardsAndMonsters.Features.Tests.Opponent
             await service.FakeBattlePhase(board);
 
             // Assert
+            _mockRepository.VerifyAll();
+        }
+
+        [Fact]
+        public async Task FakeBattlePhase_NullBoard_ThrowsGameArgumentException()
+        {
+            // Arrange
+            var service = CreateService();
+            Board board = null;
+
+            // Act
+            async Task act() => await service.FakeBattlePhase(board);
+
+            // Assert
+            await Assert.ThrowsAsync<GameArgumentException<Board>>(act);
+
             _mockRepository.VerifyAll();
         }
 
@@ -104,6 +137,22 @@ namespace CardsAndMonsters.Features.Tests.Opponent
             await service.FakeEndPhase(board);
 
             // Assert
+            _mockRepository.VerifyAll();
+        }
+
+        [Fact]
+        public async Task FakeEndPhase_NullBoard_ThrowsGameArgumentException()
+        {
+            // Arrange
+            var service = CreateService();
+            Board board = null;
+
+            // Act
+            async Task act() => await service.FakeEndPhase(board);
+
+            // Assert
+            await Assert.ThrowsAsync<GameArgumentException<Board>>(act);
+
             _mockRepository.VerifyAll();
         }
 
@@ -138,6 +187,22 @@ namespace CardsAndMonsters.Features.Tests.Opponent
 
             // Assert
             _mockPhaseService.Verify(ps => ps.EnterPhase(It.IsAny<Phase>(), board), Times.Exactly(expectedAmount));
+            _mockRepository.VerifyAll();
+        }
+
+        [Fact]
+        public async Task ResumePhase_NullBoard_ThrowsGameArgumentException()
+        {
+            // Arrange
+            var service = CreateService();
+            Board board = null;
+
+            // Act
+            async Task act() => await service.ResumePhase(board);
+
+            // Assert
+            await Assert.ThrowsAsync<GameArgumentException<Board>>(act);
+
             _mockRepository.VerifyAll();
         }
     }
