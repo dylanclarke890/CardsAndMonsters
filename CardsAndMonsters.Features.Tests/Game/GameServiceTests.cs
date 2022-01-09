@@ -47,7 +47,7 @@ namespace CardsAndMonsters.Features.Tests.Game
             _mockDuelLogService = _mockRepository.Create<IDuelLogService>();
             _mockFakeOpponentService = _mockRepository.Create<IFakeOpponentService>();
             _mockGameOverService = _mockRepository.Create<IGameOverService>();
-            _mockNumberGenerator= _mockRepository.Create<INumberGenerator>();
+            _mockNumberGenerator = _mockRepository.Create<INumberGenerator>();
             _mockPhaseService = _mockRepository.Create<IPhaseService>();
             _mockPositionService = _mockRepository.Create<IPositionService>();
             _mockTurnService = _mockRepository.Create<ITurnService>();
@@ -467,7 +467,7 @@ namespace CardsAndMonsters.Features.Tests.Game
             board.CurrentTurn = new(player);
 
             _mockTurnService.Setup(ts => ts.EndTurn(board))
-                .Returns(() => 
+                .Returns(() =>
                 {
                     board.CurrentTurn = new(opponent);
                     return Task.CompletedTask;

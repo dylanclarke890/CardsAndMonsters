@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace CardsAndMonsters.Models.Cards
+﻿namespace CardsAndMonsters.Models.Cards
 {
     public class Monster : BaseCard
     {

@@ -2,7 +2,6 @@
 using CardsAndMonsters.Models.Base;
 using CardsAndMonsters.Models.Cards;
 using CardsAndMonsters.Models.Turns;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -33,7 +32,7 @@ namespace CardsAndMonsters.Models
 
         public IList<BaseCard> CurrentHand { get; set; }
 
-        public IList<BaseCard> Deck {get; set;}
+        public IList<BaseCard> Deck { get; set; }
 
         public bool OutOfHealth()
         {
@@ -66,10 +65,10 @@ namespace CardsAndMonsters.Models
                 board.OpponentField.Monsters.Add(monster);
             }
             turn.SummonedThisTurn.Add(monster);
-            turn.MonsterState[monster.Id] = new() 
-            { 
-                AbleToSwitch = false, 
-                TimesAttacked = 0, 
+            turn.MonsterState[monster.Id] = new()
+            {
+                AbleToSwitch = false,
+                TimesAttacked = 0,
                 Monster = monster
             };
         }

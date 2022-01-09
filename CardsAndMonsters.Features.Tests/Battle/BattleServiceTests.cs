@@ -38,7 +38,7 @@ namespace CardsAndMonsters.Features.Tests.Battle
             _mockDuelLogService.Setup(dls => dls.AddNewEventLog(Event.AttackDeclared, It.IsAny<Duelist>()));
 
             var service = CreateService();
-            
+
             Duelist attacker = new();
             Duelist defender = new();
             Monster monster = new(1000, 1000);
@@ -56,7 +56,7 @@ namespace CardsAndMonsters.Features.Tests.Battle
 
             // Assert
             Assert.True(service.DeclaringAttack);
-            
+
             Assert.Equal(monster, service.CurrentBattle.AttackingMonster);
             Assert.Equal(attacker, service.CurrentBattle.AttackingPlayer);
             Assert.Equal(board, service.CurrentBattle.Board);
@@ -90,10 +90,10 @@ namespace CardsAndMonsters.Features.Tests.Battle
 
             BattleTarget target = BattleTarget.Monster;
             Monster targetMonster = new(100, 100);
-            BattleInfo info = new() 
-            { 
-                Target = target, 
-                TargetMonster = targetMonster 
+            BattleInfo info = new()
+            {
+                Target = target,
+                TargetMonster = targetMonster
             };
 
             // Act
@@ -102,7 +102,7 @@ namespace CardsAndMonsters.Features.Tests.Battle
             // Assert
             Assert.Equal(target, service.CurrentBattle.Target);
             Assert.Equal(targetMonster, service.CurrentBattle.TargetMonster);
-            
+
             _mockRepository.VerifyAll();
         }
 
@@ -189,12 +189,12 @@ namespace CardsAndMonsters.Features.Tests.Battle
             _mockDuelLogService.Setup(dls => dls.AddNewEventLog(Event.DamageTaken, opponent));
 
             var service = CreateService();
-            
+
             TurnState currentTurn = new() { Duelist = player };
             Monster monster = new(100, 0);
             MonsterTurnState monsterState = new() { Monster = monster };
             currentTurn.MonsterState.Add(monster.Id, monsterState);
-            
+
             Board board = new(player, opponent) { CurrentTurn = currentTurn };
             board.PlayerField.Monsters.Add(monster);
 

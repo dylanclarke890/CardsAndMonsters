@@ -164,7 +164,7 @@ namespace CardsAndMonsters.Features.Tests.Opponent
         public async Task ResumePhase_FromDifferentPhases_CallsChangePhaseExpectedNumOfTimes(Phase phase, int expectedAmount)
         {
             // Arrange
-            Board board = new() { CurrentTurn = new() { Phase =  phase} };
+            Board board = new() { CurrentTurn = new() { Phase = phase } };
 
             _mockBoardManagementService.Setup(bms => bms.Save(board))
                 .Returns(Task.CompletedTask);

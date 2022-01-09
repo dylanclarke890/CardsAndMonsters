@@ -156,7 +156,7 @@ namespace CardsAndMonsters.Features.Tests.Turn
 
             _mockPhaseService.Setup(ps => ps.EnterPhase(phase, board))
                 .Returns(Task.CompletedTask);
-            
+
             var service = CreateService();
 
             // Act

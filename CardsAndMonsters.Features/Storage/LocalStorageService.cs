@@ -8,8 +8,8 @@ namespace CardsAndMonsters.Features.Storage
     public class LocalStorageService<T> : ILocalStorageService<T> where T : BaseModel
     {
         private readonly IJSRuntime _jSRuntime;
-        private readonly JsonSerializerSettings _serializerSettings = new() 
-        { 
+        private readonly JsonSerializerSettings _serializerSettings = new()
+        {
             TypeNameHandling = TypeNameHandling.Auto,
             ObjectCreationHandling = ObjectCreationHandling.Replace,
             ReferenceLoopHandling = ReferenceLoopHandling.Ignore

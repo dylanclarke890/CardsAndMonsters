@@ -69,7 +69,7 @@ namespace CardsAndMonsters.Features.Game
         {
             Board = await _boardManagementService.Load();
             await _turnService.ResumeTurn(Board);
-            
+
             if (Board.TurnCount == 0 && !Board.Player.CurrentHand.Any() && !Board.Opponent.CurrentHand.Any())
             {
                 await DrawInitialCardsAsync();

@@ -8,7 +8,7 @@ namespace CardsAndMonsters.Models
     public class GameOverInfo : BaseModel
     {
         public GameOverInfo(
-            Duelist player, 
+            Duelist player,
             LossReason lossReason,
             IList<EventLog> eventLogs)
         {

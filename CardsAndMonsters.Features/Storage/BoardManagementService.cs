@@ -6,7 +6,7 @@ namespace CardsAndMonsters.Features.Storage
     public class BoardManagementService : IBoardManagementService
     {
         private readonly ILocalStorageService<Board> _localStorageService;
-        private readonly static string StorageName = "boardStorage";
+        private static readonly string StorageName = "boardStorage";
 
 
         public BoardManagementService(ILocalStorageService<Board> localStorageService)
