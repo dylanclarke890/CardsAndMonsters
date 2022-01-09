@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CardsAndMonsters.Core.Exceptions;
+using System;
 
 namespace CardsAndMonsters.Features.RandomNumber
 {
@@ -13,6 +14,11 @@ namespace CardsAndMonsters.Features.RandomNumber
 
         public int GetRandom(int lessThan)
         {
+            if (lessThan <= 0)
+            {
+                throw new GameArgumentException<Random>(nameof(lessThan), lessThan);
+            }
+
             return _random.Next(lessThan);
         }
     }
