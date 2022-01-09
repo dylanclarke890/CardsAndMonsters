@@ -18,29 +18,29 @@ namespace CardsAndMonsters.Features.Tests.Opponent
         private readonly MockRepository _mockRepository;
 
         private readonly Mock<IBattleService> _mockBattleService;
-        private readonly Mock<IPhaseService> _mockPhaseService;
-        private readonly Mock<ITurnService> _mockTurnService;
-        private readonly Mock<IPositionService> _mockPositionService;
-        private readonly Mock<IDuelLogService> _mockDuelLogService;
         private readonly Mock<IBoardManagementService> _mockBoardManagementService;
+        private readonly Mock<IDuelLogService> _mockDuelLogService;
+        private readonly Mock<IPhaseService> _mockPhaseService;
+        private readonly Mock<IPositionService> _mockPositionService;
+        private readonly Mock<ITurnService> _mockTurnService;
 
         public FakeOpponentServiceTests()
         {
             _mockRepository = new MockRepository(MockBehavior.Strict);
 
             _mockBattleService = _mockRepository.Create<IBattleService>();
-            _mockPhaseService = _mockRepository.Create<IPhaseService>();
-            _mockTurnService = _mockRepository.Create<ITurnService>();
-            _mockPositionService = _mockRepository.Create<IPositionService>();
-            _mockDuelLogService = _mockRepository.Create<IDuelLogService>();
             _mockBoardManagementService = _mockRepository.Create<IBoardManagementService>();
+            _mockDuelLogService = _mockRepository.Create<IDuelLogService>();
+            _mockPhaseService = _mockRepository.Create<IPhaseService>();
+            _mockPositionService = _mockRepository.Create<IPositionService>();
+            _mockTurnService = _mockRepository.Create<ITurnService>();
         }
 
         private FakeOpponentService CreateService()
         {
-            return new FakeOpponentService(_mockBattleService.Object, _mockPhaseService.Object, 
-                _mockTurnService.Object, _mockPositionService.Object, _mockDuelLogService.Object,
-                _mockBoardManagementService.Object);
+            return new FakeOpponentService(_mockBattleService.Object, _mockBoardManagementService.Object,
+                _mockDuelLogService.Object, _mockPhaseService.Object, _mockPositionService.Object,
+                _mockTurnService.Object);
         }
 
         [Fact]

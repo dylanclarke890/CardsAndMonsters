@@ -17,22 +17,22 @@ namespace CardsAndMonsters.Features.Opponent
     public class FakeOpponentService : IFakeOpponentService
     {
         private readonly IBattleService _battleService;
-        private readonly IPhaseService _phaseService;
-        private readonly ITurnService _turnService;
-        private readonly IPositionService _positionService;
-        private readonly IDuelLogService _duelLogService;
         private readonly IBoardManagementService _boardManagementService;
+        private readonly IDuelLogService _duelLogService;
+        private readonly IPhaseService _phaseService;
+        private readonly IPositionService _positionService;
+        private readonly ITurnService _turnService;
 
-        public FakeOpponentService(IBattleService battleService, IPhaseService phaseService,
-            ITurnService turnService, IPositionService positionService,
-            IDuelLogService duelLogService, IBoardManagementService boardManagementService)
+        public FakeOpponentService(IBattleService battleService, IBoardManagementService boardManagementService,
+             IDuelLogService duelLogService, IPhaseService phaseService, IPositionService positionService,
+            ITurnService turnService)
         {
             _battleService = battleService;
-            _phaseService = phaseService;
-            _turnService = turnService;
-            _positionService = positionService;
-            _duelLogService = duelLogService;
             _boardManagementService = boardManagementService;
+            _duelLogService = duelLogService;
+            _phaseService = phaseService;
+            _positionService = positionService;
+            _turnService = turnService;
         }
 
         public async Task FakeMainPhase(Board board)

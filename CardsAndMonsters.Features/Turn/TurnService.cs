@@ -10,16 +10,16 @@ namespace CardsAndMonsters.Features.Turn
 {
     public class TurnService : ITurnService
     {
-        private readonly IPhaseService _phaseService;
-        private readonly IGameOverService _gameOverService;
         private readonly IDuelLogService _duelLogService;
+        private readonly IGameOverService _gameOverService;
+        private readonly IPhaseService _phaseService;
 
-        public TurnService(IPhaseService phaseService,
-            IGameOverService gameOverService, IDuelLogService duelLogService)
+        public TurnService(IDuelLogService duelLogService, IGameOverService gameOverService,
+            IPhaseService phaseService)
         {
-            _phaseService = phaseService;
-            _gameOverService = gameOverService;
             _duelLogService = duelLogService;
+            _gameOverService = gameOverService;
+            _phaseService = phaseService;
         }
 
         public async Task StartTurn(Duelist duelist, bool drawCard, Board board)

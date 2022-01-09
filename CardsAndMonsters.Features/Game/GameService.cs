@@ -21,37 +21,36 @@ namespace CardsAndMonsters.Features.Game
 {
     public class GameService : IGameService, IDisposable
     {
-        private readonly IDuelistFactory _duelistFactory;
         private readonly IBattleService _battleService;
-        private readonly ITurnService _turnService;
-        private readonly IPhaseService _phaseService;
-        private readonly IPositionService _positionService;
+        private readonly IBoardManagementService _boardManagementService;
+        private readonly ICardService _cardService;
+        private readonly IDuelistFactory _duelistFactory;
+        private readonly IDuelLogService _duelLogService;
         private readonly IFakeOpponentService _fakeOpponentService;
         private readonly IGameOverService _gameOverService;
-        private readonly IDuelLogService _duelLogService;
-        private readonly ICardService _cardService;
-        private readonly IBoardManagementService _boardManagementService;
         private readonly INumberGenerator _numberGenerator;
+        private readonly IPhaseService _phaseService;
+        private readonly IPositionService _positionService;
+        private readonly ITurnService _turnService;
 
         private bool disposedValue;
 
-        public GameService(IDuelistFactory duelistFactory, IBattleService battleService,
-            ITurnService turnService, IPhaseService phaseService, IPositionService positionService,
-            IFakeOpponentService fakeOpponentService, IGameOverService gameOverService,
-            IDuelLogService duelLogService, ICardService cardService, IBoardManagementService boardManagementService,
-            INumberGenerator numberGenerator)
+        public GameService(IBattleService battleService, IBoardManagementService boardManagementService,
+            ICardService cardService, IDuelistFactory duelistFactory, IDuelLogService duelLogService,
+            IFakeOpponentService fakeOpponentService, IGameOverService gameOverService, INumberGenerator numberGenerator,
+            IPhaseService phaseService, IPositionService positionService, ITurnService turnService)
         {
-            _duelistFactory = duelistFactory;
             _battleService = battleService;
-            _turnService = turnService;
-            _phaseService = phaseService;
-            _positionService = positionService;
+            _boardManagementService = boardManagementService;
+            _cardService = cardService;
+            _duelistFactory = duelistFactory;
+            _duelLogService = duelLogService;
             _fakeOpponentService = fakeOpponentService;
             _gameOverService = gameOverService;
-            _duelLogService = duelLogService;
-            _cardService = cardService;
-            _boardManagementService = boardManagementService;
             _numberGenerator = numberGenerator;
+            _phaseService = phaseService;
+            _positionService = positionService;
+            _turnService = turnService;
 
             _phaseService.PhaseChanged += StateHasChanged;
         }

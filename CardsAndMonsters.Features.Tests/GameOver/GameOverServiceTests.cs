@@ -15,20 +15,20 @@ namespace CardsAndMonsters.Features.Tests.GameOver
     {
         private readonly MockRepository _mockRepository;
 
-        private readonly Mock<IDuelLogService> _mockDuelLogService;
         private readonly Mock<IBoardManagementService> _mockBoardManagementService;
+        private readonly Mock<IDuelLogService> _mockDuelLogService;
 
         public GameOverServiceTests()
         {
             _mockRepository = new MockRepository(MockBehavior.Strict);
 
-            _mockDuelLogService = _mockRepository.Create<IDuelLogService>();
             _mockBoardManagementService = _mockRepository.Create<IBoardManagementService>();
+            _mockDuelLogService = _mockRepository.Create<IDuelLogService>();
         }
 
         private GameOverService CreateService()
         {
-            return new GameOverService(_mockDuelLogService.Object, _mockBoardManagementService.Object);
+            return new GameOverService(_mockBoardManagementService.Object, _mockDuelLogService.Object);
         }
 
         [Fact]

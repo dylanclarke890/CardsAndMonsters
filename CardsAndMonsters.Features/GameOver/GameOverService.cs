@@ -9,14 +9,13 @@ namespace CardsAndMonsters.Features.GameOver
 {
     public class GameOverService : IGameOverService
     {
-        private readonly IDuelLogService _duelLogService;
         private readonly IBoardManagementService _boardManagementService;
+        private readonly IDuelLogService _duelLogService;
 
-        public GameOverService(IDuelLogService duelLogService,
-            IBoardManagementService boardManagementService)
+        public GameOverService(IBoardManagementService boardManagementService, IDuelLogService duelLogService)
         {
-            _duelLogService = duelLogService;
             _boardManagementService = boardManagementService;
+            _duelLogService = duelLogService;
         }
 
         public Action<GameOverInfo> OnLoss { get; set; }

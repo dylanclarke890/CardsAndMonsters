@@ -10,11 +10,10 @@ namespace CardsAndMonsters.Features.Battle
 {
     public class BattleService : IBattleService
     {
-        public readonly IPositionService _positionService;
         private readonly IDuelLogService _duelLogService;
+        public readonly IPositionService _positionService;
 
-        public BattleService(IPositionService positionService,
-            IDuelLogService duelLogService)
+        public BattleService(IDuelLogService duelLogService, IPositionService positionService)
         {
             _positionService = positionService;
             _duelLogService = duelLogService;

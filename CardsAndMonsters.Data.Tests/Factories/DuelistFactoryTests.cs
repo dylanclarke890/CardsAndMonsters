@@ -8,13 +8,9 @@ namespace CardsAndMonsters.Data.Tests.Factories
     {
         private readonly MockRepository _mockRepository;
 
-
-
         public DuelistFactoryTests()
         {
             _mockRepository = new MockRepository(MockBehavior.Strict);
-
-
         }
 
         private DuelistFactory CreateFactory()

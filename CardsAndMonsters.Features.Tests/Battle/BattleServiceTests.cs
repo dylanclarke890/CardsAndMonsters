@@ -14,20 +14,20 @@ namespace CardsAndMonsters.Features.Tests.Battle
     {
         private readonly MockRepository _mockRepository;
 
-        private readonly Mock<IPositionService> _mockPositionService;
         private readonly Mock<IDuelLogService> _mockDuelLogService;
+        private readonly Mock<IPositionService> _mockPositionService;
 
         public BattleServiceTests()
         {
             _mockRepository = new MockRepository(MockBehavior.Strict);
 
-            _mockPositionService = _mockRepository.Create<IPositionService>();
             _mockDuelLogService = _mockRepository.Create<IDuelLogService>();
+            _mockPositionService = _mockRepository.Create<IPositionService>();
         }
 
         private BattleService CreateService()
         {
-            return new BattleService(_mockPositionService.Object, _mockDuelLogService.Object);
+            return new BattleService(_mockDuelLogService.Object, _mockPositionService.Object);
         }
 
         [Fact]

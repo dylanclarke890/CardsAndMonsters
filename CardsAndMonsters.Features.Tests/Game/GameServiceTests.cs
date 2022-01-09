@@ -23,42 +23,43 @@ namespace CardsAndMonsters.Features.Tests.Game
     {
         private readonly MockRepository _mockRepository;
 
-        private readonly Mock<IDuelistFactory> _mockDuelistFactory;
         private readonly Mock<IBattleService> _mockBattleService;
-        private readonly Mock<ITurnService> _mockTurnService;
-        private readonly Mock<IPhaseService> _mockPhaseService;
-        private readonly Mock<IPositionService> _mockPositionService;
+        private readonly Mock<IBoardManagementService> _mockBoardManagementService;
+        private readonly Mock<ICardService> _mockCardService;
+        private readonly Mock<IDuelistFactory> _mockDuelistFactory;
+        private readonly Mock<IDuelLogService> _mockDuelLogService;
         private readonly Mock<IFakeOpponentService> _mockFakeOpponentService;
         private readonly Mock<IGameOverService> _mockGameOverService;
-        private readonly Mock<IDuelLogService> _mockDuelLogService;
-        private readonly Mock<ICardService> _mockCardService;
-        private readonly Mock<IBoardManagementService> _mockBoardManagementService;
         private readonly Mock<INumberGenerator> _mockNumberGenerator;
+        private readonly Mock<IPositionService> _mockPositionService;
+        private readonly Mock<IPhaseService> _mockPhaseService;
+        private readonly Mock<ITurnService> _mockTurnService;
 
         public GameServiceTests()
         {
             _mockRepository = new MockRepository(MockBehavior.Strict);
 
-            _mockDuelistFactory = _mockRepository.Create<IDuelistFactory>();
             _mockBattleService = _mockRepository.Create<IBattleService>();
-            _mockTurnService = _mockRepository.Create<ITurnService>();
-            _mockPhaseService = _mockRepository.Create<IPhaseService>();
-            _mockPhaseService.SetupAllProperties();
-            _mockPositionService = _mockRepository.Create<IPositionService>();
+            _mockBoardManagementService = _mockRepository.Create<IBoardManagementService>();
+            _mockCardService = _mockRepository.Create<ICardService>();
+            _mockDuelistFactory = _mockRepository.Create<IDuelistFactory>();
+            _mockDuelLogService = _mockRepository.Create<IDuelLogService>();
             _mockFakeOpponentService = _mockRepository.Create<IFakeOpponentService>();
             _mockGameOverService = _mockRepository.Create<IGameOverService>();
-            _mockDuelLogService = _mockRepository.Create<IDuelLogService>();
-            _mockCardService = _mockRepository.Create<ICardService>();
-            _mockBoardManagementService = _mockRepository.Create<IBoardManagementService>();
             _mockNumberGenerator= _mockRepository.Create<INumberGenerator>();
+            _mockPhaseService = _mockRepository.Create<IPhaseService>();
+            _mockPositionService = _mockRepository.Create<IPositionService>();
+            _mockTurnService = _mockRepository.Create<ITurnService>();
+
+            _mockPhaseService.SetupAllProperties();
         }
 
         private GameService CreateService()
         {
-            return new GameService(_mockDuelistFactory.Object, _mockBattleService.Object,
-                _mockTurnService.Object, _mockPhaseService.Object, _mockPositionService.Object,
-                _mockFakeOpponentService.Object, _mockGameOverService.Object, _mockDuelLogService.Object,
-                _mockCardService.Object, _mockBoardManagementService.Object, _mockNumberGenerator.Object);
+            return new GameService(_mockBattleService.Object, _mockBoardManagementService.Object,
+                _mockCardService.Object, _mockDuelistFactory.Object, _mockDuelLogService.Object,
+                _mockFakeOpponentService.Object, _mockGameOverService.Object, _mockNumberGenerator.Object,
+                _mockPhaseService.Object, _mockPositionService.Object, _mockTurnService.Object);
         }
 
         [Fact]

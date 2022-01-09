@@ -15,23 +15,23 @@ namespace CardsAndMonsters.Features.Tests.Turn
     {
         private readonly MockRepository _mockRepository;
 
-        private readonly Mock<IPhaseService> _mockPhaseService;
-        private readonly Mock<IGameOverService> _mockGameOverService;
         private readonly Mock<IDuelLogService> _mockDuelLogService;
+        private readonly Mock<IGameOverService> _mockGameOverService;
+        private readonly Mock<IPhaseService> _mockPhaseService;
 
         public TurnServiceTests()
         {
             _mockRepository = new MockRepository(MockBehavior.Strict);
 
-            _mockPhaseService = _mockRepository.Create<IPhaseService>();
-            _mockGameOverService = _mockRepository.Create<IGameOverService>();
             _mockDuelLogService = _mockRepository.Create<IDuelLogService>();
+            _mockGameOverService = _mockRepository.Create<IGameOverService>();
+            _mockPhaseService = _mockRepository.Create<IPhaseService>();
         }
 
         private TurnService CreateService()
         {
-            return new TurnService(_mockPhaseService.Object, _mockGameOverService.Object,
-                _mockDuelLogService.Object);
+            return new TurnService(_mockDuelLogService.Object, _mockGameOverService.Object,
+                _mockPhaseService.Object);
         }
 
         [Fact]
