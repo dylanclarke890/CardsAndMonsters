@@ -45,6 +45,10 @@ namespace CardsAndMonsters.Features.Battle
 
         public void AttackTarget(BattleInfo info)
         {
+            if (info == null)
+            {
+                throw new GameArgumentException<BattleInfo>(nameof(info), info);
+            }
             if (CurrentBattle == null)
             {
                 throw new GameArgumentException<BattleInfo>(nameof(CurrentBattle), CurrentBattle);

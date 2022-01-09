@@ -1,4 +1,5 @@
-﻿using CardsAndMonsters.Features.Battle;
+﻿using CardsAndMonsters.Core.Exceptions;
+using CardsAndMonsters.Features.Battle;
 using CardsAndMonsters.Features.Logging;
 using CardsAndMonsters.Features.Position;
 using CardsAndMonsters.Models;
@@ -6,6 +7,7 @@ using CardsAndMonsters.Models.Cards;
 using CardsAndMonsters.Models.Enums;
 using CardsAndMonsters.Models.Turns;
 using Moq;
+using System;
 using Xunit;
 
 namespace CardsAndMonsters.Features.Tests.Battle
@@ -65,6 +67,22 @@ namespace CardsAndMonsters.Features.Tests.Battle
         }
 
         [Fact]
+        public void DeclareAttack_NullBattleInfo_ThrowsGameArgumentException()
+        {
+            // Arrange
+            var service = CreateService();
+            BattleInfo info = null;
+
+            // Act
+            void act() => service.DeclareAttack(info);
+
+            // Assert
+            Assert.Throws<GameArgumentException<BattleInfo>>(act);
+
+            _mockRepository.VerifyAll();
+        }
+
+        [Fact]
         public void AttackTarget_CorrectParameters_AddsInfoToCurrentBattle()
         {
             // Arrange
@@ -86,6 +104,40 @@ namespace CardsAndMonsters.Features.Tests.Battle
             Assert.Equal(target, service.CurrentBattle.Target);
             Assert.Equal(targetMonster, service.CurrentBattle.TargetMonster);
             
+            _mockRepository.VerifyAll();
+        }
+
+        [Fact]
+        public void AttackTarget_NullBattleInfo_ThrowsGameArgumentException()
+        {
+            // Arrange
+            var service = CreateService();
+            service.CurrentBattle = new();
+            BattleInfo info = null;
+
+            // Act
+            void act() => service.AttackTarget(info);
+
+            // Assert
+            Assert.Throws<GameArgumentException<BattleInfo>>(act);
+
+            _mockRepository.VerifyAll();
+        }
+
+        [Fact]
+        public void AttackTarget_NullCurrentBattle_ThrowsGameArgumentException()
+        {
+            // Arrange
+            var service = CreateService();
+            service.CurrentBattle = null;
+            BattleInfo info = new();
+
+            // Act
+            void act() => service.AttackTarget(info);
+
+            // Assert
+            Assert.Throws<GameArgumentException<BattleInfo>>(act);
+
             _mockRepository.VerifyAll();
         }
 
@@ -112,6 +164,20 @@ namespace CardsAndMonsters.Features.Tests.Battle
             Assert.Null(service.CurrentBattle);
 
             _mockRepository.VerifyAll();
+        }
+
+        [Fact]
+        public void Attack_NullBattleInfo_ThrowsGameArgumentException()
+        {
+            // Arrange
+            var service = CreateService();
+            BattleInfo battleInfo = null;
+
+            // Act
+            void act() => service.Attack(battleInfo);
+
+            // Assert
+            Assert.Throws<GameArgumentException<BattleInfo>>(act);
         }
 
         [Fact]
@@ -149,6 +215,41 @@ namespace CardsAndMonsters.Features.Tests.Battle
             Assert.Single(board.PlayerField.Monsters);
             Assert.Equal(900, opponent.HP);
             Assert.Equal(1, board.CurrentTurn.MonsterState[monster.Id].TimesAttacked);
+
+            _mockRepository.VerifyAll();
+        }
+
+        [Fact]
+        public void Attack_DefenderWithMonstersDirectly_ThrowsIncorrectMoveException()
+        {
+            // Arrange
+            var service = CreateService();
+
+            Duelist player = new() { HP = 1000 };
+            Duelist opponent = new() { HP = 1000 };
+            TurnState currentTurn = new() { Duelist = player };
+            Monster monster = new(100, 0);
+            MonsterTurnState monsterState = new() { Monster = monster };
+            currentTurn.MonsterState.Add(monster.Id, monsterState);
+
+            Board board = new(player, opponent) { CurrentTurn = currentTurn };
+            board.PlayerField.Monsters.Add(monster);
+            board.OpponentField.Monsters.Add(monster);
+
+            BattleInfo battleInfo = new()
+            {
+                AttackingMonster = monster,
+                AttackingPlayer = player,
+                Board = board,
+                DefendingPlayer = opponent,
+                Target = BattleTarget.Direct,
+            };
+
+            // Act
+            void act() => service.Attack(battleInfo);
+
+            // Assert
+            Assert.Throws<IncorrectMoveException>(act);
 
             _mockRepository.VerifyAll();
         }
