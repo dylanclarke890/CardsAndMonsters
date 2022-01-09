@@ -45,9 +45,9 @@ namespace CardsAndMonsters.Models
 
         public bool AbleToPlayMonster(Monster monster)
         {
-            return CurrentTurn?.Phase is Phase.Main && (bool)CurrentTurn?.Duelist.Equals(PlayerField.Duelist) 
+            return CurrentTurn?.Phase is Phase.Main && (bool)CurrentTurn?.Duelist.Equals(Player) 
                 && (bool)!CurrentTurn?.NormalSummonLimitReached() && PlayerField.Monsters.Count < AppConstants.FieldSize 
-                && PlayerField.Duelist.CurrentHand.Contains(monster);
+                && Player.CurrentHand.Contains(monster);
         }
     }
 }
