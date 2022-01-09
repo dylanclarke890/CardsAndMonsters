@@ -1,4 +1,5 @@
-﻿using CardsAndMonsters.Data.Factories;
+﻿using CardsAndMonsters.Core.Exceptions;
+using CardsAndMonsters.Data.Factories;
 using CardsAndMonsters.Features.Battle;
 using CardsAndMonsters.Features.Card;
 using CardsAndMonsters.Features.Game;
@@ -295,6 +296,22 @@ namespace CardsAndMonsters.Features.Tests.Game
         }
 
         [Fact]
+        public void PlayCard_NullCard_ThrowsGameArgumentException()
+        {
+            // Arrange
+            var service = CreateService();
+            BaseCard card = null;
+
+            // Act
+            void act() => service.PlayCard(card);
+
+            // Assert
+            Assert.Throws<GameArgumentException<BaseCard>>(act);
+
+            _mockRepository.VerifyAll();
+        }
+
+        [Fact]
         public void PlayMonster_ValidMonster_CompletesSuccessfully()
         {
             // Arrange
@@ -308,6 +325,22 @@ namespace CardsAndMonsters.Features.Tests.Game
             service.PlayMonster(monster);
 
             // Assert
+            _mockRepository.VerifyAll();
+        }
+
+        [Fact]
+        public void PlayMonster_NullCard_ThrowsGameArgumentException()
+        {
+            // Arrange
+            var service = CreateService();
+            Monster monster = null;
+
+            // Act
+            void act() => service.PlayMonster(monster);
+
+            // Assert
+            Assert.Throws<GameArgumentException<Monster>>(act);
+
             _mockRepository.VerifyAll();
         }
 
@@ -327,6 +360,22 @@ namespace CardsAndMonsters.Features.Tests.Game
             await service.PlayMonster(position);
 
             // Assert
+            _mockRepository.VerifyAll();
+        }
+
+        [Fact]
+        public async Task PlayMonster_InvalidPosition_ThrowsGameArgumentException()
+        {
+            // Arrange
+            var service = CreateService();
+            FieldPosition position = FieldPosition.VerticalDown;
+
+            // Act
+            async Task act() => await service.PlayMonster(position);
+
+            // Assert
+            await Assert.ThrowsAsync<GameArgumentException<Monster>>(act);
+
             _mockRepository.VerifyAll();
         }
 
@@ -352,7 +401,22 @@ namespace CardsAndMonsters.Features.Tests.Game
         }
 
         [Fact]
-        public async Task SwitchPosition_StateUnderTest_ExpectedBehavior()
+        public async Task Attack_NullBattleInfo_ThrowsGameArgumentException()
+        {
+            // Arrange
+            var service = CreateService();
+            BattleInfo battleInfo = null;
+
+            // Act
+            async Task act() => await service.Attack(battleInfo);
+
+            // Assert
+            await Assert.ThrowsAsync<GameArgumentException<BattleInfo>>(act);
+            _mockRepository.VerifyAll();
+        }
+
+        [Fact]
+        public async Task SwitchPosition_ValidPosition_SwitchesMonstersPosition()
         {
             // Arrange
             Monster monster = new(100, 100) { FieldPosition = FieldPosition.HorizontalDown };
@@ -362,7 +426,7 @@ namespace CardsAndMonsters.Features.Tests.Game
             _mockPositionService.Setup(ps => ps.PositionSwitched(monster, null));
             _mockBoardManagementService.Setup(bms => bms.Save(null))
                 .Returns(Task.CompletedTask);
-            
+
             var service = CreateService();
 
             // Act
@@ -371,6 +435,23 @@ namespace CardsAndMonsters.Features.Tests.Game
             // Assert
 
             Assert.Equal(FieldPosition.VerticalUp, monster.FieldPosition);
+
+            _mockRepository.VerifyAll();
+        }
+
+        [Fact]
+        public async Task SwitchPosition_NullMonster_ThrowsGameArgumentException()
+        {
+            // Arrange
+            var service = CreateService();
+            Monster monster = null;
+
+            // Act
+            async Task act() => await service.SwitchPosition(monster);
+
+            // Assert
+
+            await Assert.ThrowsAsync<GameArgumentException<Monster>>(act);
 
             _mockRepository.VerifyAll();
         }
