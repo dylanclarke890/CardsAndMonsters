@@ -1,4 +1,5 @@
-﻿using CardsAndMonsters.Models;
+﻿using CardsAndMonsters.Core.Exceptions;
+using CardsAndMonsters.Models;
 using CardsAndMonsters.Models.Enums;
 using CardsAndMonsters.Models.Logging;
 using System;
@@ -18,6 +19,11 @@ namespace CardsAndMonsters.Features.Logging
 
         public void AddNewEventLog(Event eventType, Duelist duelist)
         {
+            if (duelist == null)
+            {
+                throw new GameArgumentException<Duelist>(nameof(duelist), duelist);
+            }
+
             EventLog eventLog = new()
             {
                 Event = eventType,
@@ -35,7 +41,7 @@ namespace CardsAndMonsters.Features.Logging
                 Event.MonsterDestroyed => $"{duelist.Name} destroyed a monster",
                 Event.DamageTaken => $"{duelist.Name} took damage",
                 Event.GameEnded => $"{duelist.Name} won the game",
-                _ => throw new ArgumentException("Couldn't determine description."),
+                _ => throw new GameArgumentException<EventLog>(nameof(eventType), eventType),
             };
 
             EventLogs.Add(eventLog);
