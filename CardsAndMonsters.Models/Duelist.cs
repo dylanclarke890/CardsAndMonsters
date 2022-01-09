@@ -77,7 +77,6 @@ namespace CardsAndMonsters.Models
         public void TakeDamage(decimal amount)
         {
             HP -= amount;
-            HP = HP < 0 ? 0 : HP;
         }
     }
 }
