@@ -1,4 +1,5 @@
-﻿using CardsAndMonsters.Features.Logging;
+﻿using CardsAndMonsters.Core.Exceptions;
+using CardsAndMonsters.Features.Logging;
 using CardsAndMonsters.Features.Position;
 using CardsAndMonsters.Models;
 using CardsAndMonsters.Models.Cards;
@@ -40,7 +41,7 @@ namespace CardsAndMonsters.Features.Battle
         {
             if (CurrentBattle == null)
             {
-                throw new ApplicationException("This should've been filled out.");
+                throw new GameArgumentException<BattleInfo>(nameof(CurrentBattle), CurrentBattle);
             }
 
             CurrentBattle.Target = info.Target;
@@ -63,7 +64,7 @@ namespace CardsAndMonsters.Features.Battle
                         {
                             if (battleInfo.Board.OpponentField.Monsters.Any())
                             {
-                                throw new InvalidOperationException("Cannot attack directly if duelist has monsters");
+                                throw new IncorrectMoveException("Attacked directly but opponent has monsters.");
                             }
                             else
                             {
@@ -74,7 +75,7 @@ namespace CardsAndMonsters.Features.Battle
                         {
                             if (battleInfo.Board.PlayerField.Monsters.Any())
                             {
-                                throw new InvalidOperationException("Cannot attack directly if duelist has monsters");
+                                throw new IncorrectMoveException("Attacked directly but player has monsters.");
                             }
                             else
                             {
