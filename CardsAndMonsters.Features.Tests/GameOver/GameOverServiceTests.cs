@@ -1,4 +1,5 @@
-﻿using CardsAndMonsters.Features.GameOver;
+﻿using CardsAndMonsters.Core.Exceptions;
+using CardsAndMonsters.Features.GameOver;
 using CardsAndMonsters.Features.Logging;
 using CardsAndMonsters.Features.Storage;
 using CardsAndMonsters.Models;
@@ -74,6 +75,22 @@ namespace CardsAndMonsters.Features.Tests.GameOver
         }
 
         [Fact]
+        public async Task CheckForGameOver_NullBoard_ThrowsGameArgumentException()
+        {
+            // Arrange
+            var service = CreateService();
+            Board board = null;
+
+            // Act
+            async Task act() => await service.CheckForGameOver(board);
+
+            // Assert
+            await Assert.ThrowsAsync<GameArgumentException<Board>>(act);
+
+            _mockRepository.VerifyAll();
+        }
+
+        [Fact]
         public async Task EndGame_SetsGameOverToTrue()
         {
             // Arrange
@@ -91,6 +108,23 @@ namespace CardsAndMonsters.Features.Tests.GameOver
 
             // Assert
             Assert.True(service.GameOver);
+
+            _mockRepository.VerifyAll();
+        }
+
+        [Fact]
+        public async Task EndGame_NullDuelist_ThrowsGameArgumentException()
+        {
+            // Arrange
+            var service = CreateService();
+            Duelist duelist = null;
+            LossReason reason = LossReason.DeckOut;
+
+            // Act
+            async Task act() => await service.EndGame(duelist, reason);
+
+            // Assert
+            await Assert.ThrowsAsync<GameArgumentException<GameOverInfo>>(act);
 
             _mockRepository.VerifyAll();
         }
