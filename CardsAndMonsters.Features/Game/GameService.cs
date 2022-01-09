@@ -6,6 +6,7 @@ using CardsAndMonsters.Features.GameOver;
 using CardsAndMonsters.Features.Logging;
 using CardsAndMonsters.Features.Opponent;
 using CardsAndMonsters.Features.Position;
+using CardsAndMonsters.Features.RandomNumber;
 using CardsAndMonsters.Features.Storage;
 using CardsAndMonsters.Features.Turn;
 using CardsAndMonsters.Features.TurnPhase;
@@ -30,13 +31,15 @@ namespace CardsAndMonsters.Features.Game
         private readonly IDuelLogService _duelLogService;
         private readonly ICardService _cardService;
         private readonly IBoardManagementService _boardManagementService;
+        private readonly INumberGenerator _numberGenerator;
 
         private bool disposedValue;
 
         public GameService(IDuelistFactory duelistFactory, IBattleService battleService,
             ITurnService turnService, IPhaseService phaseService, IPositionService positionService,
             IFakeOpponentService fakeOpponentService, IGameOverService gameOverService,
-            IDuelLogService duelLogService, ICardService cardService, IBoardManagementService boardManagementService)
+            IDuelLogService duelLogService, ICardService cardService, IBoardManagementService boardManagementService,
+            INumberGenerator numberGenerator)
         {
             _duelistFactory = duelistFactory;
             _battleService = battleService;
@@ -48,6 +51,7 @@ namespace CardsAndMonsters.Features.Game
             _duelLogService = duelLogService;
             _cardService = cardService;
             _boardManagementService = boardManagementService;
+            _numberGenerator = numberGenerator;
 
             _phaseService.PhaseChanged += StateHasChanged;
         }
@@ -93,8 +97,7 @@ namespace CardsAndMonsters.Features.Game
         {
             Board = new(_duelistFactory.GetNewPlayer(), _duelistFactory.GetNewOpponent());
 
-            Random rnd = new();
-            var startingPlayer = rnd.Next(2) == 1 ? Board.Opponent : Board.Player;
+            var startingPlayer = _numberGenerator.GetRandomNumber(2) == 1 ? Board.Opponent : Board.Player;
             Board.CurrentTurn = new(startingPlayer);
 
             _duelLogService.AddNewEventLog(Event.GameStarted, startingPlayer);

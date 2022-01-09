@@ -5,6 +5,7 @@ using CardsAndMonsters.Features.GameOver;
 using CardsAndMonsters.Features.Logging;
 using CardsAndMonsters.Features.Opponent;
 using CardsAndMonsters.Features.Position;
+using CardsAndMonsters.Features.RandomNumber;
 using CardsAndMonsters.Features.Storage;
 using CardsAndMonsters.Features.Turn;
 using CardsAndMonsters.Features.TurnPhase;
@@ -26,6 +27,7 @@ namespace CardsAndMonsters.Features
             services.AddScoped(typeof(ILocalStorageService<>), typeof(LocalStorageService<>));
             services.AddScoped<IPositionService, PositionService>();
             services.AddScoped<IPhaseService, PhaseService>();
+            services.AddScoped<INumberGenerator, NumberGenerator>();
             services.AddScoped<ITurnService, TurnService>();
 
             return services;
