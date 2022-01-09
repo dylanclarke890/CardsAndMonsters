@@ -4,6 +4,7 @@ using CardsAndMonsters.Features.Position;
 using CardsAndMonsters.Models;
 using CardsAndMonsters.Models.Cards;
 using CardsAndMonsters.Models.Enums;
+using CardsAndMonsters.Models.Turns;
 using System;
 using System.Linq;
 
@@ -26,6 +27,11 @@ namespace CardsAndMonsters.Features.Battle
 
         public void DeclareAttack(BattleInfo info)
         {
+            if (info == null)
+            {
+                throw new GameArgumentException<BattleInfo>(nameof(info), info);
+            }
+
             CurrentBattle = new()
             {
                 Board = info.Board,
@@ -56,6 +62,11 @@ namespace CardsAndMonsters.Features.Battle
 
         public void Attack(BattleInfo battleInfo)
         {
+            if (battleInfo == null)
+            {
+                throw new GameArgumentException<BattleInfo>(nameof(battleInfo), battleInfo);
+            }
+
             switch (battleInfo.Target)
             {
                 case BattleTarget.Direct:
@@ -97,6 +108,11 @@ namespace CardsAndMonsters.Features.Battle
 
         private void MonsterAttack(BattleInfo battleInfo)
         {
+            if (battleInfo == null)
+            {
+                throw new GameArgumentException<BattleInfo>(nameof(battleInfo), battleInfo);
+            }
+
             switch (battleInfo.TargetMonster.FieldPosition)
             {
                 case FieldPosition.HorizontalDown:
@@ -123,6 +139,11 @@ namespace CardsAndMonsters.Features.Battle
 
         private void DirectAttack(BattleInfo battleInfo)
         {
+            if (battleInfo == null)
+            {
+                throw new GameArgumentException<BattleInfo>(nameof(battleInfo), battleInfo);
+            }
+
             MonsterAttacked(battleInfo.AttackingMonster.Id, battleInfo.Board);
             DamageDuelist(battleInfo.DefendingPlayer, battleInfo.AttackingMonster.Attack, battleInfo.Board);
             battleInfo.Successful = true;
@@ -130,11 +151,42 @@ namespace CardsAndMonsters.Features.Battle
 
         private static void MonsterAttacked(Guid monsterId, Board board)
         {
-            board.CurrentTurn.MonsterState[monsterId].TimesAttacked++;
+            GetMonsterStateByKey(monsterId, board).TimesAttacked++;
+        }
+
+        private static void MarkAsDestroyed(Guid monsterId, Board board)
+        {
+            GetMonsterStateByKey(monsterId, board).Destroyed = true;
+        }
+
+        private static MonsterTurnState GetMonsterStateByKey(Guid monsterId, Board board)
+        {
+            if (monsterId == Guid.Empty)
+            {
+                throw new GameArgumentException<MonsterTurnState>(nameof(monsterId), monsterId);
+            }
+            if (board == null)
+            {
+                throw new GameArgumentException<MonsterTurnState>(nameof(board), board);
+            }
+
+            if (board.CurrentTurn.MonsterState.TryGetValue(monsterId, out var value))
+            {
+                return value;
+            }
+            else
+            {
+                throw new IncorrectMoveException($"{monsterId} not found in monster states.");
+            }
         }
 
         private void CalculateAtkVsAtk(BattleInfo battleInfo)
         {
+            if (battleInfo == null)
+            {
+                throw new GameArgumentException<BattleInfo>(nameof(battleInfo), battleInfo);
+            }
+
             if (battleInfo.AttackingMonster.Attack > battleInfo.TargetMonster.Attack)
             {
                 DestroyMonster(battleInfo.TargetMonster, battleInfo.DefendingPlayer, battleInfo.Board);
@@ -159,6 +211,11 @@ namespace CardsAndMonsters.Features.Battle
 
         private void CalculateAtkVsDef(BattleInfo battleInfo)
         {
+            if (battleInfo == null)
+            {
+                throw new GameArgumentException<BattleInfo>(nameof(battleInfo), battleInfo);
+            }
+
             if (battleInfo.AttackingMonster.Attack > battleInfo.TargetMonster.Defense)
             {
                 DestroyMonster(battleInfo.TargetMonster, battleInfo.DefendingPlayer, battleInfo.Board);
@@ -178,6 +235,19 @@ namespace CardsAndMonsters.Features.Battle
 
         private void DestroyMonster(Monster monster, Duelist duelist, Board board)
         {
+            if (monster == null)
+            {
+                throw new GameArgumentException<Monster>(nameof(monster), monster);
+            }
+            if (duelist == null)
+            {
+                throw new GameArgumentException<Monster>(nameof(duelist), duelist);
+            }
+            if (board == null)
+            {
+                throw new GameArgumentException<Monster>(nameof(board), board);
+            }
+
             if (board.Player.Equals(duelist))
             {
                 board.PlayerField.Monsters.Remove(monster);
@@ -200,13 +270,17 @@ namespace CardsAndMonsters.Features.Battle
             }
         }
 
-        private static void MarkAsDestroyed(Guid monsterId, Board board)
-        {
-            board.CurrentTurn.MonsterState[monsterId].Destroyed = true;
-        }
-
         private void DamageDuelist(Duelist player, decimal dmg, Board board)
         {
+            if (player == null)
+            {
+                throw new GameArgumentException<Duelist>(nameof(player), player);
+            }
+            if (board == null)
+            {
+                throw new GameArgumentException<Duelist>(nameof(board), board);
+            }
+
             if (player.Equals(board.Player))
             {
                 DamagePlayer(dmg, board);
@@ -219,12 +293,22 @@ namespace CardsAndMonsters.Features.Battle
 
         private void DamageOpponent(decimal amount, Board board)
         {
+            if (board == null)
+            {
+                throw new GameArgumentException<Duelist>(nameof(board), board);
+            }
+
             board.Opponent.TakeDamage(amount);
             _duelLogService.AddNewEventLog(Event.DamageTaken, board.Opponent);
         }
 
         private void DamagePlayer(decimal amount, Board board)
         {
+            if (board == null)
+            {
+                throw new GameArgumentException<Duelist>(nameof(board), board);
+            }
+
             board.Player.TakeDamage(amount);
             _duelLogService.AddNewEventLog(Event.DamageTaken, board.Player);
         }
