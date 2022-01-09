@@ -148,7 +148,8 @@ namespace CardsAndMonsters.Features.Tests.Card
             var service = CreateService();
 
             FieldPosition position = FieldPosition.HorizontalDown;
-            service.PendingPlacement = new Monster(100, 100);
+            var card = new Monster(100, 100);
+            service.PendingPlacement = card;
 
             Duelist opponent = new() { HP = 1000 };
             TurnState currentTurn = new() { Duelist = player };
@@ -158,7 +159,7 @@ namespace CardsAndMonsters.Features.Tests.Card
             service.PlayMonster(position, board);
 
             // Assert
-            Assert.Equal(position, service.PendingPlacement.FieldPosition);
+            Assert.Equal(position, card.FieldPosition);
 
             _mockRepository.VerifyAll();
         }
