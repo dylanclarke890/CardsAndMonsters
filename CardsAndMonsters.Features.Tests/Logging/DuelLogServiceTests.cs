@@ -1,4 +1,5 @@
-﻿using CardsAndMonsters.Features.Logging;
+﻿using CardsAndMonsters.Core.Exceptions;
+using CardsAndMonsters.Features.Logging;
 using CardsAndMonsters.Models;
 using CardsAndMonsters.Models.Enums;
 using CardsAndMonsters.Models.Logging;
@@ -34,6 +35,40 @@ namespace CardsAndMonsters.Features.Tests.Logging
             service.AddNewEventLog(eventType, duelist);
 
             // Assert
+            _mockRepository.VerifyAll();
+        }
+
+        [Fact]
+        public void AddNewEventLog_InvalidEventType_ThrowsGameArgumentException()
+        {
+            // Arrange
+            var service = CreateService();
+            Event eventType = (Event)1000;
+            Duelist duelist = new("test");
+
+            // Act
+            void act() => service.AddNewEventLog(eventType, duelist);
+
+            // Assert
+            Assert.Throws<GameArgumentException<EventLog>>(act);
+
+            _mockRepository.VerifyAll();
+        }
+
+        [Fact]
+        public void AddNewEventLog_NullDuelist_ThrowsGameArgumentException()
+        {
+            // Arrange
+            var service = CreateService();
+            Event eventType = Event.TurnChange;
+            Duelist duelist = null;
+
+            // Act
+            void act() => service.AddNewEventLog(eventType, duelist);
+
+            // Assert
+            Assert.Throws<GameArgumentException<EventLog>>(act);
+
             _mockRepository.VerifyAll();
         }
 

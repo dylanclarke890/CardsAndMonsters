@@ -21,7 +21,7 @@ namespace CardsAndMonsters.Features.Logging
         {
             if (duelist == null)
             {
-                throw new GameArgumentException<Duelist>(nameof(duelist), duelist);
+                throw new GameArgumentException<EventLog>(nameof(duelist), duelist);
             }
 
             EventLog eventLog = new()
