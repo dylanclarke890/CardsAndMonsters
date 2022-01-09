@@ -1,4 +1,5 @@
-﻿using CardsAndMonsters.Features.GameOver;
+﻿using CardsAndMonsters.Core.Exceptions;
+using CardsAndMonsters.Features.GameOver;
 using CardsAndMonsters.Features.Logging;
 using CardsAndMonsters.Features.Turn;
 using CardsAndMonsters.Features.TurnPhase;
@@ -107,6 +108,42 @@ namespace CardsAndMonsters.Features.Tests.Turn
             _mockRepository.VerifyAll();
         }
 
+        [Fact]
+        public async Task StartTurn_NullBoard_ThrowsGameArgumentException()
+        {
+            // Arrange
+            var service = CreateService();
+            Board board = null;
+            Duelist duelist = new("test");
+            bool drawCard = true;
+
+            // Act
+            async Task act() => await service.StartTurn(duelist, drawCard, board);
+
+            // Assert
+            await Assert.ThrowsAsync<GameArgumentException<Board>>(act);
+
+            _mockRepository.VerifyAll();
+        }
+
+        [Fact]
+        public async Task StartTurn_NullDuelist_ThrowsGameArgumentException()
+        {
+            // Arrange
+            var service = CreateService();
+            Board board = new();
+            Duelist duelist = null;
+            bool drawCard = true;
+
+            // Act
+            async Task act() => await service.StartTurn(duelist, drawCard, board);
+
+            // Assert
+            await Assert.ThrowsAsync<GameArgumentException<Board>>(act);
+
+            _mockRepository.VerifyAll();
+        }
+
         [Theory]
         [InlineData(Phase.Standby)]
         [InlineData(Phase.Main)]
@@ -126,6 +163,22 @@ namespace CardsAndMonsters.Features.Tests.Turn
             await service.ResumeTurn(board);
 
             // Assert
+
+            _mockRepository.VerifyAll();
+        }
+
+        [Fact]
+        public async Task ResumeTurn_NullBoard_ThrowsGameArgumentException()
+        {
+            // Arrange
+            var service = CreateService();
+            Board board = null;
+
+            // Act
+            async Task act() => await service.ResumeTurn(board);
+
+            // Assert
+            await Assert.ThrowsAsync<GameArgumentException<Board>>(act);
 
             _mockRepository.VerifyAll();
         }
@@ -157,6 +210,22 @@ namespace CardsAndMonsters.Features.Tests.Turn
 
             // Assert
             Assert.Equal(1, board.TurnCount);
+
+            _mockRepository.VerifyAll();
+        }
+
+        [Fact]
+        public async Task EndTurn_NullBoard_ThrowsGameArgumentException()
+        {
+            // Arrange
+            var service = CreateService();
+            Board board = null;
+
+            // Act
+            async Task act() => await service.EndTurn(board);
+
+            // Assert
+            await Assert.ThrowsAsync<GameArgumentException<Board>>(act);
 
             _mockRepository.VerifyAll();
         }
