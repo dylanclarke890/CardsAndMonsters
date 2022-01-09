@@ -1,4 +1,5 @@
-﻿using CardsAndMonsters.Features.GameOver;
+﻿using CardsAndMonsters.Core.Exceptions;
+using CardsAndMonsters.Features.GameOver;
 using CardsAndMonsters.Features.Logging;
 using CardsAndMonsters.Features.TurnPhase;
 using CardsAndMonsters.Models;
@@ -24,6 +25,15 @@ namespace CardsAndMonsters.Features.Turn
 
         public async Task StartTurn(Duelist duelist, bool drawCard, Board board)
         {
+            if (duelist == null)
+            {
+                throw new GameArgumentException<Board>(nameof(duelist), duelist);
+            }
+            if (board == null)
+            {
+                throw new GameArgumentException<Board>(nameof(board), board);
+            }
+
             board.CurrentTurn = new(board.Player.Equals(duelist) ? board.PlayerField.Monsters : board.OpponentField.Monsters, duelist);
             await _phaseService.EnterPhase(Phase.Standby, board);
 
@@ -45,12 +55,22 @@ namespace CardsAndMonsters.Features.Turn
 
         public async Task ResumeTurn(Board board)
         {
+            if (board == null)
+            {
+                throw new GameArgumentException<Board>(nameof(board), board);
+            }
+
             // Re-enter the last phase
             await _phaseService.EnterPhase(board.CurrentTurn.Phase, board);
         }
 
         public async Task EndTurn(Board board)
         {
+            if (board == null)
+            {
+                throw new GameArgumentException<Board>(nameof(board), board);
+            }
+
             await _phaseService.EnterPhase(Phase.End, board);
 
             _duelLogService.AddNewEventLog(Event.TurnChange, board.CurrentTurn.Duelist);
