@@ -27,5 +27,10 @@ namespace CardsAndMonsters.Models.Base
         {
             return HashCode.Combine(Id);
         }
+
+        public bool IsType(Type type)
+        {
+            return GetType() == type;
+        }
     }
 }
