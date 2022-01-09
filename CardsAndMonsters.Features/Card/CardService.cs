@@ -49,8 +49,8 @@ namespace CardsAndMonsters.Features.Card
 
         public void PlayMonster(Monster monster)
         {
-            ChoosingFieldPosition = true;
             PendingPlacement = monster ?? throw new GameArgumentException<Monster>(nameof(monster), monster);
+            ChoosingFieldPosition = true;
         }
 
         public void PlayMonster(FieldPosition position, Board board)

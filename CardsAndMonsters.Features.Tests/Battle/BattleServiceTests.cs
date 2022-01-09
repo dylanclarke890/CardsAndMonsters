@@ -7,7 +7,6 @@ using CardsAndMonsters.Models.Cards;
 using CardsAndMonsters.Models.Enums;
 using CardsAndMonsters.Models.Turns;
 using Moq;
-using System;
 using Xunit;
 
 namespace CardsAndMonsters.Features.Tests.Battle
