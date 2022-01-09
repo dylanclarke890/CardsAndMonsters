@@ -13,7 +13,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CardsAndMonsters.Features",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CardsAndMonsters.Core", "..\CardsAndMonsters.Core\CardsAndMonsters.Core.csproj", "{905054B4-727C-4791-B836-62B46B5728DB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CardsAndMonsters.Features.Tests", "..\CardsAndMonsters.Features.Tests\CardsAndMonsters.Features.Tests.csproj", "{ACADD677-94F2-419D-A2D9-2C5D245FA60D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CardsAndMonsters.Features.Tests", "..\CardsAndMonsters.Features.Tests\CardsAndMonsters.Features.Tests.csproj", "{ACADD677-94F2-419D-A2D9-2C5D245FA60D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{53F12ED6-88E7-4398-ABE0-3CC8D8A00B31}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -48,6 +50,9 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{ACADD677-94F2-419D-A2D9-2C5D245FA60D} = {53F12ED6-88E7-4398-ABE0-3CC8D8A00B31}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {3463E8D6-2C60-409A-85C1-1099BA3213F2}
