@@ -11,7 +11,7 @@ namespace CardsAndMonsters.Features.RandomNumber
             _random = new();
         }
 
-        public int GetRandomNumber(int lessThan)
+        public int GetRandom(int lessThan)
         {
             return _random.Next(lessThan);
         }

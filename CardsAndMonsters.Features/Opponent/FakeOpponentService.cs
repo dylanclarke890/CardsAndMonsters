@@ -1,7 +1,9 @@
 ﻿using CardsAndMonsters.Core;
+using CardsAndMonsters.Core.Exceptions;
 using CardsAndMonsters.Features.Battle;
 using CardsAndMonsters.Features.Logging;
 using CardsAndMonsters.Features.Position;
+using CardsAndMonsters.Features.RandomNumber;
 using CardsAndMonsters.Features.Storage;
 using CardsAndMonsters.Features.Turn;
 using CardsAndMonsters.Features.TurnPhase;
@@ -19,17 +21,19 @@ namespace CardsAndMonsters.Features.Opponent
         private readonly IBattleService _battleService;
         private readonly IBoardManagementService _boardManagementService;
         private readonly IDuelLogService _duelLogService;
+        private readonly INumberGenerator _numberGenerator;
         private readonly IPhaseService _phaseService;
         private readonly IPositionService _positionService;
         private readonly ITurnService _turnService;
 
         public FakeOpponentService(IBattleService battleService, IBoardManagementService boardManagementService,
-             IDuelLogService duelLogService, IPhaseService phaseService, IPositionService positionService,
-            ITurnService turnService)
+             IDuelLogService duelLogService, INumberGenerator numberGenerator, IPhaseService phaseService,
+             IPositionService positionService, ITurnService turnService)
         {
             _battleService = battleService;
             _boardManagementService = boardManagementService;
             _duelLogService = duelLogService;
+            _numberGenerator = numberGenerator;
             _phaseService = phaseService;
             _positionService = positionService;
             _turnService = turnService;
@@ -37,6 +41,11 @@ namespace CardsAndMonsters.Features.Opponent
 
         public async Task FakeMainPhase(Board board)
         {
+            if (board == null)
+            {
+                throw new GameArgumentException<Board>(nameof(board), board);
+            }
+
             foreach (var monster in board.OpponentField.Monsters)
             {
                 var monsterState = board.CurrentTurn.MonsterState[monster.Id];
@@ -54,14 +63,12 @@ namespace CardsAndMonsters.Features.Opponent
                 return;
             }
 
-            Random rnd = new();
-
-            var card = board.Opponent.CurrentHand[rnd.Next(board.Opponent.CurrentHand.Count)];
+            var card = board.Opponent.CurrentHand[_numberGenerator.GetRandom(board.Opponent.CurrentHand.Count)];
             if (card.IsType(typeof(Monster)) && board.OpponentField.Monsters.Count < AppConstants.FieldSize
                 && !board.CurrentTurn.NormalSummonLimitReached())
             {
                 var monster = card as Monster;
-                monster.FieldPosition = rnd.Next(2) == 1 ? FieldPosition.VerticalUp : FieldPosition.HorizontalDown;
+                monster.FieldPosition = _numberGenerator.GetRandom(2) == 1 ? FieldPosition.VerticalUp : FieldPosition.HorizontalDown;
 
                 board.Opponent.PlayMonster(monster, board, board.CurrentTurn);
                 _duelLogService.AddNewEventLog(Event.PlayMonster, board.Opponent);
@@ -77,6 +84,11 @@ namespace CardsAndMonsters.Features.Opponent
 
         public async Task FakeBattlePhase(Board board)
         {
+            if (board == null)
+            {
+                throw new GameArgumentException<Board>(nameof(board), board);
+            }
+
             await _phaseService.EnterPhase(Phase.Battle, board);
 
             Monster[] monsters = new Monster[board.OpponentField.Monsters.Count];
@@ -100,9 +112,8 @@ namespace CardsAndMonsters.Features.Opponent
                 if (board.PlayerField.Monsters.Any())
                 {
                     battleInfo.Target = BattleTarget.Monster;
-                    Random rnd = new();
 
-                    battleInfo.TargetMonster = board.PlayerField.Monsters[rnd.Next(board.PlayerField.Monsters.Count)];
+                    battleInfo.TargetMonster = board.PlayerField.Monsters[_numberGenerator.GetRandom(board.PlayerField.Monsters.Count)];
                     _battleService.Attack(battleInfo);
                 }
                 else
@@ -117,12 +128,22 @@ namespace CardsAndMonsters.Features.Opponent
 
         public async Task FakeEndPhase(Board board)
         {
+            if (board == null)
+            {
+                throw new GameArgumentException<Board>(nameof(board), board);
+            }
+
             await _turnService.EndTurn(board);
             await _boardManagementService.Save(board);
         }
 
         public async Task ResumePhase(Board board)
         {
+            if (board == null)
+            {
+                throw new GameArgumentException<Board>(nameof(board), board);
+            }
+
             switch (board.CurrentTurn.Phase)
             {
                 case Phase.Standby:
@@ -143,7 +164,7 @@ namespace CardsAndMonsters.Features.Opponent
                     await FakeEndPhase(board);
                     break;
                 default:
-                    throw new ArgumentException("Couldn't figure out the phase");
+                    throw new GameArgumentException<Board>(nameof(board.CurrentTurn.Phase), board.CurrentTurn.Phase);
             }
         }
     }

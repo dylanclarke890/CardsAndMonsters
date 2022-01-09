@@ -180,7 +180,7 @@ namespace CardsAndMonsters.Features.Tests.Game
                 .Returns(Task.CompletedTask);
             _mockTurnService.Setup(ts => ts.StartTurn(It.IsAny<Duelist>(), false, It.IsAny<Board>()))
                 .Returns(Task.CompletedTask);
-            _mockNumberGenerator.Setup(ng => ng.GetRandomNumber(2))
+            _mockNumberGenerator.Setup(ng => ng.GetRandom(2))
                 .Returns(0);
 
             var service = CreateService();
@@ -214,7 +214,7 @@ namespace CardsAndMonsters.Features.Tests.Game
                 .Returns(Task.CompletedTask);
             _mockTurnService.Setup(ts => ts.StartTurn(It.IsAny<Duelist>(), false, It.IsAny<Board>()))
                 .Returns(Task.CompletedTask);
-            _mockNumberGenerator.Setup(ng => ng.GetRandomNumber(2))
+            _mockNumberGenerator.Setup(ng => ng.GetRandom(2))
                 .Returns(1);
             _mockFakeOpponentService.Setup(fop => fop.FakeMainPhase(It.IsAny<Board>()))
                 .Returns(Task.CompletedTask);

@@ -2,6 +2,7 @@
 using CardsAndMonsters.Features.Logging;
 using CardsAndMonsters.Features.Opponent;
 using CardsAndMonsters.Features.Position;
+using CardsAndMonsters.Features.RandomNumber;
 using CardsAndMonsters.Features.Storage;
 using CardsAndMonsters.Features.Turn;
 using CardsAndMonsters.Features.TurnPhase;
@@ -20,6 +21,7 @@ namespace CardsAndMonsters.Features.Tests.Opponent
         private readonly Mock<IBattleService> _mockBattleService;
         private readonly Mock<IBoardManagementService> _mockBoardManagementService;
         private readonly Mock<IDuelLogService> _mockDuelLogService;
+        private readonly Mock<INumberGenerator> _mockNumberGenerator;
         private readonly Mock<IPhaseService> _mockPhaseService;
         private readonly Mock<IPositionService> _mockPositionService;
         private readonly Mock<ITurnService> _mockTurnService;
@@ -31,6 +33,7 @@ namespace CardsAndMonsters.Features.Tests.Opponent
             _mockBattleService = _mockRepository.Create<IBattleService>();
             _mockBoardManagementService = _mockRepository.Create<IBoardManagementService>();
             _mockDuelLogService = _mockRepository.Create<IDuelLogService>();
+            _mockNumberGenerator = _mockRepository.Create<INumberGenerator>();
             _mockPhaseService = _mockRepository.Create<IPhaseService>();
             _mockPositionService = _mockRepository.Create<IPositionService>();
             _mockTurnService = _mockRepository.Create<ITurnService>();
@@ -39,8 +42,8 @@ namespace CardsAndMonsters.Features.Tests.Opponent
         private FakeOpponentService CreateService()
         {
             return new FakeOpponentService(_mockBattleService.Object, _mockBoardManagementService.Object,
-                _mockDuelLogService.Object, _mockPhaseService.Object, _mockPositionService.Object,
-                _mockTurnService.Object);
+                _mockDuelLogService.Object, _mockNumberGenerator.Object, _mockPhaseService.Object,
+                _mockPositionService.Object, _mockTurnService.Object);
         }
 
         [Fact]

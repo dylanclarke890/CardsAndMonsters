@@ -2,6 +2,6 @@
 {
     public interface INumberGenerator
     {
-        int GetRandomNumber(int lessThan);
+        int GetRandom(int lessThan);
     }
 }

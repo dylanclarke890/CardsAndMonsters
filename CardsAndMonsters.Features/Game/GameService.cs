@@ -97,7 +97,7 @@ namespace CardsAndMonsters.Features.Game
         {
             Board = new(_duelistFactory.GetNewPlayer(), _duelistFactory.GetNewOpponent());
 
-            var startingPlayer = _numberGenerator.GetRandomNumber(2) == 1 ? Board.Opponent : Board.Player;
+            var startingPlayer = _numberGenerator.GetRandom(2) == 1 ? Board.Opponent : Board.Player;
             Board.CurrentTurn = new(startingPlayer);
 
             _duelLogService.AddNewEventLog(Event.GameStarted, startingPlayer);
