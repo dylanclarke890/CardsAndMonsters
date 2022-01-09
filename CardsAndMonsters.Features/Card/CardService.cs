@@ -1,9 +1,9 @@
 ﻿using CardsAndMonsters.Core;
+using CardsAndMonsters.Core.Exceptions;
 using CardsAndMonsters.Features.Logging;
 using CardsAndMonsters.Models;
 using CardsAndMonsters.Models.Cards;
 using CardsAndMonsters.Models.Enums;
-using System;
 
 namespace CardsAndMonsters.Features.Card
 {
@@ -22,6 +22,15 @@ namespace CardsAndMonsters.Features.Card
 
         public void PlayCard(BaseCard card, Board board)
         {
+            if (card == null)
+            {
+                throw new GameArgumentException<BaseCard>(nameof(card), card);
+            }
+            if (board == null)
+            {
+                throw new GameArgumentException<BaseCard>(nameof(board), board);
+            }
+
             if (card.IsType(typeof(Monster)))
             {
                 var monster = card as Monster;
@@ -29,7 +38,8 @@ namespace CardsAndMonsters.Features.Card
                 {
                     if (board.PlayerField.Monsters.Count == AppConstants.FieldSize || board.CurrentTurn.NormalSummonLimitReached())
                     {
-                        return;
+                        string error = board.CurrentTurn.NormalSummonLimitReached() ? "normal summon limit reached" : "field is full";
+                        throw new IncorrectMoveException($"Tried playing a monster when {error}");
                     }
 
                     PlayMonster(monster);
@@ -40,11 +50,20 @@ namespace CardsAndMonsters.Features.Card
         public void PlayMonster(Monster monster)
         {
             ChoosingFieldPosition = true;
-            PendingPlacement = monster ?? throw new ArgumentException("Needs a monster to be able to select placement.");
+            PendingPlacement = monster ?? throw new GameArgumentException<Monster>(nameof(monster), monster);
         }
 
         public void PlayMonster(FieldPosition position, Board board)
         {
+            if (position is FieldPosition.VerticalDown)
+            {
+                throw new GameArgumentException<Monster>(nameof(position), position);
+            }
+            if (board == null)
+            {
+                throw new GameArgumentException<Monster>(nameof(board), board);
+            }
+
             ChoosingFieldPosition = false;
             var monster = PendingPlacement as Monster;
             monster.FieldPosition = position;
