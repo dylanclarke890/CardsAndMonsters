@@ -1,4 +1,5 @@
-﻿using CardsAndMonsters.Features.Logging;
+﻿using CardsAndMonsters.Core.Exceptions;
+using CardsAndMonsters.Features.Logging;
 using CardsAndMonsters.Features.Storage;
 using CardsAndMonsters.Models;
 using CardsAndMonsters.Models.Enums;
@@ -24,6 +25,11 @@ namespace CardsAndMonsters.Features.GameOver
 
         public async Task CheckForGameOver(Board board)
         {
+            if (board == null)
+            {
+                throw new GameArgumentException<Board>(nameof(board), board);
+            }
+
             if (board.Player.OutOfHealth())
             {
                 await EndGame(board.Player, LossReason.NoHP);
@@ -38,6 +44,11 @@ namespace CardsAndMonsters.Features.GameOver
 
         public async Task EndGame(Duelist duelist, LossReason reason)
         {
+            if (duelist == null)
+            {
+                throw new GameArgumentException<GameOverInfo>(nameof(duelist), duelist);
+            }
+
             GameOverInfo gameOverInfo = new(duelist, reason, _duelLogService.GetEventLogs());
             GameOver = true;
 
