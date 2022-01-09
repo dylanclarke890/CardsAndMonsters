@@ -1,4 +1,5 @@
 ﻿using CardsAndMonsters.Core;
+using CardsAndMonsters.Core.Exceptions;
 using CardsAndMonsters.Data.Factories;
 using CardsAndMonsters.Features.Battle;
 using CardsAndMonsters.Features.Card;
@@ -134,22 +135,42 @@ namespace CardsAndMonsters.Features.Game
 
         public void PlayCard(BaseCard card)
         {
+            if (card == null)
+            {
+                throw new GameArgumentException<BaseCard>(nameof(card), card);
+            }
+
             _cardService.PlayCard(card, Board);
         }
 
         public void PlayMonster(Monster monster)
         {
+            if (monster == null)
+            {
+                throw new GameArgumentException<Monster>(nameof(monster), monster);
+            }
+
             _cardService.PlayMonster(monster);
         }
 
         public async Task PlayMonster(FieldPosition position)
         {
+            if (position is FieldPosition.VerticalDown)
+            {
+                throw new GameArgumentException<Monster>(nameof(position), position);
+            }
+
             _cardService.PlayMonster(position, Board);
             await _boardManagementService.Save(Board);
         }
 
         public async Task Attack(BattleInfo battleInfo)
         {
+            if (battleInfo == null)
+            {
+                throw new GameArgumentException<BattleInfo>(nameof(battleInfo), battleInfo);
+            }
+
             _battleService.Attack(battleInfo);
             await _boardManagementService.Save(Board);
             await _gameOverService.CheckForGameOver(Board);
@@ -157,6 +178,11 @@ namespace CardsAndMonsters.Features.Game
 
         public async Task SwitchPosition(Monster monster)
         {
+            if (monster == null)
+            {
+                throw new GameArgumentException<Monster>(nameof(monster), monster);
+            }
+
             monster.FieldPosition = _positionService.NewPosition(monster.FieldPosition);
             _positionService.PositionSwitched(monster, Board);
             await _boardManagementService.Save(Board);
