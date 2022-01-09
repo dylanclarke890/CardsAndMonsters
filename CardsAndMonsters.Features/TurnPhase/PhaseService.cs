@@ -1,4 +1,5 @@
-﻿using CardsAndMonsters.Features.Logging;
+﻿using CardsAndMonsters.Core.Exceptions;
+using CardsAndMonsters.Features.Logging;
 using CardsAndMonsters.Models;
 using CardsAndMonsters.Models.Enums;
 using System;
@@ -26,6 +27,11 @@ namespace CardsAndMonsters.Features.TurnPhase
 
         public async Task EnterPhase(Phase phase, Board board)
         {
+            if (board == null)
+            {
+                throw new GameArgumentException<Board>(nameof(board), board);
+            }
+
             ChangingPhase = true;
             board.CurrentTurn.Phase = phase;
             PhaseChanged?.Invoke();
