@@ -1,5 +1,8 @@
 # CardsAndMonsters
 
+## 26-01-22 18:54PM (UPDATE)
+It's been a lot longer than I planned and I'm still working on other projects so I've put this on the back burner for now. Definitely glad I tidied everything up the last time I came back to this so should be a lot easier to return to! Currently working on CipherSharp which is (currently) a bunch of classical and mechanical ciphers I've implemented in C#. I've got to a decent stage of being able to focus on individual algorithms and optimise them, so I'm going to continue with that in the next few weeks and fine-tune things there before I revisit this.
+
 ## 09-01-22 16:32PM (60ish hours)
 
 It's been a little while since an update, took a small break to apply for jobs, attend interviews, complete tasks (one of which is now public on my repos and I'm planning on extending it from converting just CSV files to take any file (or as many as I can) and display the relevant options and possible file types it can convert to) and sleep because it's been pretty exhausting. Started on unit tests when I came back to this, partly so that I have demonstrable examples of tests using Moq and xUnit, partly because I didn't want to work on new features and partly because I didn't want to have to come back to it all later. Was a bit of a slog, went through all of the features and added error checks along with unit tests, managed to get 79.2% code coverage in the end and they're all passing (136) so was worth it. Managed to catch a few bugs as well so definitely glad I did it. Would like to get some documentation added before I go any further which I'll continue with in the next few days.
